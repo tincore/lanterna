@@ -129,12 +129,12 @@ public class ListSelectDialog<T> extends DialogWindow {
     @SafeVarargs
     public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, TerminalSize listBoxSize, T... items) {
         ListSelectDialog<T> listSelectDialog = new ListSelectDialogBuilder<T>()
-            .setTitle(title)
-            .setDescription(description)
+            .title(title)
+            .description(description)
             .setListBoxSize(listBoxSize)
             .addListItems(items)
             .build();
-        return listSelectDialog.showDialog(textGUI);
+        return listSelectDialog.show(textGUI);
     }
 
     public void onCancel() {
@@ -153,9 +153,9 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The item in the list that was selected or {@code null} if the dialog was cancelled
      */
     @Override
-    public T showDialog(WindowBasedTextGUI textGUI) {
+    public T show(WindowBasedTextGUI textGUI) {
         result = null;
-        super.showDialog(textGUI);
+        super.show(textGUI);
         return result;
     }
 }

@@ -36,7 +36,7 @@ public class WaitingDialog extends DialogWindow {
     }
 
     @Override
-    public Object showDialog(WindowBasedTextGUI textGUI) {
+    public Object show(WindowBasedTextGUI textGUI) {
         showDialog(textGUI, true);
         return null;
     }

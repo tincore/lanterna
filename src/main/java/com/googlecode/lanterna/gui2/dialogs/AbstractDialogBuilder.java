@@ -26,6 +26,7 @@ import java.util.Set;
 
 /**
  * Abstract class for dialog building, containing much shared code between different kinds of dialogs
+ *
  * @param <B> The real type of the builder class
  * @param <T> Type of dialog this builder is building
  * @author Martin
@@ -37,6 +38,7 @@ public abstract class AbstractDialogBuilder<B, T extends DialogWindow> {
 
     /**
      * Default constructor for a dialog builder
+     *
      * @param title Title to assign to the dialog
      */
     public AbstractDialogBuilder(String title) {
@@ -46,85 +48,65 @@ public abstract class AbstractDialogBuilder<B, T extends DialogWindow> {
     }
 
     /**
-     * Changes the title of the dialog
-     * @param title New title
-     * @return Itself
+     * Builds a new dialog following the specifications of this builder
+     *
+     * @return New dialog built following the specifications of this builder
      */
-    public B setTitle(String title) {
-        if(title == null) {
-            title = "";
+    public final T build() {
+        T dialog = buildDialog();
+        if (!extraWindowHints.isEmpty()) {
+            dialog.addHints(extraWindowHints);
         }
-        this.title = title;
-        return self();
+        return dialog;
     }
-
-//    /**
-//     * Returns the title that the built dialog will have
-//     * @return Title that the built dialog will have
-//     */
-//    public String getTitle() {
-//        return title;
-//    }
-
-    /**
-     * Changes the description of the dialog
-     * @param description New description
-     * @return Itself
-     */
-    public B setDescription(String description) {
-        this.description = description;
-        return self();
-    }
-
-//    /**
-//     * Returns the description that the built dialog will have
-//     * @return Description that the built dialog will have
-//     */
-//    public String getDescription() {
-//        return description;
-//    }
-
-    /**
-     * Assigns a set of extra window hints that you want the built dialog to have
-     * @param extraWindowHints Window hints to assign to the window in addition to the ones the builder will put
-     * @return Itself
-     */
-    public B setExtraWindowHints(Set<Window.Hint> extraWindowHints) {
-        this.extraWindowHints = extraWindowHints;
-        return self();
-    }
-
-    /**
-     * Returns the list of extra window hints that will be assigned to the window when built
-     * @return List of extra window hints that will be assigned to the window when built
-     */
-    public Set<Window.Hint> getExtraWindowHints() {
-        return extraWindowHints;
-    }
-
-    /**
-     * Helper method for casting this to {@code type} parameter {@code B}
-     * @return {@code this} as {@code B}
-     */
-    protected abstract B self();
 
     /**
      * Builds the dialog according to the builder implementation
+     *
      * @return New dialog object
      */
     protected abstract T buildDialog();
 
     /**
-     * Builds a new dialog following the specifications of this builder
-     * @return New dialog built following the specifications of this builder
+     * Dialog description
+     *
+     * @param description text
+     * @return Itself
      */
-    public final T build() {
-        T dialog = buildDialog();
-        if(!extraWindowHints.isEmpty()) {
-            Set<Window.Hint> combinedHints = new HashSet<>(dialog.getHints());
-            combinedHints.addAll(extraWindowHints);
-            dialog.setHints(combinedHints);
+    public B description(String description) {
+        this.description = description;
+        return self();
+    }
+
+    /**
+     * Assigns a set of extra window hints that you want the built dialog to have
+     *
+     * @param extraWindowHints Window hints to assign to the window in addition to the ones the builder will put
+     * @return Itself
+     */
+    public B extraWindowHints(Set<Window.Hint> extraWindowHints) {
+        this.extraWindowHints = extraWindowHints;
+        return self();
+    }
+
+    /**
+     * Helper method for casting this to {@code type} parameter {@code B}
+     *
+     * @return {@code this} as {@code B}
+     */
+    protected abstract B self();
+
+    /**
+     * Dialog title
+     *
+     * @param title New title
+     * @return Itself
+     */
+    public B title(String title) {
+        if (title == null) {
+            title = "";
         }
-        return dialog;
+        this.title = title;
+        return self();
     }
 }

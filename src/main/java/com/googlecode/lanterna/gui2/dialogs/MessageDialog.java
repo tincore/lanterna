@@ -93,7 +93,7 @@ public class MessageDialog extends DialogWindow {
         for (MessageDialogButton button : buttons) {
             builder.addButton(button);
         }
-        return builder.build().showDialog(textGUI);
+        return builder.build().show(textGUI);
     }
 
     /**
@@ -103,9 +103,9 @@ public class MessageDialog extends DialogWindow {
      * @return The selected button's enum value
      */
     @Override
-    public MessageDialogButton showDialog(WindowBasedTextGUI textGUI) {
+    public MessageDialogButton show(WindowBasedTextGUI textGUI) {
         result = null;
-        super.showDialog(textGUI);
+        super.show(textGUI);
         return result;
     }
 }

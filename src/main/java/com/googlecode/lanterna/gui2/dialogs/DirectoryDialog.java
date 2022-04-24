@@ -157,9 +157,9 @@ public class DirectoryDialog extends DialogWindow {
      * @return The directory which was selected in the dialog or {@code null} if the dialog was cancelled
      */
     @Override
-    public File showDialog(WindowBasedTextGUI textGUI) {
+    public File show(WindowBasedTextGUI textGUI) {
         selectedDir = null;
-        super.showDialog(textGUI);
+        super.show(textGUI);
         return selectedDir;
     }
 }

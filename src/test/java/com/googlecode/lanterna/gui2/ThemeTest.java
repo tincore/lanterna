@@ -274,12 +274,12 @@ public class ThemeTest extends TestBase {
             .addItem("Move button to right", s -> rightHolder.add(exampleButton))
             .addItem("Override button theme", s -> {
                 ActionListDialogBuilder actionListDialogBuilder = new ActionListDialogBuilder();
-                actionListDialogBuilder.setTitle("Choose theme for the button");
+                actionListDialogBuilder.title("Choose theme for the button");
                 for (final String theme : themes) {
-                    actionListDialogBuilder.addItem(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
+                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
                 }
-                actionListDialogBuilder.addItem("Clear override", () -> exampleButton.setTheme(null));
-                actionListDialogBuilder.build().showDialog(textGUI);
+                actionListDialogBuilder.item("Clear override", () -> exampleButton.setTheme(null));
+                actionListDialogBuilder.build().show(textGUI);
             })
             .addItem("Cycle window theme", s -> {
                 windowThemeIndex[0]++;
@@ -314,12 +314,12 @@ public class ThemeTest extends TestBase {
             .addItem("Move button to left", s -> leftHolder.add(exampleButton))
             .addItem("Override button theme", s -> {
                 ActionListDialogBuilder actionListDialogBuilder = new ActionListDialogBuilder();
-                actionListDialogBuilder.setTitle("Choose theme for the button");
+                actionListDialogBuilder.title("Choose theme for the button");
                 for (final String theme : themes) {
-                    actionListDialogBuilder.addItem(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
+                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
                 }
-                actionListDialogBuilder.addItem("Clear override", () -> exampleButton.setTheme(null));
-                actionListDialogBuilder.build().showDialog(textGUI);
+                actionListDialogBuilder.item("Clear override", () -> exampleButton.setTheme(null));
+                actionListDialogBuilder.build().show(textGUI);
             })
             .addItem("Cycle window theme", s -> {
                 windowThemeIndex[1]++;

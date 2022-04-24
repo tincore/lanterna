@@ -177,12 +177,12 @@ public class MultiWindowManagerTest extends TestBase {
         }
 
         private void toggleManaged() {
-            boolean isManaged = !getHints().contains(Hint.FIXED_SIZE);
+            boolean isManaged = !isHint(Hint.FIXED_SIZE);
             isManaged = !isManaged;
             if (isManaged) {
                 setHints(Collections.emptyList());
             } else {
-                setHints(Collections.singletonList(Hint.FIXED_SIZE));
+                setHints(Hint.FIXED_SIZE);
             }
             labelUnlockWindow.setText(Boolean.toString(isManaged));
         }

@@ -99,11 +99,11 @@ public class ActionListDialog extends DialogWindow {
      */
     public static void showDialog(WindowBasedTextGUI textGUI, String title, String description, ActionListBox.Item... items) {
         ActionListDialog actionListDialog = new ActionListDialogBuilder()
-            .setTitle(title)
-            .setDescription(description)
-            .addActions(items)
+            .title(title)
+            .description(description)
+            .items(items)
             .build();
-        actionListDialog.showDialog(textGUI);
+        actionListDialog.show(textGUI);
     }
 
     public void onCancel() {

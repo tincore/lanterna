@@ -219,9 +219,9 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             TerminalSize minimumTerminalSize = TerminalSize.ZERO;
             for (Window window : getWindows()) {
                 if (window.isVisible()) {
-                    if (window.getHints().contains(Window.Hint.FULL_SCREEN) ||
-                            window.getHints().contains(Window.Hint.FIT_TERMINAL_WINDOW) ||
-                            window.getHints().contains(Window.Hint.EXPANDED)) {
+                    if (window.isHint(Hint.FULL_SCREEN) ||
+                        window.isHint(Hint.FIT_TERMINAL_WINDOW) ||
+                        window.isHint(Hint.EXPANDED)) {
                         //Don't take full screen windows or auto-sized windows into account
                         continue;
                     }
@@ -268,7 +268,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
                 TextGUIGraphics windowGraphics = new DefaultTextGUIGraphics(this, textImage.newTextGraphics());
                 TextGUIGraphics insideWindowDecorationsGraphics = windowGraphics;
                 TerminalPosition contentOffset = TerminalPosition.TOP_LEFT_CORNER;
-                if (!window.getHints().contains(Window.Hint.NO_DECORATIONS)) {
+                if (!window.isHint(Hint.NO_DECORATIONS)) {
                     WindowDecorationRenderer decorationRenderer = windowManager.getWindowDecorationRenderer(window);
                     insideWindowDecorationsGraphics = decorationRenderer.draw(this, windowGraphics, window);
                     contentOffset = decorationRenderer.getOffset(window);
@@ -282,7 +282,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
 
                 graphics.drawImage(window.getPosition(), textImage);
 
-                if(!window.getHints().contains(Window.Hint.NO_POST_RENDERING)) {
+                if(!window.isHint(Hint.NO_POST_RENDERING)) {
                     if (window.getPostRenderer() != null) {
                         window.getPostRenderer().postRender(graphics, this, window);
                     }
@@ -390,7 +390,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             }
             // clear popup menus if they clicked onto another window or missed all windows
             if (priorActiveWindow != getActiveWindow() || !anyHit.get()) {
-                if (priorActiveWindow.getHints().contains(Hint.MENU_POPUP)) {
+                if (priorActiveWindow.isHint(Hint.MENU_POPUP)) {
                     priorActiveWindow.close();
                 }
             }
@@ -409,8 +409,8 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             if (window == null) {
                 return;
             }
-            
-            if (window.getHints().contains(Hint.MENU_POPUP)) {
+
+            if (window.isHint(Hint.MENU_POPUP)) {
                 // popup windows are not draggable
                 return;
             }
@@ -439,22 +439,13 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             TerminalPosition wp = originWindowPosition;
             int dx = mp.getColumn() - dragStart.getColumn();
             int dy = mp.getRow() - dragStart.getRow();
-            changeWindowHintsForDragged(titleBarDragWindow);
+            titleBarDragWindow.setDraggable();
             titleBarDragWindow.setPosition(new TerminalPosition(wp.getColumn() + dx, wp.getRow() + dy));
             // TODO ? any additional children popups (shown menus, etc) should also be moved (or just closed)
         }
         
     }
-    /**
-     * In order for window to be draggable, it would no longer be CENTERED.    
-     * Removes Hint.CENTERED, adds Hint.FIXED_POSITION to the window hints.
-     */
-    protected void changeWindowHintsForDragged(Window window) {
-        Set<Hint> hints = new HashSet<>(titleBarDragWindow.getHints());
-        hints.remove(Hint.CENTERED);
-        hints.add(Hint.FIXED_POSITION);
-        titleBarDragWindow.setHints(hints);
-    }
+
 
     @Override
     public WindowManager getWindowManager() {

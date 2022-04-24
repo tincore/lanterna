@@ -102,11 +102,11 @@ public class DynamicGridLayoutTest extends TestBase {
             case TextBox:
                 String sizeString = new TextInputDialogBuilder()
                     .setInitialContent(componentType == SelectableComponentType.Block ? "4x1" : "16x1")
-                    .setTitle("Add " + componentType)
-                    .setDescription("Enter size of " + componentType + " (<columns>x<rows>)")
+                    .title("Add " + componentType)
+                    .description("Enter size of " + componentType + " (<columns>x<rows>)")
                     .setValidationPattern(Pattern.compile("[0-9]+x[0-9]+"), "Invalid format, please use <columns>x<rows>")
                     .build()
-                    .showDialog(textGUI);
+                    .show(textGUI);
                 if (sizeString == null) {
                     return;
                 }
@@ -130,12 +130,12 @@ public class DynamicGridLayoutTest extends TestBase {
         }
 
         GridLayoutDataEditor gridLayoutDataEditor = new GridLayoutDataEditor(component);
-        gridLayoutDataEditor.showDialog(textGUI);
+        gridLayoutDataEditor.show(textGUI);
     }
 
     private void onModifyGrid(WindowBasedTextGUI textGUI, GridLayout gridLayout) {
         GridLayoutEditor gridLayoutEditor = new GridLayoutEditor(gridLayout);
-        gridLayoutEditor.showDialog(textGUI);
+        gridLayoutEditor.show(textGUI);
     }
 
     private void onResetGrid(WindowBasedTextGUI textGUI, Panel gridPanel) {

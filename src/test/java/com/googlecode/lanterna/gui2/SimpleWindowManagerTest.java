@@ -21,7 +21,6 @@ package com.googlecode.lanterna.gui2;
 import com.googlecode.lanterna.TestUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -30,25 +29,24 @@ import java.util.Collections;
  * @author Martin
  */
 public class SimpleWindowManagerTest extends TestBase {
+
+
     public static void main(String[] args) throws IOException, InterruptedException {
         new SimpleWindowManagerTest().run(args);
     }
 
     @Override
     public void init(final WindowBasedTextGUI textGUI) {
-        final Window mainWindow = new BasicWindow("Choose test");
-        Panel contentArea = new Panel();
-        contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-        contentArea.add(new Button("Centered window", s -> textGUI.addWindow(new CenteredWindow())));
-        contentArea.add(new Button("Undecorated window", s -> textGUI.addWindow(new UndecoratedWindow())));
-        contentArea.add(new Button("Undecorated + Centered window", s -> textGUI.addWindow(new UndecoratedCenteredWindow())));
-        contentArea.add(new Button("Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(true))));
-        contentArea.add(new Button("Undecorated + Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(false))));
-        contentArea.add(new Button("Expanded window", s -> textGUI.addWindow(new ExpandedWindow(true))));
-        contentArea.add(new Button("Undecorated + Expanded window", s -> textGUI.addWindow(new ExpandedWindow(false))));
-        contentArea.add(new Button("Close", s -> mainWindow.close()));
-        mainWindow.setComponent(contentArea);
-        textGUI.addWindow(mainWindow);
+        textGUI.addWindow(new BasicWindow("Choose test")
+            .setComponent(new Panel(new LinearLayout(Direction.VERTICAL))
+                .add(new Button("Centered window", s -> textGUI.addWindow(new CenteredWindow())))
+                .add(new Button("Undecorated window", s -> textGUI.addWindow(new UndecoratedWindow())))
+                .add(new Button("Undecorated + Centered window", s -> textGUI.addWindow(new UndecoratedCenteredWindow())))
+                .add(new Button("Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(true))))
+                .add(new Button("Undecorated + Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(false))))
+                .add(new Button("Expanded window", s -> textGUI.addWindow(new ExpandedWindow(true))))
+                .add(new Button("Undecorated + Expanded window", s -> textGUI.addWindow(new ExpandedWindow(false))))
+                .add(createButtonCloseContainer())));
     }
 
     private static class CenteredWindow extends TestWindow {
@@ -61,7 +59,7 @@ public class SimpleWindowManagerTest extends TestBase {
     private static class UndecoratedWindow extends TestWindow {
         UndecoratedWindow() {
             super("Undecorated");
-            setHints(Collections.singletonList(Hint.NO_DECORATIONS));
+            setHints(Hint.NO_DECORATIONS);
         }
     }
 
@@ -69,7 +67,7 @@ public class SimpleWindowManagerTest extends TestBase {
 
         UndecoratedCenteredWindow() {
             super("UndecoratedCentered");
-            setHints(Arrays.asList(Hint.NO_DECORATIONS, Hint.CENTERED));
+            setHints(Hint.NO_DECORATIONS, Hint.CENTERED);
         }
     }
 
@@ -77,17 +75,13 @@ public class SimpleWindowManagerTest extends TestBase {
 
         public FullScreenWindow(boolean decorations) {
             super("FullScreenWindow");
+            setHints(Hint.EXPANDED);
+            if (!decorations) {
+                addHints(Hint.NO_DECORATIONS);
+            }
 
-            Panel content = new Panel();
-            content.setLayoutManager(new BorderLayout());
-            TextBox textBox = new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE);
-            textBox.setLayoutData(BorderLayout.Location.CENTER);
-            textBox.setReadOnly(true);
-            content.add(textBox);
-
-            setComponent(content);
-
-            setHints(decorations ? Collections.singletonList(Hint.FULL_SCREEN) : Arrays.asList(Hint.FULL_SCREEN, Hint.NO_DECORATIONS));
+            setComponent(new Panel(new BorderLayout())
+                .add(new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE).setReadOnly(true), BorderLayout.Location.CENTER));
         }
     }
 
@@ -96,24 +90,22 @@ public class SimpleWindowManagerTest extends TestBase {
         public ExpandedWindow(boolean decorations) {
             super("ExpandedWindow");
 
-            Panel content = new Panel();
-            content.setLayoutManager(new BorderLayout());
-            TextBox textBox = new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE);
-            textBox.setLayoutData(BorderLayout.Location.CENTER);
-            textBox.setReadOnly(true);
-            content.add(textBox);
+            setHints(Hint.EXPANDED);
+            if (!decorations) {
+                addHints(Hint.NO_DECORATIONS);
+            }
+            setComponent(new Panel(new BorderLayout())
+                .add(new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE).setReadOnly(true), BorderLayout.Location.CENTER));
 
-            setComponent(content);
-
-            setHints(decorations ? Collections.singletonList(Hint.EXPANDED) : Arrays.asList(Hint.EXPANDED, Hint.NO_DECORATIONS));
         }
     }
 
     private static class TestWindow extends BasicWindow {
         TestWindow(String title) {
             super(title);
-            setComponent(new Button("Close", s -> this.close()));
-            setCloseWindowWithEscape(true);
+            setComponent(createButtonCloseContainer());
+            setOnKeyEscapeClose(true);
         }
     }
+
 }

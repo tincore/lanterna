@@ -27,14 +27,14 @@ import com.googlecode.lanterna.gui2.table.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * Test for the Table component
  */
-public class TableTest extends TestBase {
+public class
+TableTest extends TestBase {
     private int columnCounter = 4;
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -47,107 +47,105 @@ public class TableTest extends TestBase {
 
     private String askForANumber(WindowBasedTextGUI textGUI, String title, String initialNumber) {
         return new TextInputDialogBuilder()
-            .setTitle(title)
+            .title(title)
             .setInitialContent(initialNumber)
             .setValidationPattern(Pattern.compile("[0-9]+"), "Not a number")
             .build()
-            .showDialog(textGUI);
+            .show(textGUI);
     }
 
     private String askForAString(WindowBasedTextGUI textGUI, String title) {
         return new TextInputDialogBuilder()
-            .setTitle(title)
+            .title(title)
             .build()
-            .showDialog(textGUI);
+            .show(textGUI);
     }
 
     private String chooseAString(WindowBasedTextGUI textGUI, String title, String... items) {
         return new ListSelectDialogBuilder<String>()
-            .setTitle(title)
+            .title(title)
             .addListItems(items)
             .build()
-            .showDialog(textGUI);
+            .show(textGUI);
     }
 
     @Override
     public void init(final WindowBasedTextGUI textGUI) {
-        final BasicWindow window = new BasicWindow("Table container test");
-        window.setHints(Collections.singletonList(Window.Hint.FIT_TERMINAL_WINDOW));
+        final Window window = new BasicWindow("Table container test").setHints(Window.Hint.FIT_TERMINAL_WINDOW);
 
-        final Table<String> table = new Table<>("Column 1", "Column 2", "Column 3");
-        table.setTableCellRenderer(new DefaultTableCellRenderer<String>() {
-            @Override
-            protected void applyStyle(Table<String> table, String cell, int columnIndex, int rowIndex, boolean isSelected, TextGUIGraphics textGUIGraphics) {
-                super.applyStyle(table, cell, columnIndex, rowIndex, isSelected, textGUIGraphics);
-                if (columnIndex == 1) {
-                    textGUIGraphics.setBackgroundColor(TextColor.ANSI.BLACK);
-                    textGUIGraphics.setForegroundColor(TextColor.ANSI.GREEN);
-                    if (isSelected) {
-                        textGUIGraphics.enableModifiers(SGR.REVERSE);
+        final Table<String> table = new Table<String>("Column 1", "Column 2", "Column 3")
+            .setTableCellRenderer(new DefaultTableCellRenderer<String>() {
+                @Override
+                protected void applyStyle(Table<String> table, String cell, int columnIndex, int rowIndex, boolean isSelected, TextGUIGraphics textGUIGraphics) {
+                    super.applyStyle(table, cell, columnIndex, rowIndex, isSelected, textGUIGraphics);
+                    if (columnIndex == 1) {
+                        textGUIGraphics.setBackgroundColor(TextColor.ANSI.BLACK);
+                        textGUIGraphics.setForegroundColor(TextColor.ANSI.GREEN);
+                        if (isSelected) {
+                            textGUIGraphics.enableModifiers(SGR.REVERSE);
+                        }
                     }
                 }
-            }
-        });
+            });
+
         final TableModel<String> model = table.getTableModel();
         for (int i = 1; i < 30; i++) {
             model.addRow("Row" + i, "Row" + i, "Row" + i);
         }
 
-        Panel buttonPanel = new Panel();
-        buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
-
-        buttonPanel.add(new Button("Add...", s -> new ActionListDialogBuilder()
-            .setTitle("Add to table")
-            .addItem("Row", () -> {
-                List<String> labels = new ArrayList<>();
-                for (int i = 0; i < model.getColumnCount(); i++) {
-                    labels.add("Row" + (model.getRowCount() + 1));
-                }
-                model.addRow(labels.toArray(new String[0]));
-                table.invalidate();
-            })
-            .addItem("5 Rows", () -> {
-                for (int row = 0; row < 5; row++) {
-                    List<String> labels = new ArrayList<>();
-                    for (int i = 0; i < model.getColumnCount(); i++) {
-                        labels.add("Row" + (model.getRowCount() + 1));
-                    }
-                    model.addRow(labels.toArray(new String[0]));
-                }
-                table.invalidate();
-            })
-            .addItem("Column", () -> {
-                List<String> labels = new ArrayList<>();
-                for (int i = 0; i < model.getRowCount(); i++) {
-                    labels.add("Row" + (i + 1));
-                }
-                model.addColumn("Column " + (columnCounter++), labels.toArray(new String[0]));
-                table.invalidate();
-            })
-            .build()
-            .showDialog(textGUI)));
-        buttonPanel.add(new Button("Modify...", s -> onModify(textGUI, table)));
-        buttonPanel.add(new Button("Remove...", s -> new ActionListDialogBuilder()
-            .setTitle("Remove from table")
-            .addItem("Row", () -> {
-                String numberAsText = askForANumber(textGUI, "Enter row # to remove (0-" + (model.getRowCount() - 1) + ")");
-                if (numberAsText != null) {
-                    model.removeRow(Integer.parseInt(numberAsText));
-                }
-            })
-            .addItem("Column", () -> {
-                String numberAsText = askForANumber(textGUI, "Enter column # to remove (0-" + (model.getColumnCount() - 1) + ")");
-                if (numberAsText != null) {
-                    model.removeColumn(Integer.parseInt(numberAsText));
-                }
-            })
-            .build()
-            .showDialog(textGUI)));
-        buttonPanel.add(new Button("Close", s -> window.close()));
-
         window.setComponent(Panels.vertical(
             table.withBorder(Borders.singleLineBevel("Table")),
-            buttonPanel));
+            new Panel(new LinearLayout(Direction.HORIZONTAL))
+                .add(new Button("Add...",
+                    s -> new ActionListDialogBuilder()
+                        .title("Add to table")
+                        .item("Row", () -> {
+                            List<String> labels = new ArrayList<>();
+                            for (int i = 0; i < model.getColumnCount(); i++) {
+                                labels.add("Row" + (model.getRowCount() + 1));
+                            }
+                            model.addRow(labels.toArray(new String[0]));
+                            table.invalidate();
+                        })
+                        .item("5 Rows", () -> {
+                            for (int row = 0; row < 5; row++) {
+                                List<String> labels = new ArrayList<>();
+                                for (int i = 0; i < model.getColumnCount(); i++) {
+                                    labels.add("Row" + (model.getRowCount() + 1));
+                                }
+                                model.addRow(labels.toArray(new String[0]));
+                            }
+                            table.invalidate();
+                        })
+                        .item("Column", () -> {
+                            List<String> labels = new ArrayList<>();
+                            for (int i = 0; i < model.getRowCount(); i++) {
+                                labels.add("Row" + (i + 1));
+                            }
+                            model.addColumn("Column " + (columnCounter++), labels.toArray(new String[0]));
+                            table.invalidate();
+                        })
+                        .build()
+                        .show(textGUI)))
+                .add(new Button("Modify...", s -> onModify(textGUI, table)))
+                .add(new Button("Remove...",
+                    s -> new ActionListDialogBuilder()
+                        .title("Remove from table")
+                        .item("Row", () -> {
+                            String numberAsText = askForANumber(textGUI, "Enter row # to remove (0-" + (model.getRowCount() - 1) + ")");
+                            if (numberAsText != null) {
+                                model.removeRow(Integer.parseInt(numberAsText));
+                            }
+                        })
+                        .item("Column", () -> {
+                            String numberAsText = askForANumber(textGUI, "Enter column # to remove (0-" + (model.getColumnCount() - 1) + ")");
+                            if (numberAsText != null) {
+                                model.removeColumn(Integer.parseInt(numberAsText));
+                            }
+                        })
+                        .build()
+                        .show(textGUI)))
+                .add(new Button("Close", s -> window.close()))));
         textGUI.addWindow(window);
     }
 
@@ -204,10 +202,10 @@ public class TableTest extends TestBase {
             table.setCellSelection(!table.isCellSelection());
         } else {
             TableCellBorderStyle newStyle = new ListSelectDialogBuilder<TableCellBorderStyle>()
-                .setTitle("Choose a new style")
+                .title("Choose a new style")
                 .addListItems(TableCellBorderStyle.values())
                 .build()
-                .showDialog(textGUI);
+                .show(textGUI);
             if (newStyle != null) {
                 if (choice.equals(dialogChoices[0])) {
                     renderer.setHeaderVerticalBorderStyle(newStyle);

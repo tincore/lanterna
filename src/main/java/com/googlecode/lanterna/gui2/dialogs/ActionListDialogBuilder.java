@@ -49,31 +49,20 @@ public class ActionListDialogBuilder extends AbstractDialogBuilder<ActionListDia
         this.onSelectionClose = true;
     }
 
-    /**
-     * Adds additional actions to the {@code ActionListBox} that is to be displayed when the dialog is opened. The
-     * label of the items will be derived by calling {@code toString()} on each runnable
-     *
-     * @param items Items to add to the {@code ActionListBox}
-     * @return Itself
-     */
-    public ActionListDialogBuilder addActions(ActionListBox.Item... items) {
-        this.items.addAll(Arrays.asList(items));
-        return this;
-    }
-
-    public ActionListDialogBuilder addItem(String label, Interactable.ClickListener clickListener) {
-        return addItem(new ActionListBox.Item(label, clickListener));
+    @Override
+    protected ActionListDialog buildDialog() {
+        return new ActionListDialog(title, description, listBoxSize, cancellable, onSelectionClose, items);
     }
 
     /**
-     * Adds an additional action to the {@code ActionListBox} that is to be displayed when the dialog is opened. The
-     * label of this item will be derived by calling {@code toString()} on the runnable
+     * Sets if the dialog can be cancelled or not (default: {@code true})
      *
-     * @param item Action to perform if the user selects this item
+     * @param cancellable If {@code true}, the user has the option to cancel the dialog, if {@code false} there is no such
+     *                    button in the dialog
      * @return Itself
      */
-    public ActionListDialogBuilder addItem(ActionListBox.Item item) {
-        this.items.add(item);
+    public ActionListDialogBuilder cancellable(boolean cancellable) {
+        this.cancellable = cancellable;
         return this;
     }
 
@@ -84,69 +73,35 @@ public class ActionListDialogBuilder extends AbstractDialogBuilder<ActionListDia
      * @param action Action to perform if the user selects this item
      * @return Itself
      */
-    public ActionListDialogBuilder addItem(final String label, final Runnable action) {
-        return addItem(label, s -> action.run());
+    public ActionListDialogBuilder item(final String label, final Runnable action) {
+        return item(label, s -> action.run());
     }
 
-    @Override
-    protected ActionListDialog buildDialog() {
-        return new ActionListDialog(title, description, listBoxSize, cancellable, onSelectionClose, items);
+    public ActionListDialogBuilder item(String label, Interactable.ClickListener clickListener) {
+        return item(new ActionListBox.Item(label, clickListener));
     }
-//
-//    /**
-//     * Returns a copy of the internal list of actions currently inside this builder that will be assigned to the
-//     * {@code ActionListBox} in the dialog when built
-//     *
-//     * @return Copy of the internal list of actions currently inside this builder
-//     */
-//    public List<Runnable> getItems() {
-//        return new ArrayList<>(items);
-//    }
-//
-//    /**
-//     * Returns the specified size of the internal {@code ActionListBox} or {@code null} if there is no size and the list
-//     * box will attempt to take up enough size to draw all items
-//     *
-//     * @return Specified size of the internal {@code ActionListBox} or {@code null} if there is no size
-//     */
-//    public TerminalSize getListBoxSize() {
-//        return listBoxSize;
-//    }
-
-    @Override
-    protected ActionListDialogBuilder self() {
-        return this;
-    }
-
-//    /**
-//     * Returns {@code true} if the dialog can be cancelled once it's opened
-//     *
-//     * @return {@code true} if the dialog can be cancelled once it's opened
-//     */
-//    public boolean isCancellable() {
-//        return cancellable;
-//    }
 
     /**
-     * Sets if the dialog can be cancelled or not (default: {@code true})
+     * Adds an additional action to the {@code ActionListBox} that is to be displayed when the dialog is opened. The
+     * label of this item will be derived by calling {@code toString()} on the runnable
      *
-     * @param cancellable If {@code true}, the user has the option to cancel the dialog, if {@code false} there is no such
-     *                    button in the dialog
+     * @param item Action to perform if the user selects this item
      * @return Itself
      */
-    public ActionListDialogBuilder setCancellable(boolean cancellable) {
-        this.cancellable = cancellable;
+    public ActionListDialogBuilder item(ActionListBox.Item item) {
+        this.items.add(item);
         return this;
     }
 
     /**
-     * Sets if clicking on an action automatically closes the dialog after the action is finished (default: {@code true})
+     * Adds additional actions to the {@code ActionListBox} that is to be displayed when the dialog is opened. The
+     * label of the items will be derived by calling {@code toString()} on each runnable
      *
-     * @param closeAutomatically if {@code true} dialog will be automatically closed after choosing and finish any of the action
+     * @param items Items to add to the {@code ActionListBox}
      * @return Itself
      */
-    public ActionListDialogBuilder setCloseAutomaticallyOnAction(boolean closeAutomatically) {
-        this.onSelectionClose = closeAutomatically;
+    public ActionListDialogBuilder items(ActionListBox.Item... items) {
+        this.items.addAll(Arrays.asList(items));
         return this;
     }
 
@@ -157,8 +112,24 @@ public class ActionListDialogBuilder extends AbstractDialogBuilder<ActionListDia
      * @param listBoxSize Size of the {@code ActionListBox}
      * @return Itself
      */
-    public ActionListDialogBuilder setListBoxSize(TerminalSize listBoxSize) {
+    public ActionListDialogBuilder listSize(TerminalSize listBoxSize) {
         this.listBoxSize = listBoxSize;
+        return this;
+    }
+
+    /**
+     * Sets if clicking on an action automatically closes the dialog after the action is finished (default: {@code true})
+     *
+     * @param onSelectionClose if {@code true} dialog will be automatically closed after choosing and finish any of the action
+     * @return Itself
+     */
+    public ActionListDialogBuilder onSelectionClose(boolean onSelectionClose) {
+        this.onSelectionClose = onSelectionClose;
+        return this;
+    }
+
+    @Override
+    protected ActionListDialogBuilder self() {
         return this;
     }
 }

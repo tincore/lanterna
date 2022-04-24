@@ -25,11 +25,9 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import static com.googlecode.lanterna.gui2.Attributes.EMPTY;
 
 /**
  * Abstract Window has most of the code requiring for a window to function, all concrete window implementations extends
@@ -40,22 +38,16 @@ import static com.googlecode.lanterna.gui2.Attributes.EMPTY;
  */
 public abstract class AbstractWindow extends AbstractBasePane<Window> implements Window {
     private String title;
-    private WindowBasedTextGUI textGUI;
-    private boolean visible;
+    private boolean visible = true;
     private TerminalSize lastKnownSize;
     private TerminalSize lastKnownDecoratedSize;
     private TerminalPosition lastKnownPosition;
-    private TerminalPosition contentOffset;
-    private Set<Hint> hints;
-    private WindowPostRenderer windowPostRenderer;
-    private boolean closeWindowWithEscape;
+    private TerminalPosition contentOffset = TerminalPosition.TOP_LEFT_CORNER;
+    private Set<Hint> hints = new HashSet<>();
+    private boolean onKeyEscapeClose;
 
-    /**
-     * Default constructor, this creates a window with no title
-     */
-    public AbstractWindow() {
-        this("");
-    }
+    private WindowPostRenderer windowPostRenderer;
+    private WindowBasedTextGUI textGUI;
 
     public AbstractWindow(Attributes attributes) {
         this("", attributes);
@@ -66,23 +58,23 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
      *
      * @param title Title of this window
      */
-    public AbstractWindow(String title) {
-        this(title, EMPTY);
-    }
-
     public AbstractWindow(String title, Attributes attributes) {
         super(attributes);
         this.title = title;
-        this.textGUI = null;
-        this.visible = true;
-        this.contentOffset = TerminalPosition.TOP_LEFT_CORNER;
-        this.lastKnownPosition = null;
-        this.lastKnownSize = null;
-        this.lastKnownDecoratedSize = null;
-        this.closeWindowWithEscape = false;
-
-        this.hints = new HashSet<>();
     }
+
+    @Override
+    public Window addHints(Hint... hints) {
+        return addHints(List.of(hints));
+    }
+
+    @Override
+    public Window addHints(Collection<Hint> hints) {
+        this.hints.addAll(hints);
+        invalidate();
+        return self();
+    }
+
 
     @Override
     public void addWindowListener(WindowListener windowListener) {
@@ -130,9 +122,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
         if (globalPosition == null || lastKnownPosition == null) {
             return null;
         }
-        return globalPosition.withRelative(
-            -lastKnownPosition.getColumn(),
-            -lastKnownPosition.getRow());
+        return globalPosition.withRelative(-lastKnownPosition.getColumn(), -lastKnownPosition.getRow());
     }
 
     @Override
@@ -143,18 +133,6 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     @Override
     public final void setDecoratedSize(TerminalSize decoratedSize) {
         this.lastKnownDecoratedSize = decoratedSize;
-    }
-
-    @Override
-    public Set<Hint> getHints() {
-        return Collections.unmodifiableSet(hints);
-    }
-
-    @Override
-    public Window setHints(Collection<Hint> hints) {
-        this.hints = new HashSet<>(hints);
-        invalidate();
-        return self();
     }
 
     @Override
@@ -182,12 +160,6 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     @Override
     public final TerminalSize getSize() {
         return lastKnownSize;
-    }
-
-    @Override
-    @Deprecated
-    public void setSize(TerminalSize size) {
-        setSize(size, true);
     }
 
     @Override
@@ -225,7 +197,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     @Override
     public boolean handleInput(KeyStroke key) {
         boolean handled = super.handleInput(key);
-        if (!handled && closeWindowWithEscape && key.getKeyType() == KeyType.Escape) {
+        if (!handled && onKeyEscapeClose && key.getKeyType() == KeyType.Escape) {
             close();
             return true;
         }
@@ -233,13 +205,13 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public boolean isVisible() {
-        return visible;
+    public boolean isHint(Hint hint) {
+        return this.hints.contains(hint);
     }
 
     @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public boolean isVisible() {
+        return visible;
     }
 
     @Override
@@ -251,27 +223,54 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
         return this;
     }
 
+    @Override
+    public Window setContentOffset(TerminalPosition offset) {
+        this.contentOffset = offset;
+        return this;
+    }
+
+    @Override
+    public Window setDraggable() {
+        /**
+         * In order for window to be draggable, it would no longer be CENTERED.
+         * Removes Hint.CENTERED, adds Hint.FIXED_POSITION to the window hints.
+         */
+        Set<Hint> hints = new HashSet<>(this.hints);
+        hints.remove(Hint.CENTERED);
+        hints.add(Hint.FIXED_POSITION);
+        setHints(hints);
+        return this;
+    }
+
+    @Override
+    public Window setFixedSize(TerminalSize size) {
+        hints.add(Hint.FIXED_SIZE);
+        return setSize(size);
+    }
+
+    @Override
+    public Window setHints(Collection<Hint> hints) {
+        this.hints = new HashSet<>(hints);
+        invalidate();
+        return self();
+    }
+
+    @Override
+    public Window setHints(Hint... hints) {
+        return setHints(List.of(hints));
+    }
+
     /**
      * Setting this property to {@code true} will cause pressing the ESC key to close the window. This used to be the
      * default behaviour of lanterna 3 during the development cycle but is not longer the case. You are encouraged to
      * put proper buttons or other kind of components to clearly mark to the user how to close the window instead of
      * magically taking ESC, but sometimes it can be useful (when doing testing, for example) to enable this mode.
      *
-     * @param closeWindowWithEscape If {@code true}, this window will self-close if you press ESC key
+     * @param onKeyEscapeClose If {@code true}, this window will self-close if you press ESC key
      */
-    public void setCloseWindowWithEscape(boolean closeWindowWithEscape) {
-        this.closeWindowWithEscape = closeWindowWithEscape;
-    }
-
-    @Override
-    public void setContentOffset(TerminalPosition offset) {
-        this.contentOffset = offset;
-    }
-
-    @Override
-    public void setFixedSize(TerminalSize size) {
-        hints.add(Hint.FIXED_SIZE);
-        setSize(size);
+    public Window setOnKeyEscapeClose(boolean onKeyEscapeClose) {
+        this.onKeyEscapeClose = onKeyEscapeClose;
+        return this;
     }
 
     @Override
@@ -283,6 +282,13 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
             .filter(l -> l instanceof WindowListener)
             .forEach(l -> ((WindowListener) l).onMoved(this, oldPosition, topLeft));
 
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public Window setSize(TerminalSize size) {
+        setSize(size, true);
         return this;
     }
 
@@ -301,14 +307,21 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
         }
     }
 
+    @Override
+    public Window setVisible(boolean visible) {
+        this.visible = visible;
+        return this;
+    }
+
     /**
      * Sets the post-renderer to use for this window. This will override the default from the GUI system (if there is
      * one set, otherwise from the theme).
      *
      * @param windowPostRenderer Window post-renderer to assign to this window
      */
-    public void setWindowPostRenderer(WindowPostRenderer windowPostRenderer) {
+    public Window setWindowPostRenderer(WindowPostRenderer windowPostRenderer) {
         this.windowPostRenderer = windowPostRenderer;
+        return this;
     }
 
     /**

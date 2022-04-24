@@ -95,11 +95,11 @@ public class TextInputDialog extends DialogWindow {
      */
     public static String showDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
-            .setTitle(title)
-            .setDescription(description)
+            .title(title)
+            .description(description)
             .setInitialContent(initialContent)
             .build();
-        return textInputDialog.showDialog(textGUI);
+        return textInputDialog.show(textGUI);
     }
 
     /**
@@ -113,12 +113,12 @@ public class TextInputDialog extends DialogWindow {
      */
     public static BigInteger showNumberDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
-            .setTitle(title)
-            .setDescription(description)
+            .title(title)
+            .description(description)
             .setInitialContent(initialContent)
             .setValidationPattern(Pattern.compile("[0-9]+"), "Not a number")
             .build();
-        String numberString = textInputDialog.showDialog(textGUI);
+        String numberString = textInputDialog.show(textGUI);
         return numberString != null ? new BigInteger(numberString) : null;
     }
 
@@ -133,12 +133,12 @@ public class TextInputDialog extends DialogWindow {
      */
     public static String showPasswordDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
-            .setTitle(title)
-            .setDescription(description)
+            .title(title)
+            .description(description)
             .setInitialContent(initialContent)
             .setPasswordInput(true)
             .build();
-        return textInputDialog.showDialog(textGUI);
+        return textInputDialog.show(textGUI);
     }
 
     public void onCancel() {
@@ -154,14 +154,15 @@ public class TextInputDialog extends DialogWindow {
                 return;
             }
         }
+
         result = text;
         close();
     }
 
     @Override
-    public String showDialog(WindowBasedTextGUI textGUI) {
+    public String show(WindowBasedTextGUI textGUI) {
         result = null;
-        super.showDialog(textGUI);
+        super.show(textGUI);
         return result;
     }
 }

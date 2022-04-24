@@ -62,10 +62,10 @@ public class Issue155 {
 
     private static Interactable.ClickListener openDialog(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
         return s -> new ActionListDialogBuilder().
-            setCancellable(true).
-            addItem("Reinstall UI (this crashes everything)", setupUI(gui, window, counter)).
+            cancellable(true).
+            item("Reinstall UI (this crashes everything)", setupUI(gui, window, counter)).
                 build().
-                showDialog(gui);
+            show(gui);
     }
 
     private static Runnable setupUI(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {

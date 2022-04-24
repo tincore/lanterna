@@ -68,6 +68,6 @@ public class WelcomeSplashTest extends TestBase {
                 .setExtraWindowHints(Collections.singleton(Window.Hint.EXPANDED))
                 .setExtraWindowHints(Collections.singleton(Window.Hint.CENTERED))
                 .build()
-                .showDialog(textGUI);
+                .show(textGUI);
     }
 }

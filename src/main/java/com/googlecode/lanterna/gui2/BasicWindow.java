@@ -30,7 +30,7 @@ public class BasicWindow extends AbstractWindow {
      * Default constructor, creates a new window with no title
      */
     public BasicWindow() {
-        super();
+        super(Attributes.EMPTY);
     }
 
     /**
@@ -39,6 +39,6 @@ public class BasicWindow extends AbstractWindow {
      * @param title Title of the window
      */
     public BasicWindow(String title) {
-        super(title);
+        super(title, Attributes.EMPTY);
     }
 }

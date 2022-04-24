@@ -90,7 +90,7 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         if (isActivationStroke(keyStroke)) {
             if (onClicked()) {
                 BasePane basePane = getBasePane();
-                if (basePane instanceof Window && ((Window) basePane).getHints().contains(Window.Hint.MENU_POPUP)) {
+                if (basePane instanceof Window && ((Window) basePane).isHint(Window.Hint.MENU_POPUP)) {
                     ((Window) basePane).close();
                 }
             }

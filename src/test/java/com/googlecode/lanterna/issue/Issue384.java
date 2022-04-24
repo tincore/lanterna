@@ -72,7 +72,7 @@ public class Issue384 {
             dialogWindow.close();
         }), LinearLayout.createLayoutData(LinearLayout.Alignment.End));
         dialogWindow.setComponent(contentPanel);
-        dialogWindow.showDialog(textGUI);
+        dialogWindow.show(textGUI);
     }
 }
 

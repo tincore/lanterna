@@ -53,51 +53,51 @@ public class DialogsTextGUIBasicTest {
             dialogsListBox.addItem("Multi-line input",
                 s -> {
                     String result = new TextInputDialogBuilder()
-                        .setTitle("Multi-line editor")
+                        .title("Multi-line editor")
                         .setTextBoxSize(new TerminalSize(35, 5))
                         .build()
-                        .showDialog(textGUI);
+                        .show(textGUI);
                     System.out.println("Result was: " + result);
                 });
             dialogsListBox.addItem("Numeric input",
                 s -> {
                     String result = new TextInputDialogBuilder()
-                        .setTitle("Numeric input")
-                        .setDescription("Enter a number")
+                        .title("Numeric input")
+                        .description("Enter a number")
                         .setValidationPattern(Pattern.compile("[0-9]+"), "Please enter a valid number")
                         .build()
-                        .showDialog(textGUI);
+                        .show(textGUI);
                     System.out.println("Result was: " + result);
                 });
             dialogsListBox.addItem("File dialog (open)",
                 s -> {
                     File result = new FileDialogBuilder()
-                        .setTitle("Open File")
-                        .setDescription("Choose a file:")
+                        .title("Open File")
+                        .description("Choose a file:")
                         .setActionLabel(LocalizedString.Open.toString())
                         .build()
-                        .showDialog(textGUI);
+                        .show(textGUI);
                     System.out.println("Result was: " + result);
                 });
             dialogsListBox.addItem("File dialog (save)",
                 s -> {
                     File result = new FileDialogBuilder()
-                        .setTitle("Save File")
-                        .setDescription("Choose a file:")
+                        .title("Save File")
+                        .description("Choose a file:")
                         .setActionLabel(LocalizedString.Save.toString())
                         .build()
-                        .showDialog(textGUI);
+                        .show(textGUI);
                     System.out.println("Result was: " + result);
                 });
             dialogsListBox.addItem("Action list dialog",
                 s -> new ActionListDialogBuilder()
-                    .setTitle("Action List Dialog")
-                    .setDescription("Choose an item")
-                    .addItem("First Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose First Item", MessageDialogButton.OK))
-                    .addItem("Second Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose Second Item", MessageDialogButton.OK))
-                    .addItem("Third Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose Third Item", MessageDialogButton.OK))
+                    .title("Action List Dialog")
+                    .description("Choose an item")
+                    .item("First Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose First Item", MessageDialogButton.OK))
+                    .item("Second Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose Second Item", MessageDialogButton.OK))
+                    .item("Third Item", s2 -> MessageDialog.showMessageDialog(textGUI, "Action List Dialog", "You chose Third Item", MessageDialogButton.OK))
                     .build()
-                    .showDialog(textGUI));
+                    .show(textGUI));
 
             mainPanel.add(dialogsListBox);
             mainPanel.add(new EmptySpace(TerminalSize.ONE));

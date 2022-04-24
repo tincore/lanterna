@@ -68,8 +68,7 @@ public class FileDialog extends DialogWindow {
         }
         selectedObject = selectedObject.getAbsoluteFile();
 
-        Panel contentPane = new Panel();
-        contentPane.setLayoutManager(new GridLayout(2));
+        Panel contentPane = new Panel(new GridLayout(2));
 
         if (description != null) {
             new Label(description)
@@ -175,9 +174,9 @@ public class FileDialog extends DialogWindow {
      * @return The file which was selected in the dialog or {@code null} if the dialog was cancelled
      */
     @Override
-    public File showDialog(WindowBasedTextGUI textGUI) {
+    public File show(WindowBasedTextGUI textGUI) {
         selectedFile = null;
-        super.showDialog(textGUI);
+        super.show(textGUI);
         return selectedFile;
     }
 

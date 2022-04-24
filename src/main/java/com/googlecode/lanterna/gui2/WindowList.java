@@ -70,7 +70,7 @@ public class WindowList {
         if(!windows.contains(window)) {
             windows.add(window);
         }
-        if(!window.getHints().contains(Window.Hint.NO_FOCUS)) {
+        if(!window.isHint(Window.Hint.NO_FOCUS)) {
             setActiveWindow(window);
         }
         hadWindowAtSomePoint = true;
@@ -91,7 +91,7 @@ public class WindowList {
             //Go backward in reverse and find the first suitable window
             for(int index = windows.size() - 1; index >= 0; index--) {
                 Window candidate = windows.get(index);
-                if(!candidate.getHints().contains(Window.Hint.NO_FOCUS)) {
+                if(!candidate.isHint(Window.Hint.NO_FOCUS)) {
                     setActiveWindow(candidate);
                     break;
                 }
@@ -128,7 +128,7 @@ public class WindowList {
      * @param reverse Direction to cycle through the windows
      */
     public WindowList cycleActiveWindow(boolean reverse) {
-        if(windows.isEmpty() || windows.size() == 1 || (activeWindow != null && activeWindow.getHints().contains(Window.Hint.MODAL))) {
+        if(windows.isEmpty() || windows.size() == 1 || (activeWindow != null && activeWindow.isHint(Window.Hint.MODAL))) {
             return this;
         }
         Window originalActiveWindow = activeWindow;
@@ -142,7 +142,7 @@ public class WindowList {
         }
 
         int noFocusWindows = 0;
-        while(nextWindow.getHints().contains(Window.Hint.NO_FOCUS)) {
+        while(nextWindow.isHint(Window.Hint.NO_FOCUS)) {
             ++noFocusWindows;
             if(noFocusWindows == windows.size()) {
                 // All windows are NO_FOCUS, so give up

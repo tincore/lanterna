@@ -26,15 +26,42 @@ import java.io.IOException;
 
 /**
  * Some common code for the GUI tests to get a text system up and running on a separate thread
+ *
  * @author Martin
  */
 public abstract class TestBase {
+
+    public static final Interactable.ClickListener ON_CLICK_CLOSE_CONTAINER = s -> ((Window) s.getBasePane()).close();
+
+    public static Button createButtonCloseContainer() {
+        return new Button("Close", ON_CLICK_CLOSE_CONTAINER);
+    }
+
+    public void afterGUIThreadStarted(WindowBasedTextGUI textGUI) {
+        // By default do nothing
+    }
+
+    protected MultiWindowTextGUI createTextGUI(Screen screen) {
+        return new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen);
+    }
+
+    private String extractTheme(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals("--theme") && i + 1 < args.length) {
+                return args[i + 1];
+            }
+        }
+        return null;
+    }
+
+    public abstract void init(WindowBasedTextGUI textGUI);
+
     void run(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen.start();
         MultiWindowTextGUI textGUI = createTextGUI(screen);
         String theme = extractTheme(args);
-        if(theme != null) {
+        if (theme != null) {
             textGUI.setTheme(LanternaThemes.getRegisteredTheme(theme));
         }
         textGUI.setBlockingIO(false);
@@ -44,31 +71,12 @@ public abstract class TestBase {
 
         try {
             init(textGUI);
-            AsynchronousTextGUIThread guiThread = (AsynchronousTextGUIThread)textGUI.getGUIThread();
+            AsynchronousTextGUIThread guiThread = (AsynchronousTextGUIThread) textGUI.getGUIThread();
             guiThread.start();
             afterGUIThreadStarted(textGUI);
             guiThread.waitForStop();
-        }
-        finally {
+        } finally {
             screen.stop();
         }
-    }
-
-    private String extractTheme(String[] args) {
-        for(int i = 0; i < args.length; i++) {
-            if(args[i].equals("--theme") && i + 1 < args.length) {
-                return args[i+1];
-            }
-        }
-        return null;
-    }
-
-    protected MultiWindowTextGUI createTextGUI(Screen screen) {
-        return new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen);
-    }
-
-    public abstract void init(WindowBasedTextGUI textGUI);
-    public void afterGUIThreadStarted(WindowBasedTextGUI textGUI) {
-        // By default do nothing
     }
 }

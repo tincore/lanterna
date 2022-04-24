@@ -21,6 +21,7 @@ public class Issue380 {
 
     private static class GridWindowWithTwoLargeComponents extends AbstractWindow {
         GridWindowWithTwoLargeComponents() {
+            super(Attributes.EMPTY);
             // two column grid
             final Panel p = new Panel(new GridLayout(2));
 

@@ -68,7 +68,7 @@ public class MenuTest extends TestBase {
         Menu menuFile = new Menu("File");
         menubar.add(menuFile);
         menuFile.add(new MenuItem("Open...", s -> {
-            File file = new FileDialogBuilder().build().showDialog(textGUI);
+            File file = new FileDialogBuilder().build().show(textGUI);
             if (file != null)
                 MessageDialog.showMessageDialog(
                     textGUI, "Open", "Selected file:\n" + file, MessageDialogButton.OK);

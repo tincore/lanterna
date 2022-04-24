@@ -63,7 +63,7 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
         int titleActualColumns = TerminalTextUtils.getColumnWidth(actualTitle);
 
         // Don't draw highlights on menu popup windows
-        if (window.getHints().contains(Window.Hint.MENU_POPUP)) {
+        if (window.isHint(Window.Hint.MENU_POPUP)) {
             graphics.applyThemeStyle(themeDefinition.getNormal());
         }
         else {

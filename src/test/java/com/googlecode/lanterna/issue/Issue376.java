@@ -19,10 +19,10 @@ public class Issue376 {
 
     private static class LabelWithTabWindow extends AbstractWindow {
         LabelWithTabWindow() {
-            Panel panel = new Panel();
-            panel.add(new Label("A label without tab"));
-            panel.add(new Label("\tAnd one with tab"));
-            setComponent(panel);
+            super(Attributes.EMPTY);
+            setComponent(new Panel()
+                .add(new Label("A label without tab"))
+                .add(new Label("\tAnd one with tab")));
         }
     }
 }
