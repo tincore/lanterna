@@ -17,7 +17,7 @@ public class DefaultThemeTest {
     public void ensureResourceFileDefaultTestIsTheSameAsTheEmbeddedTest() throws NoSuchFieldException, IllegalAccessException, IOException {
         String embeddedDefinition = getEmbeddedDefinition();
         String resourceDefinition = getResourceDefinition();
-        Assert.assertEquals(resourceDefinition, embeddedDefinition);
+        Assert.assertEquals(resourceDefinition.trim(), embeddedDefinition.trim());
     }
 
     private String getEmbeddedDefinition() throws NoSuchFieldException, IllegalAccessException {

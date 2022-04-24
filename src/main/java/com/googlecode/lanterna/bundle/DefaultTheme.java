@@ -120,9 +120,9 @@ class DefaultTheme extends PropertyTheme {
             "com.googlecode.lanterna.gui2.DefaultWindowDecorationRenderer.property[CENTER_TITLE] = false\n" +
             "\n" +
             "# GUI Backdrop\n" +
-            "com.googlecode.lanterna.gui2.GUIBackdrop.foreground = cyan\n" +
-            "com.googlecode.lanterna.gui2.GUIBackdrop.background = blue\n" +
-            "com.googlecode.lanterna.gui2.GUIBackdrop.sgr = bold\n" +
+            "com.googlecode.lanterna.gui2.FrameBackdrop.foreground = cyan\n" +
+            "com.googlecode.lanterna.gui2.FrameBackdrop.background = blue\n" +
+            "com.googlecode.lanterna.gui2.FrameBackdrop.sgr = bold\n" +
             "\n" +
             "# List boxes default\n" +
             "com.googlecode.lanterna.gui2.AbstractListBox.foreground[INSENSITIVE] = black\n" +
