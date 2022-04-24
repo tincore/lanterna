@@ -60,6 +60,7 @@ public class EmptySpace extends AbstractComponent<EmptySpace> {
      * @param size Preferred size
      */
     public EmptySpace(TextColor color, TerminalSize size) {
+        super(Attributes.EMPTY);
         this.color = color;
         this.size = size;
     }

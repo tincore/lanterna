@@ -27,26 +27,26 @@ import java.io.IOException;
 public class MultiButtonTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
         textGUI.setEOFWhenNoWindows(true);
         try {
             final BasicWindow window = new BasicWindow("Button test");
             Panel contentArea = new Panel();
             contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-            contentArea.addComponent(new Button(""));
-            contentArea.addComponent(new Button("TRE"));
-            contentArea.addComponent(new Button("Button"));
-            contentArea.addComponent(new Button("Another button"));
-            contentArea.addComponent(new EmptySpace(new TerminalSize(5, 1)));
+            contentArea.add(new Button(""));
+            contentArea.add(new Button("TRE"));
+            contentArea.add(new Button("Button"));
+            contentArea.add(new Button("Another button"));
+            contentArea.add(new EmptySpace(new TerminalSize(5, 1)));
             //contentArea.addComponent(new Button("Here is a\nmulti-line\ntext segment that is using \\n"));
-            contentArea.addComponent(new Button("OK", window::close));
+            contentArea.add(new Button("OK", s -> window.close()));
 
             window.setComponent(contentArea);
             textGUI.addWindowAndWait(window);
         }
         finally {
-            screen.stopScreen();
+            screen.stop();
         }
     }
 }

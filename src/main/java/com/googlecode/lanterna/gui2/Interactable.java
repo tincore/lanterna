@@ -1,6 +1,6 @@
 /*
  * This file is part of lanterna (https://github.com/mabe02/lanterna).
- * 
+ *
  * lanterna is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Copyright (C) 2010-2020 Martin Berglund
  */
 package com.googlecode.lanterna.gui2;
@@ -26,17 +26,35 @@ import com.googlecode.lanterna.input.KeyStroke;
  * this interface in some way will not be able to receive input focus. Normally if you create a new component, you'll
  * probably want to extend from {@code AbstractInteractableComponent} instead of implementing this one directly.
  *
- * @see AbstractInteractableComponent
  * @author Martin
+ * @see AbstractInteractableComponent
  */
 public interface Interactable extends Component {
     /**
      * Returns, in local coordinates, where to put the cursor on the screen when this component has focus. If null, the
      * cursor should be hidden. If you component is 5x1 and you want to have the cursor in the middle (when in focus),
      * return [2,0]. The GUI system will convert the position to global coordinates.
+     *
      * @return Coordinates of where to place the cursor when this component has focus
      */
     TerminalPosition getCursorLocation();
+
+    /**
+     * Returns the input filter currently assigned to the interactable component. This will intercept any user input and
+     * decide if the input should be passed on to the component or not. {@code null} means there is no filter.
+     *
+     * @return Input filter currently assigned to the interactable component
+     */
+    InputFilter getInputFilter();
+
+    /**
+     * Assigns an input filter to the interactable component. This will intercept any user input and decide if the input
+     * should be passed on to the component or not. {@code null} means there is no filter.
+     *
+     * @param inputFilter Input filter to assign to the interactable
+     * @return Itself
+     */
+    Interactable setInputFilter(InputFilter inputFilter);
 
     /**
      * Accepts a KeyStroke as input and processes this as a user input. Depending on what the component does with this
@@ -50,72 +68,32 @@ public interface Interactable extends Component {
      * <p>
      * Notice that most of the built-in components in Lanterna extends from {@link AbstractInteractableComponent} which
      * has a final implementation of this method. The method to override to handle input in that case is
-     * {@link AbstractInteractableComponent#handleKeyStroke(KeyStroke)}.
+     * {@link AbstractInteractableComponent#onKeyStroke(KeyStroke)}.
+     *
      * @param keyStroke What input was entered by the user
      * @return Result of processing the key-stroke
      */
     Result handleInput(KeyStroke keyStroke);
 
     /**
-     * Moves focus in the {@code BasePane} to this component. If the component has not been added to a {@code BasePane}
-     * (i.e. a {@code Window} most of the time), does nothing. If the component has been disabled through a call to
-     * {@link Interactable#setEnabled(boolean)}, this call also does nothing.
-     * @return Itself
+     * Returns {@code true} if this component is able to receive input as a regular interactable component. This will
+     * return {@code false} if input focus has been disabled through calling {@link Interactable#setEnabled(boolean)}.
+     *
+     * @return {@code true} if this component can receive input focus, {@code false} otherwise
      */
-    Interactable takeFocus();
-
-    /**
-     * Method called when this component gained keyboard focus.
-     * @param direction What direction did the focus come from
-     * @param previouslyInFocus Which component had focus previously ({@code null} if none)
-     */
-    void onEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus);
-
-    /**
-     * Method called when keyboard focus moves away from this component
-     * @param direction What direction is focus going in
-     * @param nextInFocus Which component is receiving focus next (or {@code null} if none)
-     */
-    void onLeaveFocus(FocusChangeDirection direction, Interactable nextInFocus);
-
-    /**
-     * Returns {@code true} if this component currently has input focus in its root container.
-     * @return {@code true} if the interactable has input focus, {@code false} otherwise
-     */
-    boolean isFocused();
-
-    /**
-     * Assigns an input filter to the interactable component. This will intercept any user input and decide if the input
-     * should be passed on to the component or not. {@code null} means there is no filter.
-     * @param inputFilter Input filter to assign to the interactable
-     * @return Itself
-     */
-    Interactable setInputFilter(InputFilter inputFilter);
-
-    /**
-     * Returns the input filter currently assigned to the interactable component. This will intercept any user input and
-     * decide if the input should be passed on to the component or not. {@code null} means there is no filter.
-     * @return Input filter currently assigned to the interactable component
-     */
-    InputFilter getInputFilter();
+    boolean isEnabled();
 
     /**
      * Prevents the component from receiving input focus if this is called with a {@code false} value. The component
      * will then behave as a mainly non-interactable component. Input focus can be re-enabled by calling this with
      * {@code true}. If the component already has input focus when calling this method, it will release focus and no
      * component is focused until there is user action or code that chooses a new focus.
+     *
      * @param enabled If called with {@code false}, this interactable won't receive input focus until it's called again
      *                with {@code true}.
      * @return Itself
      */
     Interactable setEnabled(boolean enabled);
-
-    /**
-     * Returns {@code true} if this component is able to receive input as a regular interactable component. This will
-     * return {@code false} if input focus has been disabled through calling {@link Interactable#setEnabled(boolean)}.
-     * @return {@code true} if this component can receive input focus, {@code false} otherwise
-     */
-    boolean isEnabled();
 
     /**
      * Returns {@code true} if this interactable component is currently able to receive input focus. This is similar but
@@ -128,6 +106,38 @@ public interface Interactable extends Component {
      * @return {@code true} if this component wants to receive input focus, {@code false} otherwise.
      */
     boolean isFocusable();
+
+    /**
+     * Returns {@code true} if this component currently has input focus in its root container.
+     *
+     * @return {@code true} if the interactable has input focus, {@code false} otherwise
+     */
+    boolean isFocused();
+
+    /**
+     * Method called when this component gained keyboard focus.
+     *
+     * @param direction         What direction did the focus come from
+     * @param previouslyInFocus Which component had focus previously ({@code null} if none)
+     */
+    void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus);
+
+    /**
+     * Method called when keyboard focus moves away from this component
+     *
+     * @param direction   What direction is focus going in
+     * @param nextInFocus Which component is receiving focus next (or {@code null} if none)
+     */
+    void onFocusLost(FocusChangeDirection direction, Interactable nextInFocus);
+
+    /**
+     * Moves focus in the {@code BasePane} to this component. If the component has not been added to a {@code BasePane}
+     * (i.e. a {@code Window} most of the time), does nothing. If the component has been disabled through a call to
+     * {@link Interactable#setEnabled(boolean)}, this call also does nothing.
+     *
+     * @return Itself
+     */
+    Interactable takeFocus();
 
     /**
      * Enum to represent the various results coming out of the handleKeyStroke method
@@ -177,7 +187,6 @@ public interface Interactable extends Component {
          * instead. This should generally be returned if moving focus by using the down array key.
          */
         MOVE_FOCUS_DOWN,
-        ;
     }
 
     /**
@@ -218,6 +227,26 @@ public interface Interactable extends Component {
          * Focus has gone away and no component is now in focus
          */
         RESET,
-        ;
+    }
+
+    interface ClickListener {
+        ClickListener DUMMY = s -> {
+        };
+
+        void onClicked(Interactable source);
+    }
+
+    interface FocusGainListener {
+        FocusGainListener DUMMY = (d, i, s) -> {
+        };
+
+        void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus, Interactable source);
+    }
+
+    interface FocusLostListener {
+        FocusLostListener DUMMY = (d, i, s) -> {
+        };
+
+        void onFocusLost(FocusChangeDirection direction, Interactable previouslyInFocus, Interactable source);
     }
 }

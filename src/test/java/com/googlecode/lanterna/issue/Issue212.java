@@ -31,20 +31,22 @@ import java.util.List;
 
 public class Issue212 {
     public static void main(String[] args) throws IOException {
-        final Table<String> table = new Table<>("Column 1", "Column 2",
-                "Column 3");
-        table.getTableModel().addRow("1", "2", "3");
-        table.getTableModel().addRow("1", "2", "3");
-        table.getTableModel().addRow("1", "2", "3");
-        table.getTableModel().addRow("1", "2", "3");
-        table.getTableModel().addRow("1", "2", "3");
-        table.setSelectAction(() -> {
+        final Table<String> table = new Table<>("Column 1", "Column 2", "Column 3");
+
+        table.setClickListener(s -> {
             List<String> data = table.getTableModel().getRow(
-                    table.getSelectedRow());
+                table.getSelectedRow());
             for (String aData : data) {
                 System.out.println(aData);
             }
         });
+
+        table.getTableModel()
+            .addRow("1", "2", "3")
+            .addRow("1", "2", "3")
+            .addRow("1", "2", "3")
+            .addRow("1", "2", "3")
+            .addRow("1", "2", "3");
 
         Window win = new BasicWindow();
         win.setComponent(table);
@@ -53,13 +55,13 @@ public class Issue212 {
         Terminal terminal = factory.createTerminal();
 
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         // Create gui and start gui
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen,
-                new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+            new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
         gui.addWindowAndWait(win);
 
-        screen.stopScreen();
+        screen.stop();
     }
 }

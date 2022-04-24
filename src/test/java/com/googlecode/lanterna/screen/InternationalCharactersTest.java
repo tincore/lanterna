@@ -33,7 +33,7 @@ import java.io.IOException;
 public class InternationalCharactersTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
 
         TextGraphics writer = new ScreenTextGraphics(screen);
         writer.setForegroundColor(TextColor.ANSI.DEFAULT);
@@ -48,6 +48,6 @@ public class InternationalCharactersTest {
         writer.putString(4, 9,  "Thai:       เสียงฦๅเสียงเล่าอ้าง    อันใด พี่เอย");
         screen.refresh();
         screen.readInput();
-        screen.stopScreen();
+        screen.stop();
     }
 }

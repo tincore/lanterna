@@ -19,7 +19,7 @@ public class Issue313 {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         BasicWindow window = new BasicWindow();
         window.setTitle("Hello World");

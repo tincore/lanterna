@@ -28,6 +28,14 @@ public class ScrollBarTest extends TestBase {
         new ScrollBarTest().run(args);
     }
 
+    private int getInteger(String text, int defaultValue) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     @Override
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow basicWindow = new BasicWindow("ScrollBar test");
@@ -45,50 +53,41 @@ public class ScrollBarTest extends TestBase {
         final TextBox textBoxHorizontalMax = new TextBox("100").setValidationPattern(Pattern.compile("[0-9]+"));
         final ScrollBar verticalScroll = new ScrollBar(Direction.VERTICAL);
         final ScrollBar horizontalScroll = new ScrollBar(Direction.HORIZONTAL);
-        Button buttonRefresh = new Button("Refresh", () -> {
-            ((ScrollBar.DefaultScrollBarRenderer)verticalScroll.getRenderer()).setGrowScrollTracker(checkVerticalTrackerGrow.isChecked());
+        Button buttonRefresh = new Button("Refresh", s -> {
+            ((ScrollBar.DefaultScrollBarRenderer) verticalScroll.getRenderer()).setGrowScrollTracker(checkVerticalTrackerGrow.isChecked());
             verticalScroll.setScrollMaximum(getInteger(textBoxVerticalMax.getText(), 100));
             verticalScroll.setScrollPosition(getInteger(textBoxVerticalPosition.getText(), 100));
             verticalScroll.setViewSize(getInteger(textBoxVerticalSize.getText(), 1));
-            ((ScrollBar.DefaultScrollBarRenderer)horizontalScroll.getRenderer()).setGrowScrollTracker(checkHorizontalTrackerGrow.isChecked());
+            ((ScrollBar.DefaultScrollBarRenderer) horizontalScroll.getRenderer()).setGrowScrollTracker(checkHorizontalTrackerGrow.isChecked());
             horizontalScroll.setScrollMaximum(getInteger(textBoxHorizontalMax.getText(), 0));
             horizontalScroll.setScrollPosition(getInteger(textBoxHorizontalPosition.getText(), 0));
             horizontalScroll.setViewSize(getInteger(textBoxHorizontalSize.getText(), 1));
         });
-        Button closeButton = new Button("Close", basicWindow::close);
+        Button closeButton = new Button("Close", s -> basicWindow.close());
 
         verticalScroll.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.FILL, false, true));
         horizontalScroll.setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2));
         buttonRefresh.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.BEGINNING, true, true, 2, 1));
 
-        contentPanel.addComponent(controlPanel.withBorder(Borders.singleLine("Control")));
-        contentPanel.addComponent(verticalScroll);
-        contentPanel.addComponent(horizontalScroll);
+        contentPanel.add(controlPanel.withBorder(Borders.singleLine("Control")));
+        contentPanel.add(verticalScroll);
+        contentPanel.add(horizontalScroll);
 
         controlPanel.setLayoutManager(new GridLayout(2));
-        controlPanel.addComponent(new Label("Vertical tracker grows:")).addComponent(checkVerticalTrackerGrow);
-        controlPanel.addComponent(new Label("Vertical view size:")).addComponent(textBoxVerticalSize);
-        controlPanel.addComponent(new Label("Vertical scroll position:")).addComponent(textBoxVerticalPosition);
-        controlPanel.addComponent(new Label("Vertical scroll max:")).addComponent(textBoxVerticalMax);
-        controlPanel.addComponent(new EmptySpace(TerminalSize.ONE)).addComponent(new EmptySpace(TerminalSize.ONE));
-        controlPanel.addComponent(new Label("Horizontal tracker grows:")).addComponent(checkHorizontalTrackerGrow);
-        controlPanel.addComponent(new Label("Horizontal view size:")).addComponent(textBoxHorizontalSize);
-        controlPanel.addComponent(new Label("Horizontal scroll position:")).addComponent(textBoxHorizontalPosition);
-        controlPanel.addComponent(new Label("Horizontal scroll max:")).addComponent(textBoxHorizontalMax);
-        controlPanel.addComponent(new EmptySpace(TerminalSize.ONE)).addComponent(new EmptySpace(TerminalSize.ONE));
-        controlPanel.addComponent(buttonRefresh);
-        contentPanel.addComponent(closeButton);
+        controlPanel.add(new Label("Vertical tracker grows:")).add(checkVerticalTrackerGrow);
+        controlPanel.add(new Label("Vertical view size:")).add(textBoxVerticalSize);
+        controlPanel.add(new Label("Vertical scroll position:")).add(textBoxVerticalPosition);
+        controlPanel.add(new Label("Vertical scroll max:")).add(textBoxVerticalMax);
+        controlPanel.add(new EmptySpace(TerminalSize.ONE)).add(new EmptySpace(TerminalSize.ONE));
+        controlPanel.add(new Label("Horizontal tracker grows:")).add(checkHorizontalTrackerGrow);
+        controlPanel.add(new Label("Horizontal view size:")).add(textBoxHorizontalSize);
+        controlPanel.add(new Label("Horizontal scroll position:")).add(textBoxHorizontalPosition);
+        controlPanel.add(new Label("Horizontal scroll max:")).add(textBoxHorizontalMax);
+        controlPanel.add(new EmptySpace(TerminalSize.ONE)).add(new EmptySpace(TerminalSize.ONE));
+        controlPanel.add(buttonRefresh);
+        contentPanel.add(closeButton);
 
         basicWindow.setComponent(contentPanel);
         textGUI.addWindow(basicWindow);
-    }
-
-    private int getInteger(String text, int defaultValue) {
-        try {
-            return Integer.parseInt(text);
-        }
-        catch(NumberFormatException e) {
-            return defaultValue;
-        }
     }
 }

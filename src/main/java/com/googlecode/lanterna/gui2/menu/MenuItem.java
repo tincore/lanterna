@@ -23,52 +23,43 @@ import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
-import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
-import com.googlecode.lanterna.gui2.BasePane;
-import com.googlecode.lanterna.gui2.InteractableRenderer;
-import com.googlecode.lanterna.gui2.TextGUIGraphics;
-import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.input.MouseAction;
-import com.googlecode.lanterna.input.MouseActionType;
 
 /**
  * This class is a single item that appears in a {@link Menu} with an optional action attached to it
  */
 public class MenuItem extends AbstractInteractableComponent<MenuItem> {
-    private String label;
-    private final Runnable action;
+    private final String label;
+    private ClickListener clickListener;
 
     /**
      * Creates a {@link MenuItem} with a label that does nothing when activated
+     *
      * @param label Label of the new {@link MenuItem}
      */
     public MenuItem(String label) {
-        this(label, () -> {
-        });
+        this(label, ClickListener.DUMMY, Attributes.EMPTY);
     }
 
     /**
      * Creates a new {@link MenuItem} with a label and an action that will run on the GUI thread when activated. When
      * the action has finished, the {@link Menu} containing this item will close.
-     * @param label Label of the new {@link MenuItem}
-     * @param action Action to invoke on the GUI thread when the menu item is activated
+     *
+     * @param label         Label of the new {@link MenuItem}
+     * @param clickListener Action to invoke on the GUI thread when the menu item is activated
      */
-    public MenuItem(String label, Runnable action) {
-        this.action = action;
+    public MenuItem(String label, ClickListener clickListener) {
+        this(label, clickListener, Attributes.EMPTY);
+    }
+
+    public MenuItem(String label, ClickListener clickListener, Attributes attributes) {
+        super(attributes);
+        this.clickListener = clickListener;
         if (label == null || label.trim().isEmpty()) {
             throw new IllegalArgumentException("Menu label is not allowed to be null or empty");
         }
         this.label = label.trim();
-    }
-
-    /**
-     * Returns the label of this menu item
-     * @return Label of this menu item
-     */
-    public String getLabel() {
-        return label;
     }
 
     @Override
@@ -76,20 +67,28 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         return new DefaultMenuItemRenderer();
     }
 
+    public ClickListener getClickListener() {
+        return clickListener;
+    }
+
+    public MenuItem setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
+        return this;
+    }
+
     /**
-     * Method to invoke when a menu item is "activated" by pressing the Enter key.
-     * @return Returns {@code true} if the action was performed successfully, otherwise {@code false}, which will not
-     * automatically close the popup window itself.
+     * Returns the label of this menu item
+     *
+     * @return Label of this menu item
      */
-    protected boolean onActivated() {
-        action.run();
-        return true;
+    public String getLabel() {
+        return label;
     }
 
     @Override
-    protected Result handleKeyStroke(KeyStroke keyStroke) {
+    protected Result onKeyStroke(KeyStroke keyStroke) {
         if (isActivationStroke(keyStroke)) {
-            if (onActivated()) {
+            if (onClicked()) {
                 BasePane basePane = getBasePane();
                 if (basePane instanceof Window && ((Window) basePane).getHints().contains(Window.Hint.MENU_POPUP)) {
                     ((Window) basePane).close();
@@ -100,8 +99,19 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
             takeFocus();
             return Result.HANDLED;
         } else {
-            return super.handleKeyStroke(keyStroke);
+            return super.onKeyStroke(keyStroke);
         }
+    }
+
+    /**
+     * Method to invoke when a menu item is "activated" by pressing the Enter key.
+     *
+     * @return Returns {@code true} if the action was performed successfully, otherwise {@code false}, which will not
+     * automatically close the popup window itself.
+     */
+    public boolean onClicked() {
+        clickListener.onClicked(this);
+        return true;
     }
 
     /**
@@ -115,26 +125,11 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
      */
     public static class DefaultMenuItemRenderer extends MenuItemRenderer {
         @Override
-        public TerminalPosition getCursorLocation(MenuItem component) {
-            return null;
-        }
-
-        @Override
-        public TerminalSize getPreferredSize(MenuItem component) {
-            int preferredWidth = TerminalTextUtils.getColumnWidth(component.getLabel()) + 2;
-            if (component instanceof Menu && !(component.getParent() instanceof MenuBar)) {
-                preferredWidth += 2;
-            }
-            return TerminalSize.ONE.withColumns(preferredWidth);
-        }
-
-        @Override
         public void drawComponent(TextGUIGraphics graphics, MenuItem menuItem) {
             ThemeDefinition themeDefinition = menuItem.getThemeDefinition();
             if (menuItem.isFocused()) {
                 graphics.applyThemeStyle(themeDefinition.getSelected());
-            }
-            else {
+            } else {
                 graphics.applyThemeStyle(themeDefinition.getNormal());
             }
 
@@ -149,12 +144,25 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
             if (!label.isEmpty()) {
                 if (menuItem.isFocused()) {
                     graphics.applyThemeStyle(themeDefinition.getActive());
-                }
-                else {
+                } else {
                     graphics.applyThemeStyle(themeDefinition.getPreLight());
                 }
                 graphics.putString(1, 0, leadingCharacter);
             }
+        }
+
+        @Override
+        public TerminalPosition getCursorLocation(MenuItem component) {
+            return null;
+        }
+
+        @Override
+        public TerminalSize getPreferredSize(MenuItem component) {
+            int preferredWidth = TerminalTextUtils.getColumnWidth(component.getLabel()) + 2;
+            if (component instanceof Menu && !(component.getParent() instanceof MenuBar)) {
+                preferredWidth += 2;
+            }
+            return TerminalSize.ONE.withColumns(preferredWidth);
         }
     }
 }

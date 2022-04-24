@@ -34,26 +34,26 @@ public class Issue216 {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         // Create panel to hold components
         Panel panel = new Panel();
         panel.setLayoutManager(new GridLayout(2));
 
-        panel.addComponent(new Label("Forename"));
-        panel.addComponent(new TextBox());
+        panel.add(new Label("Forename"));
+        panel.add(new TextBox());
 
-        panel.addComponent(new Label("Surname"));
-        panel.addComponent(new TextBox());
+        panel.add(new Label("Surname"));
+        panel.add(new TextBox());
 
-        panel.addComponent(new Label("Table"));
+        panel.add(new Label("Table"));
         final Table<String> table = new Table<>("Test");
         final TableModel<String> tableModel = table.getTableModel();
         tableModel.addRow("hi");
-        panel.addComponent(table);
+        panel.add(table);
 
-        panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
-        panel.addComponent(new Button("Submit", () -> {
+        panel.add(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+        panel.add(new Button("Submit", s -> {
             tableModel.addRow("haiiii");
             //table.invalidate();
         }));

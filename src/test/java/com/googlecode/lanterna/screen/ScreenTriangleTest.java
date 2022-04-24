@@ -62,7 +62,7 @@ public class ScreenTriangleTest {
             }
         }
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
 
         TextGraphics graphics = new ScreenTextGraphics(screen);
         if(square) {
@@ -127,6 +127,6 @@ public class ScreenTriangleTest {
                 Thread.sleep(500);
             }
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }

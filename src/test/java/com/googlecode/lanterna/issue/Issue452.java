@@ -18,24 +18,9 @@
  */
 package com.googlecode.lanterna.issue;
 
-import java.io.IOException;
-
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.ActionListBox;
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.Button.Listener;
-import com.googlecode.lanterna.gui2.CheckBox;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Interactable;
-import com.googlecode.lanterna.gui2.LayoutData;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.RadioBoxList;
-import com.googlecode.lanterna.gui2.TextBox;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.TextBox.Style;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.menu.Menu;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.gui2.menu.MenuItem;
@@ -43,6 +28,8 @@ import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.MouseCaptureMode;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -64,11 +51,85 @@ public class Issue452 {
     private static TextBox tableTextBox;
     private static int tableTriggeredCounter = 0;
 
+    private static void addInteractableComponentsToContent(Panel content) {
+        // for menu bar so you know which menu you have triggered
+        menuTextBox = new TextBox("Try menu above");
+        content.add(menuTextBox, LAYOUT_NEW_ROW);
+
+        // single line textbox
+        content.add(new TextBox("Single line TextBox"), LAYOUT_NEW_ROW);
+
+        // multi line textbox
+        content.add(new TextBox(
+            "First line of multi line TextBox" + System.lineSeparator() + "Second line of multi line TextBox",
+            Style.MULTI_LINE), LAYOUT_NEW_ROW);
+
+        // checkbox
+        content.add(new CheckBox("CheckBox"), LAYOUT_NEW_ROW);
+
+        // button
+        TextBox textBoxButton = new TextBox("Click the button!");
+        Button button = new Button("Button").setClickListener(i -> textBoxButton.setText("Button triggered " + Issue452.buttonTriggeredCounter++ + " times"));
+
+        content.add(button, GridLayout.createHorizontallyFilledLayoutData(1));
+        content.add(textBoxButton, GridLayout.createHorizontallyFilledLayoutData(GRID_WIDTH - 1));
+
+        // action list box
+        actionListTextBox = new TextBox("Click on something in the action list!");
+        ActionListBox actionMenu = new ActionListBox();
+        actionMenu.addItem("First menu", s -> actionListTextBox.setText("First menu clicked"));
+        actionMenu.addItem("Second menu", s -> actionListTextBox.setText("Second menu clicked"));
+        actionMenu.addItem("Third menu", s -> actionListTextBox.setText("Third menu clicked"));
+        content.add(actionListTextBox, LAYOUT_NEW_ROW);
+        content.add(actionMenu, LAYOUT_NEW_ROW);
+
+        // radiobox list
+        RadioBoxList<String> list = new RadioBoxList<>();
+        list.addItem("RadioGaga");
+        list.addItem("RadioGogo");
+        list.addItem("RadioBlaBla");
+        content.add(list, LAYOUT_NEW_ROW);
+
+        // Table
+        tableTextBox = new TextBox("Try table bellow");
+        Table<String> table = new Table<>("Column0000000", "Column111", "Column22222");
+        table.getTableModel()
+            .addRow("0", "0", "0")
+            .addRow("1", "1", "1")
+            .addRow("2", "2", "2");
+        table.setClickListener(s -> {
+            tableTriggeredCounter++;
+            tableTextBox.setText("Table's action runned " + tableTriggeredCounter + " times");
+        });
+        table.setCellSelection(true);
+        content.add(tableTextBox, LAYOUT_NEW_ROW);
+        content.add(table, LAYOUT_NEW_ROW);
+    }
+
+    private static void addMenuBar(Window window) {
+        MenuBar menuBar = new MenuBar();
+        Menu menu = new Menu("Settings");
+        menu.add(new MenuItem("Menu1", s -> {
+            menuTextBox.setText("Menu1 clicked");
+            menuTextBox.invalidate();
+        }));
+        menu.add(new MenuItem("Menu2", s -> {
+            menuTextBox.setText("Menu2 clicked");
+            menuTextBox.invalidate();
+        }));
+        menu.add(new MenuItem("Menu3", s -> {
+            menuTextBox.setText("Menu3 clicked");
+            menuTextBox.invalidate();
+        }));
+        menuBar.add(menu);
+        window.setMenuBar(menuBar);
+    }
+
     public static void main(String[] args) throws IOException {
         try (Screen screen = new DefaultTerminalFactory().setTelnetPort(23000)
-                .setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE).setInitialTerminalSize(new TerminalSize(100, 100))
-                .createScreen()) {
-            screen.startScreen();
+            .setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE).setInitialTerminalSize(new TerminalSize(100, 100))
+            .createScreen()) {
+            screen.start();
             WindowBasedTextGUI gui = new MultiWindowTextGUI(screen);
             Window window = new BasicWindow("Issue452");
             Panel content = new Panel(new GridLayout(GRID_WIDTH));
@@ -79,110 +140,6 @@ public class Issue452 {
             window.setComponent(content);
             gui.addWindowAndWait(window);
         }
-    }
-
-    private static void addInteractableComponentsToContent(Panel content) {
-        // for menu bar so you know which menu you have triggered
-        menuTextBox = new TextBox("Try menu above");
-        content.addComponent(menuTextBox, LAYOUT_NEW_ROW);
-
-        // single line textbox
-        content.addComponent(new TextBox("Single line TextBox"), LAYOUT_NEW_ROW);
-
-        // multi line textbox
-        content.addComponent(new TextBox(
-                "First line of multi line TextBox" + System.lineSeparator() + "Second line of multi line TextBox",
-                Style.MULTI_LINE), LAYOUT_NEW_ROW);
-
-        // checkbox
-        content.addComponent(new CheckBox("CheckBox"), LAYOUT_NEW_ROW);
-
-        // button
-        TextBox textBoxButton = new TextBox("Click the button!");
-        Button button = new Button("Button");
-        button.addListener(new Listener() {
-            @Override
-            public void onTriggered(Button button) {
-                textBoxButton.setText("Button triggered " + Issue452.buttonTriggeredCounter++ + " times");
-            }
-        });
-        content.addComponent(button, GridLayout.createHorizontallyFilledLayoutData(1));
-        content.addComponent(textBoxButton, GridLayout.createHorizontallyFilledLayoutData(GRID_WIDTH - 1));
-
-        // action list box
-        actionListTextBox = new TextBox("Click on something in the action list!");
-        ActionListBox actionMenu = new ActionListBox();
-        actionMenu.addItem("First menu", new Runnable() {
-            @Override
-            public void run() {
-                actionListTextBox.setText("First menu clicked");
-            }
-        });
-        actionMenu.addItem("Second menu", new Runnable() {
-            @Override
-            public void run() {
-                actionListTextBox.setText("Second menu clicked");
-            }
-        });
-        actionMenu.addItem("Third menu", new Runnable() {
-            @Override
-            public void run() {
-                actionListTextBox.setText("Third menu clicked");
-            }
-        });
-        content.addComponent(actionListTextBox, LAYOUT_NEW_ROW);
-        content.addComponent(actionMenu, LAYOUT_NEW_ROW);
-
-        // radiobox list
-        RadioBoxList<String> list = new RadioBoxList<>();
-        list.addItem("RadioGaga");
-        list.addItem("RadioGogo");
-        list.addItem("RadioBlaBla");
-        content.addComponent(list, LAYOUT_NEW_ROW);
-
-        // Table
-        tableTextBox = new TextBox("Try table bellow");
-        Table<String> table = new Table<>("Column0000000", "Column111", "Column22222");
-        table.getTableModel().addRow("0", "0", "0");
-        table.getTableModel().addRow("1", "1", "1");
-        table.getTableModel().addRow("2", "2", "2");
-        table.setSelectAction(() -> {
-            tableTriggeredCounter++;
-            tableTextBox.setText("Table's action runned " + tableTriggeredCounter + " times");
-        });
-        table.setCellSelection(true);
-        content.addComponent(tableTextBox, LAYOUT_NEW_ROW);
-        content.addComponent(table, LAYOUT_NEW_ROW);
-    }
-
-    private static void addMenuBar(Window window) {
-        MenuBar menuBar = new MenuBar();
-        Menu menu = new Menu("Settings");
-        menu.add(new MenuItem("Menu1", new Runnable() {
-            @Override
-            public void run() {
-                menuTextBox.setText("Menu1 clicked");
-                menuTextBox.invalidate();
-            }
-        }));
-        menu.add(new MenuItem("Menu2", new Runnable() {
-
-            @Override
-            public void run() {
-                menuTextBox.setText("Menu2 clicked");
-                menuTextBox.invalidate();
-            }
-        }));
-        menu.add(new MenuItem("Menu3", new Runnable() {
-
-            @Override
-            public void run() {
-                menuTextBox.setText("Menu3 clicked");
-                menuTextBox.invalidate();
-            }
-        }));
-        menuBar.add(menu);
-        window.setMenuBar(menuBar);
     }
 
 }

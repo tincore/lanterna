@@ -21,7 +21,7 @@ package com.googlecode.lanterna.gui2;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TestUtils;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,46 +35,45 @@ public class MiscComponentTest extends TestBase {
         final BasicWindow window = new BasicWindow("Grid layout test");
         final Panel leftPanel = new Panel();
         Panel checkBoxPanel = new Panel();
-        for(int i = 0; i < 4; i++) {
-            CheckBox checkBox = new CheckBox("Checkbox #" + (i+1));
-            checkBoxPanel.addComponent(checkBox);
+        for (int i = 0; i < 4; i++) {
+            CheckBox checkBox = new CheckBox("Checkbox #" + (i + 1));
+            checkBoxPanel.add(checkBox);
         }
 
         Panel textBoxPanel = new Panel();
-        textBoxPanel.addComponent(Panels.horizontal(new Label("Normal:   "), new TextBox(new TerminalSize(12, 1), "Text")));
-        textBoxPanel.addComponent(Panels.horizontal(new Label("Password: "), new TextBox(new TerminalSize(12, 1), "Text").setMask('*')));
+        textBoxPanel.add(Panels.horizontal(new Label("Normal:   "), new TextBox(new TerminalSize(12, 1), "Text")));
+        textBoxPanel.add(Panels.horizontal(new Label("Password: "), new TextBox(new TerminalSize(12, 1), "Text").setMask('*')));
 
         Panel buttonPanel = new Panel();
-        buttonPanel.addComponent(new Button("Enable spacing", () -> {
+        buttonPanel.add(new Button("Enable spacing", s -> {
             LinearLayout layoutManager = (LinearLayout) leftPanel.getLayoutManager();
             layoutManager.setSpacing(layoutManager.getSpacing() == 0 ? 1 : 0);
         }));
 
-        leftPanel.addComponent(checkBoxPanel.withBorder(Borders.singleLine("CheckBoxes")));
-        leftPanel.addComponent(textBoxPanel.withBorder(Borders.singleLine("TextBoxes")));
-        leftPanel.addComponent(buttonPanel.withBorder(Borders.singleLine("Buttons")));
+        leftPanel.add(checkBoxPanel.withBorder(Borders.singleLine("CheckBoxes")));
+        leftPanel.add(textBoxPanel.withBorder(Borders.singleLine("TextBoxes")));
+        leftPanel.add(buttonPanel.withBorder(Borders.singleLine("Buttons")));
 
         Panel rightPanel = new Panel();
         textBoxPanel = new Panel();
         TextBox readOnlyTextArea = new TextBox(new TerminalSize(16, 8));
         readOnlyTextArea.setReadOnly(true);
         readOnlyTextArea.setText(TestUtils.downloadGPL());
-        textBoxPanel.addComponent(readOnlyTextArea);
-        rightPanel.addComponent(textBoxPanel.withBorder(Borders.singleLine("Read-only")));
+        textBoxPanel.add(readOnlyTextArea);
+        rightPanel.add(textBoxPanel.withBorder(Borders.singleLine("Read-only")));
         final ProgressBar progressBar = new ProgressBar(0, 100, 16);
         progressBar.setRenderer(new ProgressBar.LargeProgressBarRenderer());
         progressBar.setLabelFormat("%2.0f%%");
-        rightPanel.addComponent(progressBar.withBorder(Borders.singleLine("ProgressBar")));
+        rightPanel.add(progressBar.withBorder(Borders.singleLine("ProgressBar")));
         rightPanel.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
 
         final Timer timer = new Timer("ProgressBar-timer", true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(progressBar.getValue() == progressBar.getMax()) {
+                if (progressBar.getValue() == progressBar.getMax()) {
                     progressBar.setValue(0);
-                }
-                else {
+                } else {
                     progressBar.setValue(progressBar.getValue() + 1);
                 }
             }
@@ -82,15 +81,15 @@ public class MiscComponentTest extends TestBase {
 
         Panel contentArea = new Panel();
         contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-        contentArea.addComponent(Panels.horizontal(leftPanel, rightPanel));
-        contentArea.addComponent(
-                new Separator(Direction.HORIZONTAL).setLayoutData(
-                        LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
-        Button okButton = new Button("OK", () -> {
+        contentArea.add(Panels.horizontal(leftPanel, rightPanel));
+        contentArea.add(
+            new Separator(Direction.HORIZONTAL).setLayoutData(
+                LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
+        Button okButton = new Button("OK", s -> {
             window.close();
             timer.cancel();
         }).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
-        contentArea.addComponent(okButton);
+        contentArea.add(okButton);
         window.setComponent(contentArea);
         window.setFocusedInteractable(okButton);
         textGUI.addWindow(window);

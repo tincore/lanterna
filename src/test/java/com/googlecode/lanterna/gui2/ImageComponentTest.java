@@ -185,10 +185,10 @@ public class ImageComponentTest extends TestBase {
         
         Panel mainPanel = new Panel();
         mainPanel.setLayoutManager(new GridLayout(2));
-        mainPanel.addComponent(imageComponentX.withBorder(Borders.singleLine("x")));
-        mainPanel.addComponent(imageComponentY.withBorder(Borders.singleLine("y")));
-        mainPanel.addComponent(imageComponentZ.withBorder(Borders.singleLine("z")));
-        mainPanel.addComponent(controller.selectedImageComponent.withBorder(Borders.singleLine("selection")));
+        mainPanel.add(imageComponentX.withBorder(Borders.singleLine("x")));
+        mainPanel.add(imageComponentY.withBorder(Borders.singleLine("y")));
+        mainPanel.add(imageComponentZ.withBorder(Borders.singleLine("z")));
+        mainPanel.add(controller.selectedImageComponent.withBorder(Borders.singleLine("selection")));
         
         
         window.setComponent(mainPanel);
@@ -205,12 +205,12 @@ public class ImageComponentTest extends TestBase {
         
         ImageComponent imageComponent = new ImageComponent() {
             @Override
-            public Result handleKeyStroke(KeyStroke keyStroke) {
+            public Result onKeyStroke(KeyStroke keyStroke) {
                 if (isMouseDown(keyStroke)) {
                     controller.setSelectedImage(textImage);
                     return Result.HANDLED;
                 }
-                return super.handleKeyStroke(keyStroke);
+                return super.onKeyStroke(keyStroke);
             }
         };
         

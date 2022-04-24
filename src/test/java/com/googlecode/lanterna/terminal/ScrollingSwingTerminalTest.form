@@ -82,7 +82,7 @@
         <Property name="text" type="java.lang.String" value="Print 100 lines"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint100LinesActionPerformed"/>
+        <EventHandler event="actionPerformed" itemSelectedListener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint100LinesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
@@ -92,7 +92,7 @@
         <Property name="text" type="java.lang.String" value="Print 10 lines"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint10LinesActionPerformed"/>
+        <EventHandler event="actionPerformed" itemSelectedListener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint10LinesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="buttonPrint1Line">
@@ -100,7 +100,7 @@
         <Property name="text" type="java.lang.String" value="Print 1 line"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint1LineActionPerformed"/>
+        <EventHandler event="actionPerformed" itemSelectedListener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonPrint1LineActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="buttonMoveCursor">
@@ -108,7 +108,7 @@
         <Property name="text" type="java.lang.String" value="Move cursor"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMoveCursorActionPerformed"/>
+        <EventHandler event="actionPerformed" itemSelectedListener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonMoveCursorActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">
@@ -116,7 +116,7 @@
         <Property name="text" type="java.lang.String" value="Clear"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" itemSelectedListener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

@@ -58,13 +58,13 @@ public abstract class AbstractDialogBuilder<B, T extends DialogWindow> {
         return self();
     }
 
-    /**
-     * Returns the title that the built dialog will have
-     * @return Title that the built dialog will have
-     */
-    public String getTitle() {
-        return title;
-    }
+//    /**
+//     * Returns the title that the built dialog will have
+//     * @return Title that the built dialog will have
+//     */
+//    public String getTitle() {
+//        return title;
+//    }
 
     /**
      * Changes the description of the dialog
@@ -76,13 +76,13 @@ public abstract class AbstractDialogBuilder<B, T extends DialogWindow> {
         return self();
     }
 
-    /**
-     * Returns the description that the built dialog will have
-     * @return Description that the built dialog will have
-     */
-    public String getDescription() {
-        return description;
-    }
+//    /**
+//     * Returns the description that the built dialog will have
+//     * @return Description that the built dialog will have
+//     */
+//    public String getDescription() {
+//        return description;
+//    }
 
     /**
      * Assigns a set of extra window hints that you want the built dialog to have

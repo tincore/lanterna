@@ -15,7 +15,7 @@ public class Issue361 {
 
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         BasicWindow window1 = new BasicWindow();
         window1.setHints(Collections.singletonList(Window.Hint.CENTERED));

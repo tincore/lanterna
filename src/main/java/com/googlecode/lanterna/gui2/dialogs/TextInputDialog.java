@@ -36,59 +36,120 @@ public class TextInputDialog extends DialogWindow {
     private String result;
 
     TextInputDialog(
-                String title,
-                String description,
-                TerminalSize textBoxPreferredSize,
-                String initialContent,
-                TextInputDialogResultValidator validator,
-                boolean password) {
+        String title,
+        String description,
+        TerminalSize textBoxPreferredSize,
+        String initialContent,
+        TextInputDialogResultValidator validator,
+        boolean password) {
 
         super(title);
         this.result = null;
         this.textBox = new TextBox(textBoxPreferredSize, initialContent);
         this.validator = validator;
 
-        if(password) {
+        if (password) {
             textBox.setMask('*');
         }
 
         Panel buttonPanel = new Panel();
         buttonPanel.setLayoutManager(new GridLayout(2).setHorizontalSpacing(1));
-        buttonPanel.addComponent(new Button(LocalizedString.OK.toString(), this::onOK).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, false)));
-        buttonPanel.addComponent(new Button(LocalizedString.Cancel.toString(), this::onCancel));
+        buttonPanel.add(new Button(LocalizedString.OK.toString(), s -> onOK()).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, false)));
+        buttonPanel.add(new Button(LocalizedString.Cancel.toString(), s -> onCancel()));
 
         Panel mainPanel = new Panel();
         mainPanel.setLayoutManager(
-                new GridLayout(1)
-                        .setLeftMarginSize(1)
-                        .setRightMarginSize(1));
-        if(description != null) {
-            mainPanel.addComponent(new Label(description));
+            new GridLayout(1)
+                .setLeftMarginSize(1)
+                .setRightMarginSize(1));
+        if (description != null) {
+            mainPanel.add(new Label(description));
         }
-        mainPanel.addComponent(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(TerminalSize.ONE));
         textBox.setLayoutData(
-                GridLayout.createLayoutData(
-                        GridLayout.Alignment.FILL,
-                        GridLayout.Alignment.CENTER,
-                        true,
-                        false))
-                .addTo(mainPanel);
-        mainPanel.addComponent(new EmptySpace(TerminalSize.ONE));
+            GridLayout.createLayoutData(
+                GridLayout.Alignment.FILL,
+                GridLayout.Alignment.CENTER,
+                true,
+                false))
+            .addTo(mainPanel);
+        mainPanel.add(new EmptySpace(TerminalSize.ONE));
         buttonPanel.setLayoutData(
-                GridLayout.createLayoutData(
-                        GridLayout.Alignment.END,
-                        GridLayout.Alignment.CENTER,
-                        false,
-                        false))
-                .addTo(mainPanel);
+            GridLayout.createLayoutData(
+                GridLayout.Alignment.END,
+                GridLayout.Alignment.CENTER,
+                false,
+                false))
+            .addTo(mainPanel);
         setComponent(mainPanel);
     }
 
-    private void onOK() {
+    /**
+     * Shortcut for quickly showing a {@code TextInputDialog}
+     *
+     * @param textGUI        GUI to show the dialog on
+     * @param title          Title of the dialog
+     * @param description    Description of the dialog
+     * @param initialContent What content to place in the text box initially
+     * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
+     */
+    public static String showDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+        TextInputDialog textInputDialog = new TextInputDialogBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setInitialContent(initialContent)
+            .build();
+        return textInputDialog.showDialog(textGUI);
+    }
+
+    /**
+     * Shortcut for quickly showing a {@code TextInputDialog} that only accepts numbers
+     *
+     * @param textGUI        GUI to show the dialog on
+     * @param title          Title of the dialog
+     * @param description    Description of the dialog
+     * @param initialContent What content to place in the text box initially
+     * @return The number the user typed into the text box, or {@code null} if the dialog was cancelled
+     */
+    public static BigInteger showNumberDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+        TextInputDialog textInputDialog = new TextInputDialogBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setInitialContent(initialContent)
+            .setValidationPattern(Pattern.compile("[0-9]+"), "Not a number")
+            .build();
+        String numberString = textInputDialog.showDialog(textGUI);
+        return numberString != null ? new BigInteger(numberString) : null;
+    }
+
+    /**
+     * Shortcut for quickly showing a {@code TextInputDialog} with password masking
+     *
+     * @param textGUI        GUI to show the dialog on
+     * @param title          Title of the dialog
+     * @param description    Description of the dialog
+     * @param initialContent What content to place in the text box initially
+     * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
+     */
+    public static String showPasswordDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+        TextInputDialog textInputDialog = new TextInputDialogBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setInitialContent(initialContent)
+            .setPasswordInput(true)
+            .build();
+        return textInputDialog.showDialog(textGUI);
+    }
+
+    public void onCancel() {
+        close();
+    }
+
+    public void onOK() {
         String text = textBox.getText();
-        if(validator != null) {
+        if (validator != null) {
             String errorMessage = validator.validate(text);
-            if(errorMessage != null) {
+            if (errorMessage != null) {
                 MessageDialog.showMessageDialog(getTextGUI(), getTitle(), errorMessage, MessageDialogButton.OK);
                 return;
             }
@@ -97,68 +158,10 @@ public class TextInputDialog extends DialogWindow {
         close();
     }
 
-    private void onCancel() {
-        close();
-    }
-
     @Override
     public String showDialog(WindowBasedTextGUI textGUI) {
         result = null;
         super.showDialog(textGUI);
         return result;
-    }
-
-    /**
-     * Shortcut for quickly showing a {@code TextInputDialog}
-     * @param textGUI GUI to show the dialog on
-     * @param title Title of the dialog
-     * @param description Description of the dialog
-     * @param initialContent What content to place in the text box initially
-     * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
-     */
-    public static String showDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
-        TextInputDialog textInputDialog = new TextInputDialogBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setInitialContent(initialContent)
-                .build();
-        return textInputDialog.showDialog(textGUI);
-    }
-
-    /**
-     * Shortcut for quickly showing a {@code TextInputDialog} that only accepts numbers
-     * @param textGUI GUI to show the dialog on
-     * @param title Title of the dialog
-     * @param description Description of the dialog
-     * @param initialContent What content to place in the text box initially
-     * @return The number the user typed into the text box, or {@code null} if the dialog was cancelled
-     */
-    public static BigInteger showNumberDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
-        TextInputDialog textInputDialog = new TextInputDialogBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setInitialContent(initialContent)
-                .setValidationPattern(Pattern.compile("[0-9]+"), "Not a number")
-                .build();
-        String numberString = textInputDialog.showDialog(textGUI);
-        return numberString != null ? new BigInteger(numberString) : null;
-    }
-
-    /**
-     * Shortcut for quickly showing a {@code TextInputDialog} with password masking
-     * @param textGUI GUI to show the dialog on
-     * @param title Title of the dialog
-     * @param description Description of the dialog
-     * @param initialContent What content to place in the text box initially
-     * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
-     */
-    public static String showPasswordDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
-        TextInputDialog textInputDialog = new TextInputDialogBuilder()
-                .setTitle(title)
-                .setDescription(description)
-                .setInitialContent(initialContent)
-                .setPasswordInput(true)
-                .build();
-        return textInputDialog.showDialog(textGUI);
     }
 }

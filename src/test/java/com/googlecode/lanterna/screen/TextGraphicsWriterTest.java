@@ -10,7 +10,7 @@ import com.googlecode.lanterna.graphics.TextGraphicsWriter;
 public class TextGraphicsWriterTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
 
         TextGraphics writer = new ScreenTextGraphics(screen);
         writer.setForegroundColor(TextColor.ANSI.WHITE);
@@ -63,6 +63,6 @@ public class TextGraphicsWriterTest {
 
         screen.refresh();
         screen.readInput();
-        screen.stopScreen();
+        screen.stop();
     }
 }

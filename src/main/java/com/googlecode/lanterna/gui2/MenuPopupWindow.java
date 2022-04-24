@@ -50,9 +50,9 @@ public class MenuPopupWindow extends AbstractWindow {
      * @param menuItem Menu item to add to the popup window.
      */
     public void addMenuItem(MenuItem menuItem) {
-        menuItemPanel.addComponent(menuItem);
+        menuItemPanel.add(menuItem);
         menuItem.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
-        if (menuItemPanel.getChildCount() == 1) {
+        if (menuItemPanel.getComponentCount() == 1) {
             setFocusedInteractable(menuItem);
         }
         invalidate();

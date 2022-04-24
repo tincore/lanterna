@@ -32,12 +32,12 @@ public class Issue78 {
         Terminal t = new TestTerminalFactory(args).createTerminal();
         t.enterPrivateMode();
         TerminalScreen s = new TerminalScreen(t);
-        s.startScreen();
+        s.start();
         try {
             Thread.sleep(1000);
         }
         catch(InterruptedException e) {}
-        s.stopScreen();
+        s.stop();
         t.exitPrivateMode();
     }
 }

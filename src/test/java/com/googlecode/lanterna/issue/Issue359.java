@@ -13,7 +13,7 @@ public class Issue359 {
     public static void main(String[] args) {
         try {
             Screen screen = new DefaultTerminalFactory().createScreen();
-            screen.startScreen();
+            screen.start();
 
             Window window = new BasicWindow();
             Button button = new Button("Hello");

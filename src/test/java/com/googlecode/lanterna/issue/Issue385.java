@@ -14,7 +14,7 @@ public class Issue385 {
 
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = terminalFactory.createScreen();
-        screen.startScreen();
+        screen.start();
 
         final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
 

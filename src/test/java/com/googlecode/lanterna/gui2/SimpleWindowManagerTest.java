@@ -20,12 +20,13 @@ package com.googlecode.lanterna.gui2;
 
 import com.googlecode.lanterna.TestUtils;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
 /**
  * Test/example class for various kinds of window manager behaviours
+ *
  * @author Martin
  */
 public class SimpleWindowManagerTest extends TestBase {
@@ -38,14 +39,14 @@ public class SimpleWindowManagerTest extends TestBase {
         final Window mainWindow = new BasicWindow("Choose test");
         Panel contentArea = new Panel();
         contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-        contentArea.addComponent(new Button("Centered window", () -> textGUI.addWindow(new CenteredWindow())));
-        contentArea.addComponent(new Button("Undecorated window", () -> textGUI.addWindow(new UndecoratedWindow())));
-        contentArea.addComponent(new Button("Undecorated + Centered window", () -> textGUI.addWindow(new UndecoratedCenteredWindow())));
-        contentArea.addComponent(new Button("Full-screen window", () -> textGUI.addWindow(new FullScreenWindow(true))));
-        contentArea.addComponent(new Button("Undecorated + Full-screen window", () -> textGUI.addWindow(new FullScreenWindow(false))));
-        contentArea.addComponent(new Button("Expanded window", () -> textGUI.addWindow(new ExpandedWindow(true))));
-        contentArea.addComponent(new Button("Undecorated + Expanded window", () -> textGUI.addWindow(new ExpandedWindow(false))));
-        contentArea.addComponent(new Button("Close", mainWindow::close));
+        contentArea.add(new Button("Centered window", s -> textGUI.addWindow(new CenteredWindow())));
+        contentArea.add(new Button("Undecorated window", s -> textGUI.addWindow(new UndecoratedWindow())));
+        contentArea.add(new Button("Undecorated + Centered window", s -> textGUI.addWindow(new UndecoratedCenteredWindow())));
+        contentArea.add(new Button("Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(true))));
+        contentArea.add(new Button("Undecorated + Full-screen window", s -> textGUI.addWindow(new FullScreenWindow(false))));
+        contentArea.add(new Button("Expanded window", s -> textGUI.addWindow(new ExpandedWindow(true))));
+        contentArea.add(new Button("Undecorated + Expanded window", s -> textGUI.addWindow(new ExpandedWindow(false))));
+        contentArea.add(new Button("Close", s -> mainWindow.close()));
         mainWindow.setComponent(contentArea);
         textGUI.addWindow(mainWindow);
     }
@@ -82,7 +83,7 @@ public class SimpleWindowManagerTest extends TestBase {
             TextBox textBox = new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE);
             textBox.setLayoutData(BorderLayout.Location.CENTER);
             textBox.setReadOnly(true);
-            content.addComponent(textBox);
+            content.add(textBox);
 
             setComponent(content);
 
@@ -100,7 +101,7 @@ public class SimpleWindowManagerTest extends TestBase {
             TextBox textBox = new TextBox(TestUtils.downloadGPL(), TextBox.Style.MULTI_LINE);
             textBox.setLayoutData(BorderLayout.Location.CENTER);
             textBox.setReadOnly(true);
-            content.addComponent(textBox);
+            content.add(textBox);
 
             setComponent(content);
 
@@ -111,7 +112,7 @@ public class SimpleWindowManagerTest extends TestBase {
     private static class TestWindow extends BasicWindow {
         TestWindow(String title) {
             super(title);
-            setComponent(new Button("Close", this::close));
+            setComponent(new Button("Close", s -> this.close()));
             setCloseWindowWithEscape(true);
         }
     }

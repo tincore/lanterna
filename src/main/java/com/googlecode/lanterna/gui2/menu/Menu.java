@@ -59,7 +59,7 @@ public class Menu extends MenuItem {
     }
 
     @Override
-    protected boolean onActivated() {
+    public boolean onClicked() {
         boolean result = true;
         if (subItems.isEmpty()) {
             return result;
@@ -80,7 +80,7 @@ public class Menu extends MenuItem {
                             popupMenu.close();
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex - 1);
                             nextSelectedMenu.takeFocus();
-                            nextSelectedMenu.onActivated();
+                            nextSelectedMenu.onClicked();
                         }
                     } else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
                         int thisMenuIndex = menuBar.getChildrenList().indexOf(Menu.this);
@@ -88,7 +88,7 @@ public class Menu extends MenuItem {
                             popupMenu.close();
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex + 1);
                             nextSelectedMenu.takeFocus();
-                            nextSelectedMenu.onActivated();
+                            nextSelectedMenu.onClicked();
                         }
                     }
                 }

@@ -18,7 +18,6 @@
  */
 package com.googlecode.lanterna.screen;
 
-import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -181,7 +180,7 @@ public abstract class AbstractScreen implements Screen {
 
     @Override
     public void close() throws IOException {
-        stopScreen();
+        stop();
     }
 
     @Override

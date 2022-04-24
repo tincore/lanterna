@@ -16,20 +16,22 @@ public class Issue392 {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
         textGUI = new MultiWindowTextGUI(screen);
         setExceptionHandler();
         BasicWindow window = new BasicWindow();
 
-        Button button = new Button("test");
-        button.addListener(b -> {
-            setExceptionHandler();
-            throw new RuntimeException("This should be caught in the uncaght exception handler!");
-        });
+        Button button = new Button("test"){
+            @Override
+            public void onClicked() {
+                setExceptionHandler();
+                throw new RuntimeException("This should be caught in the uncaght exception handler!");
+            }
+        };
         window.setComponent(button);
 
         textGUI.addWindowAndWait(window);
-        screen.stopScreen();
+        screen.stop();
     }
 
     private static void setExceptionHandler() {

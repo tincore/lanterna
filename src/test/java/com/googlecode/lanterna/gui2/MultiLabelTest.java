@@ -29,47 +29,39 @@ import java.io.IOException;
 public class MultiLabelTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         try {
             final BasicWindow window = new BasicWindow("Label test");
-            Panel contentArea = new Panel();
-            contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-            contentArea.addComponent(new Label("This is a single line label"));
-            contentArea.addComponent(new Label("This is another label on the second line"));
-            contentArea.addComponent(new EmptySpace(new TerminalSize(5, 1)));
-            contentArea.addComponent(new Label("Here is a\nmulti-line\ntext segment that is using \\n"));
-            Label label = new Label("We can change foreground color...");
-            label.setForegroundColor(TextColor.ANSI.BLUE);
-            contentArea.addComponent(label);
-            label = new Label("...and background color...");
-            label.setBackgroundColor(TextColor.ANSI.MAGENTA);
-            contentArea.addComponent(label);
-            label = new Label("...and add custom SGR styles!");
-            label.addStyle(SGR.BOLD);
-            label.addStyle(SGR.UNDERLINE);
-            contentArea.addComponent(label);
-            contentArea.addComponent(new EmptySpace(new TerminalSize(5, 1)));
-            contentArea.addComponent(new Label("Here is an animated label:"));
-            contentArea.addComponent(AnimatedLabel.createClassicSpinningLine());
-            contentArea.addComponent(new EmptySpace());
-            contentArea.addComponent(new Button("Close", window::close).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center)));
+            window.setComponent(new Panel()
+                .setLayoutManager(new LinearLayout(Direction.VERTICAL))
+                .add(new Label("This is a single line label"))
+                .add(new Label("This is another label on the second line"))
+                .add(new EmptySpace(new TerminalSize(5, 1)))
+                .add(new Label("Here is a\nmulti-line\ntext segment that is using \\n"))
+                .add(new Label("We can change foreground color...").setForegroundColor(TextColor.ANSI.BLUE))
+                .add(new Label("...and background color...").setBackgroundColor(TextColor.ANSI.MAGENTA))
+                .add(new Label("...and add custom SGR styles!")
+                    .addStyle(SGR.BOLD)
+                    .addStyle(SGR.UNDERLINE))
+                .add(new EmptySpace(new TerminalSize(5, 1)))
+                .add(new Label("Here is an animated label:"))
+                .add(AnimatedLabel.createClassicSpinningLine())
+                .add(new EmptySpace())
+                .add(new Button("Close", s -> window.close()).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center))));
 
-            window.setComponent(contentArea);
             textGUI.addWindow(window);
             textGUI.updateScreen();
-            while(!textGUI.getWindows().isEmpty()) {
+            while (!textGUI.getWindows().isEmpty()) {
                 textGUI.processInput();
-                if(textGUI.isPendingUpdate()) {
+                if (textGUI.isPendingUpdate()) {
                     textGUI.updateScreen();
-                }
-                else {
+                } else {
                     Thread.sleep(1);
                 }
             }
-        }
-        finally {
-            screen.stopScreen();
+        } finally {
+            screen.stop();
         }
     }
 }

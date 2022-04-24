@@ -19,7 +19,7 @@ public class Issue384 {
 
     public static void main(String[] args) throws IOException {
         final Screen screen = new DefaultTerminalFactory().createScreen();
-        screen.startScreen();
+        screen.start();
         final MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
         final Window window = new BasicWindow("Table container test");
         window.setHints(Collections.singletonList(Window.Hint.FIXED_SIZE));
@@ -33,36 +33,37 @@ public class Issue384 {
         table.setRenderer(tableRenderer);
 
         final TableModel<String> model = table.getTableModel();
-        for(int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 20; i++) {
             String cellLabel = "Row" + i;
             model.addRow(cellLabel, cellLabel, cellLabel);
         }
 
         Panel buttonPanel = new Panel();
         buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
-        buttonPanel.addComponent(new Button("Change Expandable Columns", () -> showExpandableColumnsEditor(textGUI, tableRenderer)));
-        buttonPanel.addComponent(new Button("Close", window::close));
+        buttonPanel.add(new Button("Change Expandable Columns", s -> showExpandableColumnsEditor(textGUI, tableRenderer)));
+        buttonPanel.add(new Button("Close", s -> window.close()));
 
         window.setComponent(Panels.vertical(
-                table.withBorder(Borders.singleLineBevel("Table")),
-                buttonPanel));
+            table.withBorder(Borders.singleLineBevel("Table")),
+            buttonPanel));
         table.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
         textGUI.addWindow(window);
         textGUI.waitForWindowToClose(window);
-        screen.stopScreen();
+        screen.stop();
     }
 
     private static void showExpandableColumnsEditor(MultiWindowTextGUI textGUI, final DefaultTableRenderer<String> tableRenderer) {
-        final DialogWindow dialogWindow = new DialogWindow("Select expandable columns") { };
+        final DialogWindow dialogWindow = new DialogWindow("Select expandable columns") {
+        };
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         final CheckBoxList<String> checkBoxList = new CheckBoxList<>();
         checkBoxList.addItem("Column1", EXPANDABLE_COLUMNS.contains(0));
         checkBoxList.addItem("Column2", EXPANDABLE_COLUMNS.contains(1));
         checkBoxList.addItem("Column3", EXPANDABLE_COLUMNS.contains(2));
-        contentPanel.addComponent(checkBoxList);
-        contentPanel.addComponent(new Button("OK", () -> {
+        contentPanel.add(checkBoxList);
+        contentPanel.add(new Button("OK", s -> {
             EXPANDABLE_COLUMNS.clear();
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 if (checkBoxList.isChecked(i)) {
                     EXPANDABLE_COLUMNS.add(i);
                 }

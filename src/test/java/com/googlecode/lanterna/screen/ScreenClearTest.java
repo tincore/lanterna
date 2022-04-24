@@ -31,7 +31,7 @@ import java.io.IOException;
 public class ScreenClearTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         for(int i = 0; i < 10; i++) {
             drawText(screen);
             screen.refresh();
@@ -40,7 +40,7 @@ public class ScreenClearTest {
             screen.refresh();
             sleep(300);
         }
-        screen.stopScreen();
+        screen.stop();
     }
 
     private static void drawText(Screen screen) {

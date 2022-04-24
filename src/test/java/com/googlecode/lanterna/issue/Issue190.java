@@ -34,19 +34,19 @@ public class Issue190 {
         factory.setTerminalEmulatorTitle("name");
         Terminal terminal = factory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         Panel panel = new Panel();
         panel.setLayoutManager(new BorderLayout());
 
         ActionListBox channels = new ActionListBox();
         channels.setLayoutData(BorderLayout.Location.LEFT);
-        panel.addComponent(channels.withBorder(Borders.singleLine("Channels")));
+        panel.add(channels.withBorder(Borders.singleLine("Channels")));
 
         TextBox log = new TextBox("", TextBox.Style.MULTI_LINE);
         log.setReadOnly(true);
         log.setLayoutData(BorderLayout.Location.CENTER);
-        panel.addComponent(log.withBorder(Borders.singleLine("Log")));
+        panel.add(log.withBorder(Borders.singleLine("Log")));
 
         Panel options = new Panel();
         options.setLayoutData(BorderLayout.Location.BOTTOM);
@@ -55,15 +55,11 @@ public class Issue190 {
 
         options.setLayoutManager(new BorderLayout());
 
-        final TextBox input = new TextBox("Message", TextBox.Style.SINGLE_LINE);
-        input.setLayoutData(BorderLayout.Location.CENTER);
-        options.addComponent(input);
+        final TextBox input = new TextBox("Message", TextBox.Style.SINGLE_LINE).setLayoutData(BorderLayout.Location.CENTER);
+        options.add(input);
+        options.add(new Button("Send", s -> input.setText("")).setLayoutData(BorderLayout.Location.RIGHT));
 
-        Button send = new Button("Send", () -> input.setText(""));
-        send.setLayoutData(BorderLayout.Location.RIGHT);
-        options.addComponent(send);
-
-        panel.addComponent(options.withBorder(Borders.singleLine("Send Message")));
+        panel.add(options.withBorder(Borders.singleLine("Send Message")));
 
         BasicWindow window = new BasicWindow();
         window.setComponent(panel.withBorder(Borders.doubleLine("DarkOwlBot")));

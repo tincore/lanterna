@@ -33,31 +33,28 @@ import java.util.List;
 public class Issue409 {
     public static void main(String[] args) {
         try {
-            Screen screen = new DefaultTerminalFactory().createScreen();
-            screen.startScreen();
+            Screen screen = new DefaultTerminalFactory().createScreen().start();
 
-            final Window window = new BasicWindow();
-
-            Panel panel = new Panel();
-            panel.addComponent(new CustomBackgroundTextBox(TextColor.ANSI.RED));
-            panel.addComponent(new EmptySpace());
-            panel.addComponent(new CustomBackgroundTextBox(TextColor.ANSI.GREEN));
-            panel.addComponent(new EmptySpace());
-            final CyclingThemesTextBox cyclingThemesTextBox = new CyclingThemesTextBox();
-            panel.addComponent(cyclingThemesTextBox);
-            panel.addComponent(new EmptySpace());
-            panel.addComponent(new Button("Close", window::close));
-
-            window.setComponent(panel);
             final MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+
+            final CyclingThemesTextBox cyclingThemesTextBox = new CyclingThemesTextBox();
+            final Window window = new BasicWindow();
+            window.setComponent(new Panel()
+                .add(new CustomBackgroundTextBox(TextColor.ANSI.RED))
+                .add(new EmptySpace())
+                .add(new CustomBackgroundTextBox(TextColor.ANSI.GREEN))
+                .add(new EmptySpace())
+                .add(cyclingThemesTextBox)
+                .add(new EmptySpace())
+                .add(new Button("Close", s -> window.close())));
+
             gui.addWindow(window);
             new Thread(() -> {
                 int counter = 0;
-                while(cyclingThemesTextBox.getTextGUI() != null) {
+                while (cyclingThemesTextBox.getTextGUI() != null) {
                     if (++counter % 200 == 0) {
                         gui.getGUIThread().invokeLater(cyclingThemesTextBox::nextTheme);
-                    }
-                    else {
+                    } else {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
@@ -68,7 +65,7 @@ public class Issue409 {
             }).start();
 
             window.waitUntilClosed();
-            screen.stopScreen();
+            screen.stop();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,14 +115,14 @@ public class Issue409 {
         }
 
         @Override
-        public ThemeStyle getNormal() {
-            DefaultMutableThemeStyle mutableThemeStyle = new DefaultMutableThemeStyle(super.getNormal());
+        public ThemeStyle getActive() {
+            DefaultMutableThemeStyle mutableThemeStyle = new DefaultMutableThemeStyle(super.getActive());
             return mutableThemeStyle.setBackground(color);
         }
 
         @Override
-        public ThemeStyle getActive() {
-            DefaultMutableThemeStyle mutableThemeStyle = new DefaultMutableThemeStyle(super.getActive());
+        public ThemeStyle getNormal() {
+            DefaultMutableThemeStyle mutableThemeStyle = new DefaultMutableThemeStyle(super.getNormal());
             return mutableThemeStyle.setBackground(color);
         }
     }

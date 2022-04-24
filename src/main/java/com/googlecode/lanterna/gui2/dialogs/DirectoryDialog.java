@@ -21,17 +21,8 @@
 package com.googlecode.lanterna.gui2.dialogs;
 
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.ActionListBox;
-import com.googlecode.lanterna.gui2.BorderLayout;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.BorderLayout.Location;
-import com.googlecode.lanterna.gui2.Borders;
-import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.GridLayout;
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.LocalizedString;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 
 import java.io.File;
 import java.util.Arrays;
@@ -46,13 +37,9 @@ import java.util.Comparator;
 public class DirectoryDialog extends DialogWindow {
 
     private final ActionListBox dirListBox;
-
     private final TextBox dirBox;
-
     private final boolean showHiddenDirs;
-
     private File directory;
-
     private File selectedDir;
 
     /**
@@ -65,15 +52,10 @@ public class DirectoryDialog extends DialogWindow {
      * @param showHiddenDirs If {@code true}, hidden directories will be visible
      * @param selectedObject Initially selected directory node
      */
-    public DirectoryDialog(
-            String title,
-            String description,
-            String actionLabel,
-            TerminalSize dialogSize,
-            boolean showHiddenDirs,
-            File selectedObject) {
+    public DirectoryDialog(String title, String description, String actionLabel, TerminalSize dialogSize,
+                           boolean showHiddenDirs, File selectedObject) {
         super(title);
-        this.selectedDir = null;
+
         this.showHiddenDirs = showHiddenDirs;
 
         if (selectedObject == null || !selectedObject.exists()) {
@@ -81,39 +63,91 @@ public class DirectoryDialog extends DialogWindow {
         }
         selectedObject = selectedObject.getAbsoluteFile();
 
-        Panel contentPane = new Panel();
-        contentPane.setLayoutManager(new BorderLayout());
+        Panel contentPane = new Panel(new BorderLayout());
 
-        Panel dirsPane = new Panel();
-        dirsPane.setLayoutManager(new BorderLayout());
-        contentPane.addComponent(dirsPane, Location.CENTER);
+        Panel dirsPane = new Panel(new BorderLayout());
 
+        contentPane.add(dirsPane, Location.CENTER);
         if (description != null)
-            contentPane.addComponent(new Label(description), Location.TOP);
+            contentPane.add(new Label(description), Location.TOP);
 
         int unitHeight = dialogSize.getRows();
 
         dirListBox = new ActionListBox(new TerminalSize(dialogSize.getColumns(), unitHeight));
-        dirsPane.addComponent(dirListBox.withBorder(Borders.singleLine()), Location.CENTER);
+        dirsPane.add(dirListBox.withBorder(Borders.singleLine()), Location.CENTER);
 
         dirBox = new TextBox(new TerminalSize(dialogSize.getColumns(), 1));
-        dirsPane.addComponent(dirBox.withBorder(Borders.singleLine()), Location.BOTTOM);
+        dirsPane.add(dirBox.withBorder(Borders.singleLine()), Location.BOTTOM);
 
         Panel panelButtons = new Panel(new GridLayout(2));
         panelButtons.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.CENTER, false, false, 2, 1));
-        panelButtons.addComponent(new Button(actionLabel, new OkHandler()));
-        panelButtons.addComponent(new Button(LocalizedString.Cancel.toString(), new CancelHandler()));
-        contentPane.addComponent(panelButtons, Location.BOTTOM);
+        panelButtons.add(new Button(actionLabel, s -> onAccept()));
+        panelButtons.add(new Button(LocalizedString.Cancel.toString(), s -> onCancel()));
+        contentPane.add(panelButtons, Location.BOTTOM);
 
         if (selectedObject.isFile()) {
             directory = selectedObject.getParentFile();
-        }
-        else if (selectedObject.isDirectory()) {
+        } else if (selectedObject.isDirectory()) {
             directory = selectedObject;
         }
 
         reloadViews(directory);
         setComponent(contentPane);
+    }
+
+    public void onAccept() {
+        File dir = new File(dirBox.getText());
+        if (dir.exists() && dir.isDirectory()) {
+            selectedDir = dir;
+            close();
+        } else {
+            MessageDialog.showMessageDialog(getTextGUI(), "Error", "Please select a valid directory name", MessageDialogButton.OK);
+        }
+    }
+
+    public void onCancel() {
+        selectedDir = null;
+        close();
+    }
+
+    private void reloadViews(final File directory) {
+        dirBox.setText(directory.getAbsolutePath());
+        dirListBox.clearItems();
+        File[] entries = directory.listFiles();
+        if (entries == null) {
+            return;
+        }
+        Arrays.sort(entries, Comparator.comparing(o -> o.getName().toLowerCase()));
+        if (directory.getAbsoluteFile().getParentFile() != null) {
+            dirListBox.addItem("..", s -> {
+                DirectoryDialog.this.directory = directory.getAbsoluteFile().getParentFile();
+                reloadViews(directory.getAbsoluteFile().getParentFile());
+            });
+        } else {
+            File[] roots = File.listRoots();
+            for (final File entry : roots) {
+                if (entry.canRead()) {
+                    dirListBox.addItem('[' + entry.getPath() + ']', s -> {
+                        DirectoryDialog.this.directory = entry;
+                        reloadViews(entry);
+                    });
+                }
+            }
+        }
+        for (final File entry : entries) {
+            if (entry.isHidden() && !showHiddenDirs) {
+                continue;
+            }
+            if (entry.isDirectory()) {
+                dirListBox.addItem(entry.getName(), s -> {
+                    DirectoryDialog.this.directory = entry;
+                    reloadViews(entry);
+                });
+            }
+        }
+        if (dirListBox.isEmpty()) {
+            dirListBox.addItem("<empty>", Interactable.ClickListener.DUMMY);
+        }
     }
 
     /**
@@ -127,76 +161,5 @@ public class DirectoryDialog extends DialogWindow {
         selectedDir = null;
         super.showDialog(textGUI);
         return selectedDir;
-    }
-
-    private class OkHandler implements Runnable {
-
-        @Override
-        public void run() {
-            File dir = new File(dirBox.getText());
-            if (dir.exists() && dir.isDirectory()) {
-                selectedDir = dir;
-                close();
-            }
-            else {
-                MessageDialog.showMessageDialog(getTextGUI(), "Error", "Please select a valid directory name", MessageDialogButton.OK);
-            }
-        }
-    }
-
-    private class CancelHandler implements Runnable {
-
-        @Override
-        public void run() {
-            selectedDir = null;
-            close();
-        }
-    }
-
-    private static class DoNothing implements Runnable {
-        @Override
-        public void run() {
-        }
-    }
-
-    private void reloadViews(final File directory) {
-        dirBox.setText(directory.getAbsolutePath());
-        dirListBox.clearItems();
-        File[] entries = directory.listFiles();
-        if (entries == null) {
-            return;
-        }
-        Arrays.sort(entries, Comparator.comparing(o -> o.getName().toLowerCase()));
-        if (directory.getAbsoluteFile().getParentFile() != null) {
-            dirListBox.addItem("..", () -> {
-                DirectoryDialog.this.directory = directory.getAbsoluteFile().getParentFile();
-                reloadViews(directory.getAbsoluteFile().getParentFile());
-            });
-        }
-        else {
-            File[] roots = File.listRoots();
-            for (final File entry : roots) {
-                if (entry.canRead()) {
-                    dirListBox.addItem('[' + entry.getPath() + ']', () -> {
-                        DirectoryDialog.this.directory = entry;
-                        reloadViews(entry);
-                    });
-                }
-            }
-        }
-        for (final File entry : entries) {
-            if (entry.isHidden() && !showHiddenDirs) {
-                continue;
-            }
-            if (entry.isDirectory()) {
-                dirListBox.addItem(entry.getName(), () -> {
-                    DirectoryDialog.this.directory = entry;
-                    reloadViews(entry);
-                });
-            }
-        }
-        if (dirListBox.isEmpty()) {
-            dirListBox.addItem("<empty>", new DoNothing());
-        }
     }
 }

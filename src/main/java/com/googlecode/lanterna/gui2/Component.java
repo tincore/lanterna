@@ -29,7 +29,7 @@ import com.googlecode.lanterna.graphics.ThemeDefinition;
  * of the methods in this interface.
  * @author Martin
  */
-public interface Component extends TextGUIElement, Tagged {
+public interface Component extends TextGUIElement, Attributed {
     /**
      * Returns the top-left corner of this component, measured from its parent.
      * @return Position of this component
@@ -201,6 +201,8 @@ public interface Component extends TextGUIElement, Tagged {
      * @param border Border to wrap the component with
      * @return The border with this component wrapped
      */
+
+    // REMOVE! USE Borders or add
     Border withBorder(Border border);
     
     /**

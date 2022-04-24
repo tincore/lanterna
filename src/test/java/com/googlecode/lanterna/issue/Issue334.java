@@ -13,12 +13,12 @@ public class Issue334 {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         // Create panel to hold components
         Panel panel = new Panel();
         panel.setLayoutManager(new GridLayout(1));
-        panel.addComponent(new Label(""));
+        panel.add(new Label(""));
 
         // Create gui and start gui
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
@@ -29,7 +29,7 @@ public class Issue334 {
         window.setCloseWindowWithEscape(true);
 
         gui.addWindowAndWait(window);
-        screen.stopScreen();
+        screen.stop();
         terminal.close();
     }
 }

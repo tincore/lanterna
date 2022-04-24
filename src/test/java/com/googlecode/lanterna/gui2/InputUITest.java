@@ -36,18 +36,44 @@ public class InputUITest extends TestBase {
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("Input test");
 
-        Interactable interactable = new AbstractInteractableComponent() {
+        Interactable interactable = new AbstractInteractableComponent(Attributes.EMPTY) {
             private String lastKey;
 
             @Override
-            protected Result handleKeyStroke(KeyStroke keyStroke) {
+            protected InteractableRenderer createDefaultRenderer() {
+                return new InteractableRenderer() {
+                    @Override
+                    public void drawComponent(TextGUIGraphics graphics, Component component) {
+                        graphics.setBackgroundColor(TextColor.ANSI.BLACK);
+                        graphics.setForegroundColor(TextColor.ANSI.WHITE);
+                        graphics.fill(' ');
+                        if (lastKey != null) {
+                            int leftPosition = 35 - (lastKey.length() / 2);
+                            graphics.putString(leftPosition, 2, lastKey);
+                        }
+                    }
+
+                    @Override
+                    public TerminalPosition getCursorLocation(Component component) {
+                        TerminalSize adjustedSize = component.getSize().withRelative(-1, -1);
+                        return new TerminalPosition(adjustedSize.getColumns(), adjustedSize.getRows());
+                    }
+
+                    @Override
+                    public TerminalSize getPreferredSize(Component component) {
+                        return new TerminalSize(70, 5);
+                    }
+                };
+            }
+
+            @Override
+            protected Result onKeyStroke(KeyStroke keyStroke) {
                 if (keyStroke.getKeyType() == KeyType.Tab) {
-                    return super.handleKeyStroke(keyStroke);
+                    return super.onKeyStroke(keyStroke);
                 }
                 if (keyStroke.getKeyType() == KeyType.Character) {
                     lastKey = keyStroke.getCharacter() + "";
-                }
-                else {
+                } else {
                     lastKey = keyStroke.getKeyType().toString();
                 }
                 if (keyStroke.isCtrlDown()) {
@@ -61,40 +87,13 @@ public class InputUITest extends TestBase {
                 }
                 return Result.HANDLED;
             }
-
-            @Override
-            protected InteractableRenderer createDefaultRenderer() {
-                return new InteractableRenderer() {
-                    @Override
-                    public TerminalPosition getCursorLocation(Component component) {
-                        TerminalSize adjustedSize = component.getSize().withRelative(-1, -1);
-                        return new TerminalPosition(adjustedSize.getColumns(), adjustedSize.getRows());
-                    }
-
-                    @Override
-                    public TerminalSize getPreferredSize(Component component) {
-                        return new TerminalSize(70, 5);
-                    }
-
-                    @Override
-                    public void drawComponent(TextGUIGraphics graphics, Component component) {
-                        graphics.setBackgroundColor(TextColor.ANSI.BLACK);
-                        graphics.setForegroundColor(TextColor.ANSI.WHITE);
-                        graphics.fill(' ');
-                        if (lastKey != null) {
-                            int leftPosition = 35 - (lastKey.length() / 2);
-                            graphics.putString(leftPosition, 2, lastKey);
-                        }
-                    }
-                };
-            }
         };
 
         window.setComponent(
-                Panels.vertical(
-                        interactable.withBorder(Borders.doubleLineBevel("Press any key to test capturing the KeyStroke")),
-                        new Label("Use the TAB key to shift focus"),
-                        new Button("Close", window::close)));
+            Panels.vertical(
+                interactable.withBorder(Borders.doubleLineBevel("Press any key to test capturing the KeyStroke")),
+                new Label("Use the TAB key to shift focus"),
+                new Button("Close", s -> window.close())));
         textGUI.addWindow(window);
     }
 }

@@ -13,7 +13,7 @@ public class Issue358 {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
         MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
         String title = "Issue358";
@@ -25,7 +25,7 @@ public class Issue358 {
         layoutManager.setVerticalSpacing(0);
         layoutManager.setHorizontalSpacing(1);
         final Panel contentPanel = new Panel(layoutManager);
-        contentPanel.addComponent(
+        contentPanel.add(
                 new EmptySpace(TextColor.ANSI.CYAN).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, false, false,3, 1)));
         window.setComponent(contentPanel);
         textGUI.addWindowAndWait(window);

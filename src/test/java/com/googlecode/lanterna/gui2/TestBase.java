@@ -31,7 +31,7 @@ import java.io.IOException;
 public abstract class TestBase {
     void run(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         MultiWindowTextGUI textGUI = createTextGUI(screen);
         String theme = extractTheme(args);
         if(theme != null) {
@@ -50,7 +50,7 @@ public abstract class TestBase {
             guiThread.waitForStop();
         }
         finally {
-            screen.stopScreen();
+            screen.stop();
         }
     }
 

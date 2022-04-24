@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 /**
  * The forth tutorial, introducing the GUIScreen interface
+ *
  * @author Martin
  */
 public class Tutorial04 {
@@ -40,7 +41,7 @@ public class Tutorial04 {
              get a Screen like we did in the previous tutorial and start it so it puts the terminal in private mode.
              */
             screen = terminalFactory.createScreen();
-            screen.startScreen();
+            screen.start();
 
             /*
             There are a couple of different constructors to MultiWindowTextGUI, we are going to go with the defaults for
@@ -74,7 +75,7 @@ public class Tutorial04 {
              * specified that we want to have a grid with two columns, below we customize the layout further by adding
              * some spacing between the columns.
              */
-            GridLayout gridLayout = (GridLayout)contentPanel.getLayoutManager();
+            GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
             gridLayout.setHorizontalSpacing(3);
 
             /*
@@ -85,71 +86,71 @@ public class Tutorial04 {
              */
             Label title = new Label("This is a label that spans two columns");
             title.setLayoutData(GridLayout.createLayoutData(
-                    GridLayout.Alignment.BEGINNING, // Horizontal alignment in the grid cell if the cell is larger than the component's preferred size
-                    GridLayout.Alignment.BEGINNING, // Vertical alignment in the grid cell if the cell is larger than the component's preferred size
-                    true,       // Give the component extra horizontal space if available
-                    false,        // Give the component extra vertical space if available
-                    2,                  // Horizontal span
-                    1));                  // Vertical span
-            contentPanel.addComponent(title);
+                GridLayout.Alignment.BEGINNING, // Horizontal alignment in the grid cell if the cell is larger than the component's preferred size
+                GridLayout.Alignment.BEGINNING, // Vertical alignment in the grid cell if the cell is larger than the component's preferred size
+                true,       // Give the component extra horizontal space if available
+                false,        // Give the component extra vertical space if available
+                2,                  // Horizontal span
+                1));                  // Vertical span
+            contentPanel.add(title);
 
             /*
             Since the grid has two columns, we can do something like this to add components when we don't need to
             customize them any further.
              */
-            contentPanel.addComponent(new Label("Text Box (aligned)"));
-            contentPanel.addComponent(
-                    new TextBox()
-                        .setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
+            contentPanel.add(new Label("Text Box (aligned)"));
+            contentPanel.add(
+                new TextBox()
+                    .setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
 
             /*
             Here is an example of customizing the regular text box component so it masks the content and can work for
             password input.
              */
-            contentPanel.addComponent(new Label("Password Box (right aligned)"));
-            contentPanel.addComponent(
-                    new TextBox()
-                        .setMask('*')
-                        .setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.CENTER)));
+            contentPanel.add(new Label("Password Box (right aligned)"));
+            contentPanel.add(
+                new TextBox()
+                    .setMask('*')
+                    .setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.CENTER)));
 
             /*
             While we are not going to demonstrate all components here, here is an example of combo-boxes, one that is
             read-only and one that is editable.
              */
-            contentPanel.addComponent(new Label("Read-only Combo Box (forced size)"));
+            contentPanel.add(new Label("Read-only Combo Box (forced size)"));
             List<String> timezonesAsStrings = new ArrayList<>(Arrays.asList(TimeZone.getAvailableIDs()));
             ComboBox<String> readOnlyComboBox = new ComboBox<>(timezonesAsStrings);
             readOnlyComboBox.setReadOnly(true);
             readOnlyComboBox.setPreferredSize(new TerminalSize(20, 1));
-            contentPanel.addComponent(readOnlyComboBox);
+            contentPanel.add(readOnlyComboBox);
 
-            contentPanel.addComponent(new Label("Editable Combo Box (filled)"));
-            contentPanel.addComponent(
-                    new ComboBox<>("Item #1", "Item #2", "Item #3", "Item #4")
-                            .setReadOnly(false)
-                            .setLayoutData(GridLayout.createHorizontallyFilledLayoutData(1)));
+            contentPanel.add(new Label("Editable Combo Box (filled)"));
+            contentPanel.add(
+                new ComboBox<>("Item #1", "Item #2", "Item #3", "Item #4")
+                    .setReadOnly(false)
+                    .setLayoutData(GridLayout.createHorizontallyFilledLayoutData(1)));
 
             /*
             Some user interactions, like buttons, work by registering callback methods. In this example here, we're
             using one of the pre-defined dialogs when the button is triggered.
              */
-            contentPanel.addComponent(new Label("Button (centered)"));
-            contentPanel.addComponent(new Button("Button", () -> MessageDialog.showMessageDialog(textGUI, "MessageBox", "This is a message box", MessageDialogButton.OK)).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER)));
+            contentPanel.add(new Label("Button (centered)"));
+            contentPanel.add(new Button("Button", s -> MessageDialog.showMessageDialog(textGUI, "MessageBox", "This is a message box", MessageDialogButton.OK)).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER)));
 
             /*
             Close off with an empty row and a separator, then a button to close the window
              */
-            contentPanel.addComponent(
-                    new EmptySpace()
-                            .setLayoutData(
-                                    GridLayout.createHorizontallyFilledLayoutData(2)));
-            contentPanel.addComponent(
-                    new Separator(Direction.HORIZONTAL)
-                            .setLayoutData(
-                                    GridLayout.createHorizontallyFilledLayoutData(2)));
-            contentPanel.addComponent(
-                    new Button("Close", window::close).setLayoutData(
-                            GridLayout.createHorizontallyEndAlignedLayoutData(2)));
+            contentPanel.add(
+                new EmptySpace()
+                    .setLayoutData(
+                        GridLayout.createHorizontallyFilledLayoutData(2)));
+            contentPanel.add(
+                new Separator(Direction.HORIZONTAL)
+                    .setLayoutData(
+                        GridLayout.createHorizontallyFilledLayoutData(2)));
+            contentPanel.add(
+                new Button("Close", s -> window.close()).setLayoutData(
+                    GridLayout.createHorizontallyEndAlignedLayoutData(2)));
 
             /*
             We now have the content panel fully populated with components. A common mistake is to forget to attach it to
@@ -177,16 +178,13 @@ public class Tutorial04 {
             underlying Screen for this, the TextGUI system does not require any additional disassembly.
              */
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
-            if(screen != null) {
+        } finally {
+            if (screen != null) {
                 try {
-                    screen.stopScreen();
-                }
-                catch(IOException e) {
+                    screen.stop();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

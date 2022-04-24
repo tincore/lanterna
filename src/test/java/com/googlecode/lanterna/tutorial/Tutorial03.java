@@ -47,7 +47,7 @@ public class Tutorial03 {
             make any of these changes visible, you'll need to call startScreen() which will prepare and setup the
             terminal.
              */
-            screen.startScreen();
+            screen.start();
 
             /*
             Let's turn off the cursor for this tutorial

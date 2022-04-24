@@ -39,7 +39,7 @@ public class ScreenResizeTest {
 
     public ScreenResizeTest(String[] args) throws InterruptedException, IOException {
         screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         screen.setCursorPosition(new TerminalPosition(0, 0));
         putStrings("Initial setup, please resize the window");
 
@@ -52,7 +52,7 @@ public class ScreenResizeTest {
 
             Thread.sleep(1);
         }
-        screen.stopScreen();
+        screen.stop();
     }
 
     private void putStrings(String topTitle) throws IOException {

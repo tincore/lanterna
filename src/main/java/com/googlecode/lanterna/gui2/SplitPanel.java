@@ -57,9 +57,9 @@ public class SplitPanel extends Panel {
         setLayoutManager(new ScrollPanelLayoutManager());
         setRatio(10, 10);
         
-        addComponent(a);
-        addComponent(thumb);
-        addComponent(b);
+        add(a);
+        add(thumb);
+        add(b);
     }
     ImageComponent makeThumb() {
         ImageComponent imageComponent = new ImageComponent() {
@@ -69,7 +69,7 @@ public class SplitPanel extends Panel {
             TerminalPosition down = null;
             TerminalPosition drag = null;
             @Override
-            public Result handleKeyStroke(KeyStroke keyStroke) {
+            public Result onKeyStroke(KeyStroke keyStroke) {
                 if (!(keyStroke instanceof MouseAction)) {
                     return Result.UNHANDLED;
                 }

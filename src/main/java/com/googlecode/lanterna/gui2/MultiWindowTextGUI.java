@@ -176,7 +176,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             background = new GUIBackdrop();
         }
         this.windowManager = windowManager;
-        this.backgroundPane = new AbstractBasePane<BasePane>() {
+        this.backgroundPane = new AbstractBasePane<>(Attributes.EMPTY) {
             @Override
             public TextGUI getTextGUI() {
                 return MultiWindowTextGUI.this;
@@ -191,7 +191,9 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
                 return globalPosition;
             }
 
-            BasePane self() { return this; }
+            BasePane self() {
+                return this;
+            }
         };
         this.backgroundPane.setComponent(background);
         this.windowRenderBufferCache = new IdentityHashMap<>();

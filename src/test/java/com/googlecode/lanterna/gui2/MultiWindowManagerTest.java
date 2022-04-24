@@ -25,19 +25,21 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MultiWindowManagerTest extends TestBase {
 
     private static final AtomicInteger WINDOW_COUNTER = new AtomicInteger(0);
+    private static int nextTheme = 0;
+    private boolean virtualScreenEnabled = true;
+    private Button buttonToggleVirtualScreen;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new MultiWindowManagerTest().run(args);
     }
-
-    private boolean virtualScreenEnabled = true;
-    private Button buttonToggleVirtualScreen;
 
     @Override
     public void init(final WindowBasedTextGUI textGUI) {
@@ -45,26 +47,24 @@ public class MultiWindowManagerTest extends TestBase {
         final Window mainWindow = new BasicWindow("Multi Window Test");
         Panel contentArea = new Panel();
         contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-        contentArea.addComponent(new Button("Add new window", () -> onNewWindow(textGUI)));
-        buttonToggleVirtualScreen = new Button("Virtual Screen: Enabled", () -> {
+        contentArea.add(new Button("Add new window", s -> onNewWindow(textGUI)));
+        buttonToggleVirtualScreen = new Button("Virtual Screen: Enabled", s -> {
             virtualScreenEnabled = !virtualScreenEnabled;
             textGUI.setVirtualScreenEnabled(virtualScreenEnabled);
             buttonToggleVirtualScreen.setLabel("Virtual Screen: " + (virtualScreenEnabled ? "Enabled" : "Disabled"));
         });
-        contentArea.addComponent(buttonToggleVirtualScreen);
-        contentArea.addComponent(new EmptySpace(TerminalSize.ONE));
-        contentArea.addComponent(new Button("Close", mainWindow::close));
+        contentArea.add(buttonToggleVirtualScreen)
+            .add(new EmptySpace(TerminalSize.ONE))
+            .add(new Button("Close", s -> mainWindow.close()));
         mainWindow.setComponent(contentArea);
         textGUI.addListener((textGUI1, keyStroke) -> {
-            if((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.Tab) ||
-                    keyStroke.getKeyType() == KeyType.F6) {
+            if ((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.Tab) ||
+                keyStroke.getKeyType() == KeyType.F6) {
                 ((WindowBasedTextGUI) textGUI1).cycleActiveWindow(false);
-            }
-            else if((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.ReverseTab) ||
-                        keyStroke.getKeyType() == KeyType.F7) {
+            } else if ((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.ReverseTab) ||
+                keyStroke.getKeyType() == KeyType.F7) {
                 ((WindowBasedTextGUI) textGUI1).cycleActiveWindow(true);
-            }
-            else {
+            } else {
                 return false;
             }
             return true;
@@ -72,13 +72,11 @@ public class MultiWindowManagerTest extends TestBase {
         textGUI.addWindow(mainWindow);
     }
 
-    private static int nextTheme = 0;
-
     private void onNewWindow(WindowBasedTextGUI textGUI) {
         DynamicWindow window = new DynamicWindow();
         List<String> availableThemes = new ArrayList<>(LanternaThemes.getRegisteredThemes());
         String themeName = availableThemes.get(nextTheme++);
-        if(nextTheme == availableThemes.size()) {
+        if (nextTheme == availableThemes.size()) {
             nextTheme = 0;
         }
         window.setTheme(LanternaThemes.getRegisteredTheme(themeName));
@@ -96,97 +94,78 @@ public class MultiWindowManagerTest extends TestBase {
 
             Panel statsTableContainer = new Panel();
             statsTableContainer.setLayoutManager(new GridLayout(2));
-            statsTableContainer.addComponent(new Label("Position:"));
+            statsTableContainer.add(new Label("Position:"));
             this.labelWindowPosition = new Label("");
-            statsTableContainer.addComponent(labelWindowPosition);
-            statsTableContainer.addComponent(new Label("Size:"));
+            statsTableContainer.add(labelWindowPosition);
+            statsTableContainer.add(new Label("Size:"));
             this.labelWindowSize = new Label("");
-            statsTableContainer.addComponent(labelWindowSize);
-            statsTableContainer.addComponent(new Label("Auto-sized:"));
+            statsTableContainer.add(labelWindowSize);
+            statsTableContainer.add(new Label("Auto-sized:"));
             this.labelUnlockWindow = new Label("true");
-            statsTableContainer.addComponent(labelUnlockWindow);
+            statsTableContainer.add(labelUnlockWindow);
 
             addWindowListener(new WindowListenerAdapter() {
-                @Override
-                public void onResized(Window window, TerminalSize oldSize, TerminalSize newSize) {
-                    labelWindowSize.setText(newSize.toString());
-                }
-
                 @Override
                 public void onMoved(Window window, TerminalPosition oldPosition, TerminalPosition newPosition) {
                     labelWindowPosition.setText(newPosition.toString());
                 }
+
+                @Override
+                public void onResized(Window window, TerminalSize oldSize, TerminalSize newSize) {
+                    labelWindowSize.setText(newSize.toString());
+                }
             });
 
-            Panel contentArea = new Panel();
-            contentArea.setLayoutManager(new GridLayout(1));
-            contentArea.addComponent(statsTableContainer);
-            contentArea.addComponent(new EmptySpace(TerminalSize.ONE));
-            contentArea.addComponent(
-                    new Label(
-                            "Move window with ALT+Arrow\n" +
-                            "Resize window with CTRL+Arrow"));
-            contentArea.addComponent(new EmptySpace(TerminalSize.ONE).setLayoutData(
-                    GridLayout.createLayoutData(GridLayout.Alignment.FILL, GridLayout.Alignment.FILL, true, true)));
-            contentArea.addComponent(
-                    Panels.horizontal(
-                            new Button("Toggle auto-sized", this::toggleManaged),
-                            new Button("Close", this::close)));
+            Panel contentArea = new Panel()
+                .setLayoutManager(new GridLayout(1))
+                .add(statsTableContainer)
+                .add(new EmptySpace(TerminalSize.ONE))
+                .add(new Label("Move window with ALT+Arrow\n" + "Resize window with CTRL+Arrow"))
+                .add(new EmptySpace(TerminalSize.ONE)
+                    .setLayoutData(
+                        GridLayout.createLayoutData(GridLayout.Alignment.FILL, GridLayout.Alignment.FILL, true, true)))
+                .add(Panels.horizontal(
+                    new Button("Toggle auto-sized", s -> this.toggleManaged()),
+                    new Button("Close", s -> this.close())));
             setComponent(contentArea);
-        }
-
-        private void toggleManaged() {
-            boolean isManaged = !getHints().contains(Hint.FIXED_SIZE);
-            isManaged = !isManaged;
-            if(isManaged) {
-                setHints(Collections.<Hint> emptyList());
-            }
-            else {
-                setHints(Collections.singletonList(Hint.FIXED_SIZE));
-            }
-            labelUnlockWindow.setText(Boolean.toString(isManaged));
         }
 
         @Override
         public boolean handleInput(KeyStroke key) {
             boolean handled = super.handleInput(key);
-            if(!handled) {
-                switch(key.getKeyType()) {
+            if (!handled) {
+                switch (key.getKeyType()) {
                     case ArrowDown:
-                        if(key.isAltDown()) {
+                        if (key.isAltDown()) {
                             setPosition(getPosition().withRelativeRow(1));
-                        }
-                        else if(key.isCtrlDown()) {
+                        } else if (key.isCtrlDown()) {
                             setFixedSize(getSize().withRelativeRows(1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowLeft:
-                        if(key.isAltDown()) {
+                        if (key.isAltDown()) {
                             setPosition(getPosition().withRelativeColumn(-1));
-                        }
-                        else if(key.isCtrlDown() && getSize().getColumns() > 1) {
+                        } else if (key.isCtrlDown() && getSize().getColumns() > 1) {
                             setFixedSize(getSize().withRelativeColumns(-1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowRight:
-                        if(key.isAltDown()) {
+                        if (key.isAltDown()) {
                             setPosition(getPosition().withRelativeColumn(1));
-                        }
-                        else if(key.isCtrlDown()) {
+                        } else if (key.isCtrlDown()) {
                             setFixedSize(getSize().withRelativeColumns(1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowUp:
-                        if(key.isAltDown()) {
+                        if (key.isAltDown()) {
                             setPosition(getPosition().withRelativeRow(-1));
-                        }
-                        else if(key.isCtrlDown() && getSize().getRows() > 1) {
+                        } else if (key.isCtrlDown() && getSize().getRows() > 1) {
                             setFixedSize(getSize().withRelativeRows(-1));
                             labelUnlockWindow.setText("false");
                         }
@@ -196,6 +175,17 @@ public class MultiWindowManagerTest extends TestBase {
             }
             return handled;
         }
+
+        private void toggleManaged() {
+            boolean isManaged = !getHints().contains(Hint.FIXED_SIZE);
+            isManaged = !isManaged;
+            if (isManaged) {
+                setHints(Collections.emptyList());
+            } else {
+                setHints(Collections.singletonList(Hint.FIXED_SIZE));
+            }
+            labelUnlockWindow.setText(Boolean.toString(isManaged));
+        }
     }
 
     private static class BackgroundComponent extends GUIBackdrop {
@@ -203,16 +193,16 @@ public class MultiWindowManagerTest extends TestBase {
         protected ComponentRenderer<EmptySpace> createDefaultRenderer() {
             return new ComponentRenderer<EmptySpace>() {
                 @Override
-                public TerminalSize getPreferredSize(EmptySpace component) {
-                    return TerminalSize.ONE;
-                }
-
-                @Override
                 public void drawComponent(TextGUIGraphics graphics, EmptySpace component) {
                     graphics.applyThemeStyle(component.getTheme().getDefinition(GUIBackdrop.class).getNormal());
                     graphics.fill('・');
                     String text = "Press <CTRL+Tab>/F6 and <CTRL+Shift+Tab>/F7 to cycle active window";
                     graphics.putString(graphics.getSize().getColumns() - text.length() - 4, graphics.getSize().getRows() - 1, text);
+                }
+
+                @Override
+                public TerminalSize getPreferredSize(EmptySpace component) {
+                    return TerminalSize.ONE;
                 }
             };
         }

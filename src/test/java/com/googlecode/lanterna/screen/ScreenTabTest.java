@@ -37,7 +37,7 @@ public class ScreenTabTest {
 
     public ScreenTabTest(String[] args) throws InterruptedException, IOException {
         screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         screen.setCursorPosition(new TerminalPosition(0, 0));
         putStrings("Trying out some tabs!");
 
@@ -45,7 +45,7 @@ public class ScreenTabTest {
         while(System.currentTimeMillis() - now < 20 * 1000) {
             Thread.sleep(1);
         }
-        screen.stopScreen();
+        screen.stop();
     }
 
     private void putStrings(String topTitle) throws IOException {

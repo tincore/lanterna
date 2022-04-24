@@ -208,7 +208,7 @@ public interface Window extends BasePane {
      * will be honored or not.
      * @param hints Set of hints to be active for this window
      */
-    void setHints(Collection<Hint> hints);
+    Window setHints(Collection<Hint> hints);
 
     /**
      * Returns a set of window hints that can be used by the text gui system, the window manager or any other part that
@@ -232,7 +232,7 @@ public interface Window extends BasePane {
      * top-left corner of the terminal itself.
      * @param topLeft Global coordinates of the top-left corner of the window
      */
-    void setPosition(TerminalPosition topLeft);
+    Window setPosition(TerminalPosition topLeft);
 
     /**
      * Returns the last known size of the window. This is in general derived from the last drawing operation, how large
@@ -349,9 +349,10 @@ public interface Window extends BasePane {
      * Sets the top-level component in the window, this will be the only component unless it's a container of some kind
      * that you add child-components to.
      * @param component Component to use as the top-level object in the Window
+     * @return
      */
     @Override
-    void setComponent(Component component);
+    Window setComponent(Component component);
 
     /**
      * Returns the component which is the top-level in the component hierarchy inside this window.
@@ -440,7 +441,7 @@ public interface Window extends BasePane {
      * @param menubar The {@link MenuBar} to assign to this window
      */
     @Override
-    void setMenuBar(MenuBar menubar);
+    Window setMenuBar(MenuBar menubar);
 
     /**
      * Returns the {@link MenuBar} assigned to this window, if any, otherwise returns {code null}.

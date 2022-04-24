@@ -59,7 +59,7 @@ public class MultiScreenTest {
         
         mainLoop:
         while(true) {
-            redScreen.startScreen();
+            redScreen.start();
             redScreen.refresh();
             while(true) {
                 KeyStroke keyStroke = terminal.pollInput();
@@ -73,8 +73,8 @@ public class MultiScreenTest {
                     break;
                 }
             }
-            redScreen.stopScreen();
-            greenScreen.startScreen();
+            redScreen.stop();
+            greenScreen.start();
             greenScreen.refresh();
             while(true) {
                 KeyStroke keyStroke = terminal.pollInput();
@@ -88,7 +88,7 @@ public class MultiScreenTest {
                     break;
                 }
             }
-            greenScreen.stopScreen();
+            greenScreen.stop();
         }
         terminal.clearScreen();
         if(terminal instanceof Window) {

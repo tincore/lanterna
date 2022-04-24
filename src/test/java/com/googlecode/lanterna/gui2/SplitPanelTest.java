@@ -135,7 +135,7 @@ public class SplitPanelTest extends TestBase {
         Panel mainPanel = new Panel();
         mainPanel.setLayoutManager(new GridLayout(2));
         SplitPanel splitboth = SplitPanel.ofHorizontal(splitH.withBorder(Borders.singleLine("horiontal split")), splitV.withBorder(Borders.singleLine("vertical split")));
-        mainPanel.addComponent(splitboth);
+        mainPanel.add(splitboth);
         
         window.setComponent(mainPanel);
         textGUI.addWindow(window);

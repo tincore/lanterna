@@ -42,13 +42,13 @@ class IssueX {
 
         public LanternaTerminalWriter(String[] args) throws IOException {
             screen = new TestTerminalFactory(args).createScreen();
-            screen.startScreen();
+            screen.start();
 
             screenWriter = screen.newTextGraphics();
         }
 
         public void close() throws IOException {
-            screen.stopScreen();
+            screen.stop();
         }
 
         public void write(String string, SGR... styles) throws IOException {

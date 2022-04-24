@@ -33,7 +33,7 @@ public class Issue249 {
         // Setup terminal and screen layers
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         TerminalSize screenSize = screen.getTerminalSize();
 

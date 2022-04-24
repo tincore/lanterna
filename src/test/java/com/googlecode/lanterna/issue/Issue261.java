@@ -35,20 +35,20 @@ public class Issue261 {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
 
         // Create panel to hold components
         Panel panel = new Panel();
         panel.setLayoutManager(new GridLayout(2));
 
-        panel.addComponent(new Label("Forename"));
-        panel.addComponent(new TextBox());
+        panel.add(new Label("Forename"));
+        panel.add(new TextBox());
 
-        panel.addComponent(new Label("Surname"));
-        panel.addComponent(new TextBox());
+        panel.add(new Label("Surname"));
+        panel.add(new TextBox());
 
-        panel.addComponent(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
-        panel.addComponent(new Button("Submit"));
+        panel.add(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+        panel.add(new Button("Submit"));
 
         // Create gui and start gui
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));

@@ -36,7 +36,7 @@ public class Issue95 {
         terminal.setCursorVisible(false);
 
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
         
         terminal.setTitle("Freedom: An arena-battle roguelike");
         terminal.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -49,6 +49,6 @@ public class Issue95 {
             }
             Thread.sleep(100);
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }

@@ -43,7 +43,7 @@ public class SimpleScreenTest {
     public static void main(String[] args) throws IOException {
         Terminal terminal = new TestTerminalFactory(args).createTerminal();
         Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
         screen.refresh();
 
         TextGraphics textGraphics = screen.newTextGraphics();
@@ -126,6 +126,6 @@ public class SimpleScreenTest {
             screen.refresh();
         }
 
-        screen.stopScreen();
+        screen.stop();
     }
 }

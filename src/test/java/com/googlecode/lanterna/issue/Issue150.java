@@ -28,23 +28,23 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 
 public class Issue150 {
+    private static Component createUi() {
+        ActionListBox actions = new ActionListBox();
+        actions.addItem("Enter terminal in a strange state", s -> Issue150.stub());
+        return actions;
+    }
+
     public static void main(String... args) throws IOException {
         Terminal term = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(term);
         WindowManager windowManager = new DefaultWindowManager();
         Component background = new EmptySpace(TextColor.ANSI.DEFAULT);
         final WindowBasedTextGUI gui = new MultiWindowTextGUI(screen, windowManager, background);
-        screen.startScreen();
+        screen.start();
         gui.addWindowAndWait(new BasicWindow("Issue150") {{
             setComponent(createUi());
         }});
-        screen.stopScreen();
-    }
-
-    private static Component createUi() {
-        ActionListBox actions = new ActionListBox();
-        actions.addItem("Enter terminal in a strange state", Issue150::stub);
-        return actions;
+        screen.stop();
     }
 
     private static <T> T stub() {

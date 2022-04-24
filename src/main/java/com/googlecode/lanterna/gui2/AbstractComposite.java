@@ -18,41 +18,93 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This abstract implementation contains common code for the different {@code Composite} implementations. A
  * {@code Composite} component is one that encapsulates a single component, like borders. Because of this, a
  * {@code Composite} can be seen as a special case of a {@code Container} and indeed this abstract class does in fact
  * implement the {@code Container} interface as well, to make the composites easier to work with internally.
- * @author martin
+ *
  * @param <T> Should always be itself, see {@code AbstractComponent}
+ * @author martin
  */
 public abstract class AbstractComposite<T extends Container> extends AbstractComponent<T> implements Composite, Container {
-    
+
     private Component component;
 
-    /**
-     * Default constructor
-     */
-    public AbstractComposite() {
-        component = null;
+    public AbstractComposite(Attributes attributes) {
+        super(attributes);
     }
-    
+
     @Override
-    public void setComponent(Component component) {
-        Component oldComponent = this.component;
-        if(oldComponent == component) {
-            return;
+    public boolean contains(Component component) {
+        return component != null && component.hasParent(this);
+    }
+
+    @Override
+    public Collection<Component> getChildren() {
+        return getChildrenList();
+    }
+
+    @Override
+    public List<Component> getChildrenList() {
+        return component != null ? Collections.singletonList(component) : Collections.emptyList();
+    }
+
+    @Override
+    public Component getComponent(int index) {
+        if (index > 0 || component == null) {
+            throw new IndexOutOfBoundsException("Component index out of range");
         }
-        if(oldComponent != null) {
-            removeComponent(oldComponent);
+        return component;
+    }
+
+    @Override
+    public Component getComponent() {
+        return component;
+    }
+
+//    @Override
+//    public T setComponent(Component component) {
+//        Component oldComponent = this.component;
+//        if (oldComponent == component) {
+//            return null;
+//        }
+//        if (oldComponent != null) {
+//            remove(oldComponent);
+//        }
+//        if (component != null) {
+//            this.component = component;
+//            component.onAdded(this);
+//            if (getBasePane() != null) {
+//                MenuBar menuBar = getBasePane().getMenuBar();
+//                if (menuBar == null || menuBar.isEmptyMenuBar()) {
+//                    component.setPosition(TerminalPosition.TOP_LEFT_CORNER);
+//                } else {
+//                    component.setPosition(TerminalPosition.TOP_LEFT_CORNER.withRelativeRow(1));
+//                }
+//            }
+//            invalidate();
+//        }
+//        return self();
+//    }
+
+
+    @Override
+    public Composite setComponent(Component component) {
+        Component oldComponent = this.component;
+        if (oldComponent == component) {
+            return this;
+        }
+        if (oldComponent != null) {
+            remove(oldComponent);
         }
         if (component != null) {
             this.component = component;
@@ -67,41 +119,63 @@ public abstract class AbstractComposite<T extends Container> extends AbstractCom
             }
             invalidate();
         }
+        return this;
     }
 
     @Override
-    public Component getComponent() {
-        return component;
-    }
-
-    @Override
-    public int getChildCount() {
+    public int getComponentCount() {
         return component != null ? 1 : 0;
     }
 
     @Override
-    public List<Component> getChildrenList() {
-        if(component != null) {
-            return Collections.singletonList(component);
+    public boolean handleInput(KeyStroke key) {
+        return false;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+
+        //Propagate
+        if (component != null) {
+            component.invalidate();
         }
-        else {
-            return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return component != null && component.isInvalid();
+    }
+
+    @Override
+    public Interactable nextFocus(Interactable fromThis) {
+        if (fromThis == null && getComponent() instanceof Interactable) {
+            Interactable interactable = (Interactable) getComponent();
+            if (interactable.isEnabled()) {
+                return interactable;
+            }
+        } else if (getComponent() instanceof Container) {
+            return ((Container) getComponent()).nextFocus(fromThis);
         }
+        return null;
     }
 
     @Override
-    public Collection<Component> getChildren() {
-        return getChildrenList();
+    public Interactable previousFocus(Interactable fromThis) {
+        if (fromThis == null && getComponent() instanceof Interactable) {
+            Interactable interactable = (Interactable) getComponent();
+            if (interactable.isEnabled()) {
+                return interactable;
+            }
+        } else if (getComponent() instanceof Container) {
+            return ((Container) getComponent()).previousFocus(fromThis);
+        }
+        return null;
     }
 
     @Override
-    public boolean containsComponent(Component component) {
-        return component != null && component.hasParent(this);
-    }
-
-    @Override
-    public boolean removeComponent(Component component) {
-        if(this.component == component) {
+    public boolean remove(Component component) {
+        if (this.component == component) {
             this.component = null;
             component.onRemoved(this);
             invalidate();
@@ -111,60 +185,11 @@ public abstract class AbstractComposite<T extends Container> extends AbstractCom
     }
 
     @Override
-    public boolean isInvalid() {
-        return component != null && component.isInvalid();
-    }
-
-    @Override
-    public void invalidate() {
-        super.invalidate();
-
-        //Propagate
-        if(component != null) {
-            component.invalidate();
-        }
-    }
-
-    @Override
-    public Interactable nextFocus(Interactable fromThis) {
-        if(fromThis == null && getComponent() instanceof Interactable) {
-            Interactable interactable = (Interactable) getComponent();
-            if(interactable.isEnabled()) {
-                return interactable;
-            }
-        }
-        else if(getComponent() instanceof Container) {
-            return ((Container)getComponent()).nextFocus(fromThis);
-        }
-        return null;
-    }
-
-    @Override
-    public Interactable previousFocus(Interactable fromThis) {
-        if(fromThis == null && getComponent() instanceof Interactable) {
-            Interactable interactable = (Interactable) getComponent();
-            if(interactable.isEnabled()) {
-                return interactable;
-            }
-        }
-        else if(getComponent() instanceof Container) {
-            return ((Container)getComponent()).previousFocus(fromThis);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean handleInput(KeyStroke key) {
-        return false;
-    }
-
-    @Override
     public void updateLookupMap(InteractableLookupMap interactableLookupMap) {
-        if(getComponent() instanceof Container) {
-            ((Container)getComponent()).updateLookupMap(interactableLookupMap);
-        }
-        else if(getComponent() instanceof Interactable) {
-            interactableLookupMap.add((Interactable)getComponent());
+        if (getComponent() instanceof Container) {
+            ((Container) getComponent()).updateLookupMap(interactableLookupMap);
+        } else if (getComponent() instanceof Interactable) {
+            interactableLookupMap.add((Interactable) getComponent());
         }
     }
 }

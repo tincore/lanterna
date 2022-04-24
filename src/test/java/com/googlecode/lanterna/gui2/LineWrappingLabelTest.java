@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class LineWrappingLabelTest extends TestBase {
     public static final String BIG_TEXT =
-            "                   GNU LESSER GENERAL PUBLIC LICENSE\n" +
+        "                   GNU LESSER GENERAL PUBLIC LICENSE\n" +
             "                       Version 3, 29 June 2007\n" +
             "\n" +
             " Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n" +
@@ -40,43 +40,40 @@ public class LineWrappingLabelTest extends TestBase {
             "  As used herein, \"this License\" refers to version 3 of the GNU Lesser General Public License, and the \"GNU GPL\" refers to version 3 of the GNU General Public License.\n" +
             "\n" +
             "  \"The Library\" refers to a covered work governed by this License, other than an Application or a Combined Work as defined below.";
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new LineWrappingLabelTest().run(args);
-    }
-
     private TerminalSize windowSize;
 
     public LineWrappingLabelTest() {
         windowSize = new TerminalSize(70, 15);
     }
 
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new LineWrappingLabelTest().run(args);
+    }
+
     @Override
     protected MultiWindowTextGUI createTextGUI(Screen screen) {
         return new MultiWindowTextGUI(
-                new SeparateTextGUIThread.Factory(),
-                screen,
-                new MyWindowManager(),
-                new WindowShadowRenderer(),
-                new EmptySpace(TextColor.ANSI.BLUE));
+            new SeparateTextGUIThread.Factory(),
+            screen,
+            new MyWindowManager(),
+            new WindowShadowRenderer(),
+            new EmptySpace(TextColor.ANSI.BLUE));
     }
 
     @Override
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("Wrapping label test");
-        Panel contentPane = new Panel();
-        contentPane.setLayoutManager(new BorderLayout());
-        contentPane.addComponent(new Label("Resize window by holding ctrl and pressing arrow keys").setLayoutData(BorderLayout.Location.TOP));
-        contentPane.addComponent(new Label(BIG_TEXT).withBorder(Borders.doubleLine()).setLayoutData(BorderLayout.Location.CENTER));
-        contentPane.addComponent(new Button("Close", window::close).setLayoutData(BorderLayout.Location.BOTTOM));
-
-        window.setComponent(contentPane);
+        window.setComponent(new Panel()
+            .setLayoutManager(new BorderLayout())
+            .add(new Label("Resize window by holding ctrl and pressing arrow keys").setLayoutData(BorderLayout.Location.TOP))
+            .add(new Label(BIG_TEXT).withBorder(Borders.doubleLine()).setLayoutData(BorderLayout.Location.CENTER))
+            .add(new Button("Close", s -> window.close()).setLayoutData(BorderLayout.Location.BOTTOM)));
 
         textGUI.addListener((textGUI1, keyStroke) -> {
-            if(keyStroke.isCtrlDown()) {
-                switch(keyStroke.getKeyType()) {
+            if (keyStroke.isCtrlDown()) {
+                switch (keyStroke.getKeyType()) {
                     case ArrowUp:
-                        if(windowSize.getRows() > 1) {
+                        if (windowSize.getRows() > 1) {
                             windowSize = windowSize.withRelativeRows(-1);
                             return true;
                         }
@@ -84,7 +81,7 @@ public class LineWrappingLabelTest extends TestBase {
                         windowSize = windowSize.withRelativeRows(1);
                         return true;
                     case ArrowLeft:
-                        if(windowSize.getColumns() > 1) {
+                        if (windowSize.getColumns() > 1) {
                             windowSize = windowSize.withRelativeColumns(-1);
                             return true;
                         }

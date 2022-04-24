@@ -19,7 +19,6 @@
 package com.googlecode.lanterna.gui2;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class LinearLayoutTest extends TestBase {
@@ -30,30 +29,28 @@ public class LinearLayoutTest extends TestBase {
     @Override
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("Linear layout test");
-        final Panel mainPanel = new Panel();
-        final Panel labelPanel = new Panel();
-        final LinearLayout linearLayout = new LinearLayout(Direction.VERTICAL);
-        linearLayout.setSpacing(1);
-        labelPanel.setLayoutManager(linearLayout);
+        final LinearLayout linearLayout = new LinearLayout(Direction.VERTICAL).setSpacing(1);
+        final Panel labelPanel = new Panel().setLayoutManager(linearLayout);
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             new Label("LABEL COMPONENT")
-                    .setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning, LinearLayout.GrowPolicy.CanGrow))
-                    .addTo(labelPanel);
+                .setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning, LinearLayout.GrowPolicy.CanGrow))
+                .addTo(labelPanel);
         }
-        mainPanel.addComponent(labelPanel.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning, LinearLayout.GrowPolicy.CanGrow)));
+        final Panel mainPanel = new Panel()
+            .add(labelPanel.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning, LinearLayout.GrowPolicy.CanGrow)));
 
         new Separator(Direction.HORIZONTAL)
-                .setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill))
-                .addTo(mainPanel);
+            .setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill))
+            .addTo(mainPanel);
 
-        mainPanel.addComponent(Panels.horizontal(
-                new Button("Add", () -> new Label("LABEL COMPONENT").addTo(labelPanel)),
-                new Button("Spacing", () -> linearLayout.setSpacing(linearLayout.getSpacing() == 1 ? 0 : 1)),
-                new Button("Toggle Hide Odd #", () -> toggleVisibleOnOddNumberLabels(labelPanel)),
-                new Button("Expand", () -> window.setHints(Collections.singletonList(Window.Hint.EXPANDED))),
-                new Button("Collapse", () -> window.setHints(Collections.emptySet())),
-                new Button("Close", window::close)
+        mainPanel.add(Panels.horizontal(
+            new Button("Add", s -> new Label("LABEL COMPONENT").addTo(labelPanel)),
+            new Button("Spacing", s -> linearLayout.setSpacing(linearLayout.getSpacing() == 1 ? 0 : 1)),
+            new Button("Toggle Hide Odd #", s -> toggleVisibleOnOddNumberLabels(labelPanel)),
+            new Button("Expand", s -> window.setHints(Collections.singletonList(Window.Hint.EXPANDED))),
+            new Button("Collapse", s -> window.setHints(Collections.emptySet())),
+            new Button("Close", s -> window.close())
         ));
 
         window.setComponent(mainPanel);
@@ -61,7 +58,7 @@ public class LinearLayoutTest extends TestBase {
     }
 
     void toggleVisibleOnOddNumberLabels(Panel panel) {
-        for (int i = 0; i < panel.getChildCount(); i++) {
+        for (int i = 0; i < panel.getComponentCount(); i++) {
             if ((i + 1) % 2 == 1) {
                 Component component = panel.getChildrenList().get(i);
                 component.setVisible(!component.isVisible());

@@ -13,7 +13,7 @@ public class Issue387 {
     public static void main(String[] args) {
         try {
             Screen screen = new DefaultTerminalFactory().createScreen();
-            screen.startScreen();
+            screen.start();
 
             Window window = new BasicWindow();
 
@@ -29,11 +29,11 @@ public class Issue387 {
             table.getTableModel().addRow("row 7");
 
             Panel panel = new Panel();
-            panel.addComponent(new TextBox());
-            panel.addComponent(new EmptySpace(new TerminalSize(15, 1)));
-            panel.addComponent(table);
-            panel.addComponent(new EmptySpace(new TerminalSize(15, 1)));
-            panel.addComponent(new TextBox());
+            panel.add(new TextBox());
+            panel.add(new EmptySpace(new TerminalSize(15, 1)));
+            panel.add(table);
+            panel.add(new EmptySpace(new TerminalSize(15, 1)));
+            panel.add(new TextBox());
 
             window.setComponent(panel);
 

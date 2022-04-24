@@ -22,8 +22,12 @@ import com.googlecode.lanterna.TerminalSize;
 
 import java.io.IOException;
 
+import static com.googlecode.lanterna.gui2.Borders.singleLine;
+import static com.googlecode.lanterna.gui2.Panels.vertical;
+
 /**
  * Simple test for the different kinds of list boxes
+ *
  * @author Martin
  */
 public class ListBoxTest extends TestBase {
@@ -35,27 +39,23 @@ public class ListBoxTest extends TestBase {
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("ListBox test");
 
-        Panel horizontalPanel = new Panel();
-        horizontalPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
-
         TerminalSize size = new TerminalSize(14, 10);
         CheckBoxList<String> checkBoxList = new CheckBoxList<>(size);
         RadioBoxList<String> radioBoxList = new RadioBoxList<>(size);
         ActionListBox actionListBox = new ActionListBox(size);
-        for(int i = 0; i < 30; i++) {
+        for (int i = 0; i < 30; i++) {
             final String itemText = "Item " + (i + 1);
             checkBoxList.addItem(itemText);
             radioBoxList.addItem(itemText);
-            actionListBox.addItem(itemText, () -> System.out.println("Selected " + itemText));
+            actionListBox.addItem(itemText, s -> System.out.println("Selected " + itemText));
         }
-        horizontalPanel.addComponent(checkBoxList.withBorder(Borders.singleLine("CheckBoxList")));
-        horizontalPanel.addComponent(radioBoxList.withBorder(Borders.singleLine("RadioBoxList")));
-        horizontalPanel.addComponent(actionListBox.withBorder(Borders.singleLine("ActionListBox")));
+        Panel horizontalPanel = new Panel()
+            .setLayoutManager(new LinearLayout(Direction.HORIZONTAL))
+            .add(checkBoxList.withBorder(singleLine("CheckBoxList")))
+            .add(radioBoxList.withBorder(singleLine("RadioBoxList")))
+            .add(actionListBox.withBorder(singleLine("ActionListBox")));
 
-        window.setComponent(
-                Panels.vertical(
-                        horizontalPanel,
-                        new Button("OK", window::close)));
+        window.setComponent(vertical(horizontalPanel, new Button("OK", s -> window.close())));
         textGUI.addWindow(window);
     }
 }

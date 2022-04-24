@@ -49,7 +49,7 @@ public class ScreenRectangleTest {
             }
         }
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
 
         TextGraphics textGraphics = new ScreenTextGraphics(screen);
         Random random = new Random();
@@ -87,6 +87,6 @@ public class ScreenRectangleTest {
                 Thread.sleep(500);
             }
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }

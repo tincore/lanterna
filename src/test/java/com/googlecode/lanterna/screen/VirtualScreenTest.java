@@ -40,7 +40,7 @@ public class VirtualScreenTest {
     public VirtualScreenTest(String[] args) throws InterruptedException, IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen = new VirtualScreen(screen);
-        screen.startScreen();
+        screen.start();
 
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setBackgroundColor(TextColor.ANSI.GREEN);
@@ -63,6 +63,6 @@ public class VirtualScreenTest {
                 Thread.sleep(1);
             }
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }

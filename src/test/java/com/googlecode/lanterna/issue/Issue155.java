@@ -35,11 +35,11 @@ public class Issue155 {
         WindowManager windowManager = new DefaultWindowManager();
         Component background = new EmptySpace(TextColor.ANSI.DEFAULT);
         final WindowBasedTextGUI gui = new MultiWindowTextGUI(screen, windowManager, background);
-        screen.startScreen();
+        screen.start();
         gui.addWindowAndWait(new BasicWindow("Issue155") {{
             setComponent(createUi(gui, this));
         }});
-        screen.stopScreen();
+        screen.stop();
     }
 
 
@@ -56,14 +56,14 @@ public class Issue155 {
                         addItem(String.valueOf(i));
                     }
                 }},
-                new Button("Quit", window::close)
+                new Button("Quit", s -> window.close())
         );
     }
 
-    private static Runnable openDialog(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
-        return () -> new ActionListDialogBuilder().
-                setCanCancel(true).
-                addAction("Reinstall UI (this crashes everything)", setupUI(gui, window, counter)).
+    private static Interactable.ClickListener openDialog(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
+        return s -> new ActionListDialogBuilder().
+            setCancellable(true).
+            addItem("Reinstall UI (this crashes everything)", setupUI(gui, window, counter)).
                 build().
                 showDialog(gui);
     }

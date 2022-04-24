@@ -32,7 +32,7 @@ public class TerminalTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         TextGraphics writer = new ScreenTextGraphics(screen);
-        screen.startScreen();
+        screen.start();
         try {
             Thread.sleep(500);
         }
@@ -122,6 +122,6 @@ public class TerminalTest {
         }
         catch(InterruptedException ignored) {
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }

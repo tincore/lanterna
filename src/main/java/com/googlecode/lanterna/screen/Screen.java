@@ -56,10 +56,10 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
      *
      * @throws IOException if there was an underlying IO error when exiting from private mode
      */
-    void startScreen() throws IOException;
+    Screen start() throws IOException;
 
     /**
-     * Same as calling {@link #stopScreen()}
+     * Same as calling {@link #stop()}
      *
      * @throws IOException if there was an underlying IO error when exiting from private mode
      */
@@ -73,7 +73,7 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
      *
      * @throws IOException if there was an underlying IO error when exiting from private mode
      */
-    void stopScreen() throws IOException;
+    Screen stop() throws IOException;
 
     /**
      * Erases all the characters on the screen, effectively giving you a blank area. The default background color will

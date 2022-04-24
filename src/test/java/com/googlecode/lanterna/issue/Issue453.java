@@ -20,7 +20,6 @@ package com.googlecode.lanterna.issue;
 
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.graphics.DefaultMutableThemeStyle;
-import com.googlecode.lanterna.graphics.SimpleTheme;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
 import com.googlecode.lanterna.gui2.EmptySpace;
@@ -51,7 +50,7 @@ class Issue453 {
 
         public LanternaTerminalWriter(String[] args) throws IOException {
             screen = new TestTerminalFactory(args).createScreen();
-            screen.startScreen();
+            screen.start();
             MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(),
     				new EmptySpace(TextColor.ANSI.BLACK));
             
@@ -60,7 +59,7 @@ class Issue453 {
         }
 
         public void close() throws IOException {
-            screen.stopScreen();
+            screen.stop();
         }
 
         public void write(String string, SGR... styles) throws IOException {

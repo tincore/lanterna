@@ -27,13 +27,13 @@ public class TableUnitTests {
         TerminalSize size = new TerminalSize(30, 24);
         terminal = new DefaultVirtualTerminal(size);
         TerminalScreen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        screen.start();
         DefaultWindowManager windowManager = new DefaultWindowManager(new EmptyWindowDecorationRenderer(), size);
         gui = new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen, windowManager, null, new EmptySpace());
         window = new BasicWindow();
         window.setHints(Arrays.asList(Hint.NO_DECORATIONS, Hint.FIT_TERMINAL_WINDOW, Hint.FULL_SCREEN));
         table = new Table<>("a", "b");
-        window.setComponent(new Panel(new LinearLayout().setSpacing(0)).addComponent(table, LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
+        window.setComponent(new Panel(new LinearLayout().setSpacing(0)).add(table, LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
         gui.addWindow(window);
         model = table.getTableModel();
     }

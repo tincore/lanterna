@@ -32,7 +32,7 @@ public class DrawImageTest {
     public static void main(String[] args) throws IOException {
         //Setup a standard Screen
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
         screen.setCursorPosition(null);
 
         //Create an 'image' that we fill with recognizable characters
@@ -75,6 +75,6 @@ public class DrawImageTest {
 
         screen.refresh();
         screen.readInput();
-        screen.stopScreen();
+        screen.stop();
     }
 }

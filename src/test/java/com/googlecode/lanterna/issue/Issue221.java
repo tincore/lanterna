@@ -29,30 +29,15 @@ import java.io.IOException;
 
 public class Issue221 {
     public static void main(String[] args) throws IOException {
-
-        // Setup terminal and screen layers
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
-        Screen screen = new TerminalScreen(terminal);
-        screen.startScreen();
+        Screen screen = new TerminalScreen(terminal).start();
 
-        // Create panel to hold components
-        Panel panel = new Panel();
-        panel.setLayoutManager(new GridLayout(2));
+        Window window = new BasicWindow().setComponent(new Panel(new GridLayout(2))
+            .add(new Label("The List"))
+            .add(new RadioBoxList<String>()
+                .addSelectionListener((selected, previous, source) -> System.out.println("Selected Index: " + selected + ", previous: " + previous))
+                .addItem("Item 1", "Item 2", "Item 3")));
 
-        panel.addComponent(new Label("The List"));
-        RadioBoxList<String> box = new RadioBoxList<>();
-        box.addItem("Item 1");
-        box.addItem("Item 2");
-        box.addItem("Item 3");
-        box.addListener((selected, previous) -> System.out.println("Selected Index: " + selected + ", previous: " + previous));
-
-        panel.addComponent(box);
-
-        // Create window to hold the panel
-        BasicWindow window = new BasicWindow();
-        window.setComponent(panel);
-
-        // Create gui and start gui
         MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
         gui.addWindowAndWait(window);
     }

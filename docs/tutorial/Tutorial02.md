@@ -61,7 +61,7 @@ You still need to flush for changes to become visible
 
             terminal.flush();
 
-You can attach a resize listener to your `Terminal` object, which will invoke a callback method (usually on a
+You can attach a resize itemSelectedListener to your `Terminal` object, which will invoke a callback method (usually on a
 separate thread) when it is informed of the terminal emulator window changing size. Notice that maybe not
 all implementations supports this. The `UnixTerminal`, for example, relies on the `WINCH` signal being sent to
 the java process, which might not make it though if you remote shell isn't forwarding the signal properly.

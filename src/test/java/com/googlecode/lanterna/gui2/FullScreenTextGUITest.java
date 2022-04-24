@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FullScreenTextGUITest {
     public static void main(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).setInitialTerminalSize(new TerminalSize(80, 25)).createScreen();
-        screen.startScreen();
+        screen.start();
 
         final AtomicBoolean stop = new AtomicBoolean(false);
         MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
@@ -57,7 +57,7 @@ public class FullScreenTextGUITest {
             // Terminal closed
         }
         finally {
-            screen.stopScreen();
+            screen.stop();
         }
     }
 
@@ -121,11 +121,11 @@ public class FullScreenTextGUITest {
             
             helpLabel.setPosition(new TerminalPosition(2, 22));
             helpLabel.setSize(new TerminalSize(76, 1));
-            addComponent(helpLabel);
+            add(helpLabel);
             for(BIOSButton button: Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9, button10, button11, button12, button13, button14)) {
-                addComponent(button);
+                add(button);
             }
-            addComponent(button14);
+            add(button14);
         }
 
         private TextImage createBackground() {
@@ -202,7 +202,8 @@ public class FullScreenTextGUITest {
             }
 
             @Override
-            protected void afterEnterFocus(FocusChangeDirection direction, Interactable previouslyInFocus) {
+            public void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus) {
+                super.onFocusGain(direction, previouslyInFocus);
                 helpLabel.setText(description);
             }
 

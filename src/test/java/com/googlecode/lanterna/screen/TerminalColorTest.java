@@ -32,7 +32,7 @@ public class TerminalColorTest {
 
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
-        screen.startScreen();
+        screen.start();
 
         TextGraphics writer = new ScreenTextGraphics(screen);
         writer.setForegroundColor(TextColor.ANSI.DEFAULT);
@@ -120,6 +120,6 @@ public class TerminalColorTest {
             Thread.sleep(5000);
         } catch(InterruptedException ignored) {
         }
-        screen.stopScreen();
+        screen.stop();
     }
 }
