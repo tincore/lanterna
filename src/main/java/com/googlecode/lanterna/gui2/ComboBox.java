@@ -707,12 +707,12 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
         }
 
         @Override
-        public synchronized boolean handleInput(KeyStroke keyStroke) {
+        public synchronized boolean onInput(KeyStroke keyStroke) {
             if (keyStroke.getKeyType() == KeyType.Escape) {
                 close();
                 return true;
             }
-            return super.handleInput(keyStroke);
+            return super.onInput(keyStroke);
         }
     }
 }

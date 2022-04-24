@@ -22,7 +22,6 @@ import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Rectangle;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
-import com.googlecode.lanterna.input.KeyStroke;
 
 import java.util.Collection;
 
@@ -40,11 +39,11 @@ public interface Window extends RootPane {
     Window addHints(Collection<Hint> hints);
 
     /**
-     * Adds a {@link WindowListener} to this {@link Window}. If it has already been added, the call will do nothing.
+     * Adds a {@link WindowMoveListener} to this {@link Window}. If it has already been added, the call will do nothing.
      *
-     * @param windowListener Listener to attach to this {@link Window}
+     * @param windowMoveListener Listener to attach to this {@link Window}
      */
-    void addWindowListener(WindowListener windowListener);
+    void addWindowListener(WindowMoveListener windowMoveListener);
 
     /**
      * Closes the window, which will remove it from the GUI
@@ -266,24 +265,24 @@ public interface Window extends RootPane {
      */
     String getTitle();
 
-    /**
-     * Called by the GUI system's window manager when it has decided that this window should receive the keyboard input.
-     * The window will decide what to do with this input, usually sending it to one of its sub-components, but if it
-     * isn't able to find any handler for this input it should return {@code false} so that the window manager can take
-     * further decisions on what to do with it.
-     *
-     * @param key Keyboard input
-     * @return {@code true} If the window could handle the input, false otherwise
-     */
-    @Override
-    boolean handleInput(KeyStroke key);
-
-    /**
-     * Invalidates the whole window (including all of its child components) which will cause it to be recalculated
-     * and redrawn.
-     */
-    @Override
-    void invalidate();
+//    /**
+//     * Called by the GUI system's window manager when it has decided that this window should receive the keyboard input.
+//     * The window will decide what to do with this input, usually sending it to one of its sub-components, but if it
+//     * isn't able to find any handler for this input it should return {@code false} so that the window manager can take
+//     * further decisions on what to do with it.
+//     *
+//     * @param key Keyboard input
+//     * @return {@code true} If the window could handle the input, false otherwise
+//     */
+//    @Override
+//    boolean onInput(KeyStroke key);
+//
+//    /**
+//     * Invalidates the whole window (including all of its child components) which will cause it to be recalculated
+//     * and redrawn.
+//     */
+//    @Override
+//    void invalidate();
 
     ///////////////////////////////////////////////////////////////
     //// Below here are methods from BasePane                  ////
@@ -292,14 +291,14 @@ public interface Window extends RootPane {
 
     boolean isHint(Hint hint);
 
-    /**
-     * This method is used to determine if the window requires re-drawing. The most common cause for this is the some
-     * of its components has changed and we need a re-draw to make these changes visible.
-     *
-     * @return {@code true} if the window would like to be re-drawn, {@code false} if the window doesn't need
-     */
-    @Override
-    boolean isInvalid();
+//    /**
+//     * This method is used to determine if the window requires re-drawing. The most common cause for this is the some
+//     * of its components has changed and we need a re-draw to make these changes visible.
+//     *
+//     * @return {@code true} if the window would like to be re-drawn, {@code false} if the window doesn't need
+//     */
+//    @Override
+//    boolean isInvalid();
 
     /**
      * This values is optionally used by the window manager to decide if the windows should be drawn or not. In an
@@ -320,12 +319,12 @@ public interface Window extends RootPane {
     Window setVisible(boolean visible);
 
     /**
-     * Removes a {@link WindowListener} from this {@link Window}. If the listener isn't in the list of listeners, this
+     * Removes a {@link WindowMoveListener} from this {@link Window}. If the listener isn't in the list of listeners, this
      * call does nothing.
      *
-     * @param windowListener Listener to remove from this {@link Window}
+     * @param windowMoveListener Listener to remove from this {@link Window}
      */
-    void removeWindowListener(WindowListener windowListener);
+    void removeWindowListener(WindowMoveListener windowMoveListener);
 
     /**
      * This method is called by the GUI system to update the window on, as of the last drawing operation, the distance
@@ -363,14 +362,14 @@ public interface Window extends RootPane {
 
     Window setHints(Hint... hints);
 
-    /**
-     * @see Window#toGlobalFromContentRelative(Point)
-     * @see Window#toGlobalFromDecoratedRelative(Point)
-     * @deprecated This is deprecated in favor of calling either of: {@code toGlobalFromContentRelative()} or {@code toGlobalFromDecoratedRelative()}.
-     */
-    @Override
-    @Deprecated
-    Point toGlobal(Point localPoint);
+//    /**
+//     * @see Window#toGlobalFromContentRelative(Point)
+//     * @see Window#toGlobalFromDecoratedRelative(Point)
+//     * @deprecated This is deprecated in favor of calling either of: {@code toGlobalFromContentRelative()} or {@code toGlobalFromDecoratedRelative()}.
+//     */
+//    @Override
+//    @Deprecated
+//    Point toGlobal(Point localPoint);
 
     /**
      * Returns a position in the window content's local coordinate space to global coordinates

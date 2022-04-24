@@ -27,158 +27,28 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.input.MouseAction;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
 
-    protected final ContentHolder contentHolder;
+    protected final ContentHolder contentHolder = new ContentHolder();
     private final Attributes attributes;
-
-    private final CopyOnWriteArrayList<RootPaneListener<T>> rootPaneListeners;
-    protected InteractableLookupMap interactableLookupMap;
+    private final CopyOnWriteArrayList<RootPaneKeystrokeInterceptor<T>> rootPaneKeystrokeInterceptors = new CopyOnWriteArrayList<>();
+    protected InteractableLookupMap interactableLookupMap = new InteractableLookupMap(new Dimension(80, 25));
     private Interactable focusedInteractable;
     private boolean invalid;
     private boolean strictFocusChange;
-    private boolean enableDirectionBasedMovements;
+    private boolean enableDirectionBasedMovements = true;
     private Theme theme;
-
     private Interactable mouseDownForDrag = null;
 
 
     protected AbstractRootPane(Attributes attributes) {
         this.attributes = attributes;
-        this.contentHolder = new ContentHolder();
-        this.rootPaneListeners = new CopyOnWriteArrayList<>();
-        this.interactableLookupMap = new InteractableLookupMap(new Dimension(80, 25));
-        this.invalid = false;
-        this.strictFocusChange = false;
-        this.enableDirectionBasedMovements = true;
-        this.theme = null;
     }
 
-    public void addRootPaneListener(RootPaneListener<T> rootPaneListener) {
-        rootPaneListeners.addIfAbsent(rootPaneListener);
-    }
-
-    private boolean doHandleInput(KeyStroke keyStroke) {
-        boolean result = false;
-        if (keyStroke.getKeyType() == KeyType.MouseEvent) {
-            return handleMouseInput((MouseAction) keyStroke);
-        }
-        Interactable.FocusChangeDirection direction = Interactable.FocusChangeDirection.TELEPORT; // Default
-        Interactable nextFocus = null;
-        if (focusedInteractable == null) {
-            // If nothing is focused and the user presses certain navigation keys, try to find if there is an
-            // Interactable component we can move focus to.
-            MenuBar menuBar = getMenuBar();
-            Component baseComponent = getComponent();
-            switch (keyStroke.getKeyType()) {
-                case Tab:
-                case ArrowRight:
-                case ArrowDown:
-                    direction = Interactable.FocusChangeDirection.NEXT;
-                    // First try the menu, then the actual component
-                    nextFocus = menuBar.nextFocus(null);
-                    if (nextFocus == null) {
-                        if (baseComponent instanceof Container) {
-                            nextFocus = ((Container) baseComponent).nextFocus(null);
-                        } else if (baseComponent instanceof Interactable) {
-                            nextFocus = (Interactable) baseComponent;
-                        }
-                    }
-                    break;
-
-                case ReverseTab:
-                case ArrowUp:
-                case ArrowLeft:
-                    direction = Interactable.FocusChangeDirection.PREVIOUS;
-                    if (baseComponent instanceof Container) {
-                        nextFocus = ((Container) baseComponent).previousFocus(null);
-                    } else if (baseComponent instanceof Interactable) {
-                        nextFocus = (Interactable) baseComponent;
-                    }
-                    // If no component can take focus, try the menu
-                    if (nextFocus == null) {
-                        nextFocus = menuBar.previousFocus(null);
-                    }
-                    break;
-            }
-            if (nextFocus != null) {
-                setFocusedInteractable(nextFocus, direction);
-                result = true;
-            }
-        } else {
-            KeyStrokeResult handleKeyStrokeResult = focusedInteractable.onInput(keyStroke);
-            if (!enableDirectionBasedMovements) {
-                if (handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_DOWN || handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_RIGHT) {
-                    handleKeyStrokeResult = Interactable.KeyStrokeResult.MOVE_FOCUS_NEXT;
-                } else if (handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_UP || handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_LEFT) {
-                    handleKeyStrokeResult = Interactable.KeyStrokeResult.MOVE_FOCUS_PREVIOUS;
-                }
-            }
-            switch (handleKeyStrokeResult) {
-                case HANDLED:
-                    result = true;
-                    break;
-                case UNHANDLED:
-                    //Filter the event recursively through all parent containers until we hit null; give the containers
-                    //a chance to absorb the event
-                    Container parent = focusedInteractable.getParent();
-                    while (parent != null) {
-                        if (parent.handleInput(keyStroke)) {
-                            return true;
-                        }
-                        parent = parent.getParent();
-                    }
-                    result = false;
-                    break;
-                case MOVE_FOCUS_NEXT:
-                    nextFocus = contentHolder.nextFocus(focusedInteractable);
-                    if (nextFocus == null) {
-                        nextFocus = contentHolder.nextFocus(null);
-                    }
-                    direction = Interactable.FocusChangeDirection.NEXT;
-                    break;
-                case MOVE_FOCUS_PREVIOUS:
-                    nextFocus = contentHolder.previousFocus(focusedInteractable);
-                    if (nextFocus == null) {
-                        nextFocus = contentHolder.previousFocus(null);
-                    }
-                    direction = Interactable.FocusChangeDirection.PREVIOUS;
-                    break;
-                case MOVE_FOCUS_DOWN:
-                    nextFocus = interactableLookupMap.findNextDown(focusedInteractable);
-                    direction = Interactable.FocusChangeDirection.DOWN;
-                    if (nextFocus == null && !strictFocusChange) {
-                        nextFocus = contentHolder.nextFocus(focusedInteractable);
-                        direction = Interactable.FocusChangeDirection.NEXT;
-                    }
-                    break;
-                case MOVE_FOCUS_LEFT:
-                    nextFocus = interactableLookupMap.findNextLeft(focusedInteractable);
-                    direction = Interactable.FocusChangeDirection.LEFT;
-                    break;
-                case MOVE_FOCUS_RIGHT:
-                    nextFocus = interactableLookupMap.findNextRight(focusedInteractable);
-                    direction = Interactable.FocusChangeDirection.RIGHT;
-                    break;
-                case MOVE_FOCUS_UP:
-                    nextFocus = interactableLookupMap.findNextUp(focusedInteractable);
-                    direction = Interactable.FocusChangeDirection.UP;
-                    if (nextFocus == null && !strictFocusChange) {
-                        nextFocus = contentHolder.previousFocus(focusedInteractable);
-                        direction = Interactable.FocusChangeDirection.PREVIOUS;
-                    }
-                    break;
-            }
-        }
-        if (nextFocus != null) {
-            setFocusedInteractable(nextFocus, direction);
-            result = true;
-        }
-        return result;
+    public void addRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor<T> rootPaneKeystrokeInterceptor) {
+        this.rootPaneKeystrokeInterceptors.addIfAbsent(rootPaneKeystrokeInterceptor);
     }
 
     @Override
@@ -196,10 +66,6 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         contentHolder.updateLookupMap(interactableLookupMap);
         //interactableLookupMap.debug();
         invalid = false;
-    }
-
-    protected List<RootPaneListener<T>> getBasePaneListeners() {
-        return rootPaneListeners;
     }
 
     @Override
@@ -253,31 +119,6 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         return null;
     }
 
-    @Override
-    public boolean handleInput(KeyStroke keyStroke) {
-        // Fire events first and decide if the event should be sent to the focused component or not
-        AtomicBoolean deliverEvent = new AtomicBoolean(true);
-        for (RootPaneListener<T> listener : rootPaneListeners) {
-            listener.onInput(self(), keyStroke, deliverEvent);
-        }
-        if (!deliverEvent.get()) {
-            return true;
-        }
-
-        // Now try to deliver the event to the focused component
-        boolean handled = doHandleInput(keyStroke);
-
-        // If it wasn't handled, fire the listeners and decide what to report to the TextGUI
-        if (!handled) {
-            AtomicBoolean hasBeenHandled = new AtomicBoolean(false);
-            for (RootPaneListener<T> listener : rootPaneListeners) {
-                listener.onUnhandledInput(self(), keyStroke, hasBeenHandled);
-            }
-            handled = hasBeenHandled.get();
-        }
-        return handled;
-    }
-
     private boolean handleMouseInput(MouseAction mouseAction) {
         Point localCoordinates = fromGlobal(mouseAction.getPosition());
         if (localCoordinates == null) {
@@ -311,8 +152,6 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
     @Override
     public void invalidate() {
         invalid = true;
-
-        //Propagate
         contentHolder.invalidate();
     }
 
@@ -321,8 +160,151 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         return invalid || contentHolder.isInvalid();
     }
 
-    protected void removeBasePaneListener(RootPaneListener<T> rootPaneListener) {
-        rootPaneListeners.remove(rootPaneListener);
+    @Override
+    public boolean onInput(KeyStroke keyStroke) {
+        for (RootPaneKeystrokeInterceptor<T> interceptor : this.rootPaneKeystrokeInterceptors) {
+            boolean intercepted = interceptor.onBeforeKeyStroke(keyStroke, self());
+            if (intercepted) {
+                return true;
+            }
+        }
+
+        // Now try to deliver the event to the focused component
+        boolean handled = true;
+        boolean finished = false;
+        boolean result = false;
+        if (keyStroke.getKeyType() == KeyType.MouseEvent) {
+            handled = handleMouseInput((MouseAction) keyStroke);
+        } else {
+            Interactable.FocusChangeDirection direction = Interactable.FocusChangeDirection.TELEPORT; // Default
+            Interactable nextFocus = null;
+            if (focusedInteractable == null) {
+                // If nothing is focused and the user presses certain navigation keys, try to find if there is an
+                // Interactable component we can move focus to.
+                MenuBar menuBar = getMenuBar();
+                Component baseComponent = getComponent();
+                switch (keyStroke.getKeyType()) {
+                    case Tab:
+                    case ArrowRight:
+                    case ArrowDown:
+                        direction = Interactable.FocusChangeDirection.NEXT;
+                        // First try the menu, then the actual component
+                        nextFocus = menuBar.nextFocus(null);
+                        if (nextFocus == null) {
+                            if (baseComponent instanceof Container) {
+                                nextFocus = ((Container) baseComponent).nextFocus(null);
+                            } else if (baseComponent instanceof Interactable) {
+                                nextFocus = (Interactable) baseComponent;
+                            }
+                        }
+                        break;
+
+                    case ReverseTab:
+                    case ArrowUp:
+                    case ArrowLeft:
+                        direction = Interactable.FocusChangeDirection.PREVIOUS;
+                        if (baseComponent instanceof Container) {
+                            nextFocus = ((Container) baseComponent).previousFocus(null);
+                        } else if (baseComponent instanceof Interactable) {
+                            nextFocus = (Interactable) baseComponent;
+                        }
+                        // If no component can take focus, try the menu
+                        if (nextFocus == null) {
+                            nextFocus = menuBar.previousFocus(null);
+                        }
+                        break;
+                }
+                if (nextFocus != null) {
+                    setFocusedInteractable(nextFocus, direction);
+                    result = true;
+                }
+            } else {
+                KeyStrokeResult keyStrokeResult = focusedInteractable.onInput(keyStroke);
+                if (!enableDirectionBasedMovements) {
+                    if (keyStrokeResult == KeyStrokeResult.MOVE_FOCUS_DOWN || keyStrokeResult == KeyStrokeResult.MOVE_FOCUS_RIGHT) {
+                        keyStrokeResult = KeyStrokeResult.MOVE_FOCUS_NEXT;
+                    } else if (keyStrokeResult == KeyStrokeResult.MOVE_FOCUS_UP || keyStrokeResult == KeyStrokeResult.MOVE_FOCUS_LEFT) {
+                        keyStrokeResult = KeyStrokeResult.MOVE_FOCUS_PREVIOUS;
+                    }
+                }
+                switch (keyStrokeResult) {
+                    case HANDLED:
+                        result = true;
+                        break;
+                    case UNHANDLED:
+                        //Filter the event recursively through all parent containers until we hit null; give the containers
+                        //a chance to absorb the event
+                        Container parent = focusedInteractable.getParent();
+                        while (parent != null) {
+                            if (parent.handleInput(keyStroke)) {
+                                finished = true;
+                                break;
+                            }
+                            parent = parent.getParent();
+                        }
+                        if (finished) break;
+                        result = false;
+                        break;
+                    case MOVE_FOCUS_NEXT:
+                        nextFocus = contentHolder.nextFocus(focusedInteractable);
+                        if (nextFocus == null) {
+                            nextFocus = contentHolder.nextFocus(null);
+                        }
+                        direction = Interactable.FocusChangeDirection.NEXT;
+                        break;
+                    case MOVE_FOCUS_PREVIOUS:
+                        nextFocus = contentHolder.previousFocus(focusedInteractable);
+                        if (nextFocus == null) {
+                            nextFocus = contentHolder.previousFocus(null);
+                        }
+                        direction = Interactable.FocusChangeDirection.PREVIOUS;
+                        break;
+                    case MOVE_FOCUS_DOWN:
+                        nextFocus = interactableLookupMap.findNextDown(focusedInteractable);
+                        direction = Interactable.FocusChangeDirection.DOWN;
+                        if (nextFocus == null && !strictFocusChange) {
+                            nextFocus = contentHolder.nextFocus(focusedInteractable);
+                            direction = Interactable.FocusChangeDirection.NEXT;
+                        }
+                        break;
+                    case MOVE_FOCUS_LEFT:
+                        nextFocus = interactableLookupMap.findNextLeft(focusedInteractable);
+                        direction = Interactable.FocusChangeDirection.LEFT;
+                        break;
+                    case MOVE_FOCUS_RIGHT:
+                        nextFocus = interactableLookupMap.findNextRight(focusedInteractable);
+                        direction = Interactable.FocusChangeDirection.RIGHT;
+                        break;
+                    case MOVE_FOCUS_UP:
+                        nextFocus = interactableLookupMap.findNextUp(focusedInteractable);
+                        direction = Interactable.FocusChangeDirection.UP;
+                        if (nextFocus == null && !strictFocusChange) {
+                            nextFocus = contentHolder.previousFocus(focusedInteractable);
+                            direction = Interactable.FocusChangeDirection.PREVIOUS;
+                        }
+                        break;
+                }
+            }
+            if (!finished) {
+                if (nextFocus != null) {
+                    setFocusedInteractable(nextFocus, direction);
+                    result = true;
+                }
+                handled = result;
+            }
+        }
+
+        // If it wasn't handled, fire the listeners and decide what to report to the TextGUI
+        if (!handled) {
+            for (RootPaneKeystrokeInterceptor<T> interceptor : rootPaneKeystrokeInterceptors) {
+                handled = interceptor.onAfterKeyStroke(keyStroke, self()) || handled;
+            }
+        }
+        return handled;
+    }
+
+    protected void removeRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor<T> rootPaneKeystrokeInterceptor) {
+        this.rootPaneKeystrokeInterceptors.remove(rootPaneKeystrokeInterceptor);
     }
 
     abstract T self();

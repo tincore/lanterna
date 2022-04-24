@@ -18,30 +18,21 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.Dimension;
-import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
- * Adapter class for {@link WindowListener} to make it easier to create listeners without having to implement every
+ * Adapter class for {@link WindowMoveListener} to make it easier to create listeners without having to implement every
  * interface method.
  */
-public class WindowListenerAdapter implements WindowListener {
+public class RootPaneKeystrokeAdapter<T extends RootPane> implements RootPaneKeystrokeInterceptor<T> {
+
     @Override
-    public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
+    public boolean onAfterKeyStroke(KeyStroke keyStroke, T rootPane) {
+        return false;
     }
 
     @Override
-    public void onMoved(Window window, Point oldPoint, Point newPoint) {
-    }
-
-    @Override
-    public void onResized(Window window, Dimension oldSize, Dimension newSize) {
-    }
-
-    @Override
-    public void onUnhandledInput(Window basePane, KeyStroke keyStroke, AtomicBoolean hasBeenHandled) {
+    public boolean onBeforeKeyStroke(KeyStroke keyStroke, T rootPane) {
+        return false;
     }
 }

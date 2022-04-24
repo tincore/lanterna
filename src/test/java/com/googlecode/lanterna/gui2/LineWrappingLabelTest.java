@@ -69,7 +69,7 @@ public class LineWrappingLabelTest extends AbstractGuiTest {
             .add(new Label(BIG_TEXT).withBorder(Borders.doubleLine()).setLayoutData(BorderLayout.Location.CENTER))
             .add(createButtonCloseContainer().setLayoutData(BorderLayout.Location.BOTTOM)));
 
-        textGUI.addListener((textGUI1, keyStroke) -> {
+        textGUI.addKeyStrokeListener((keyStroke, gui) -> {
             if (keyStroke.isCtrlDown()) {
                 switch (keyStroke.getKeyType()) {
                     case ArrowUp:

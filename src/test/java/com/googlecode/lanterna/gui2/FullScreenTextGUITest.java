@@ -38,7 +38,7 @@ public class FullScreenTextGUITest {
 
         final AtomicBoolean stop = new AtomicBoolean(false);
         MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
-        textGUI.addListener((textGUI1, key) -> {
+        textGUI.addKeyStrokeListener((key, g) -> {
             if(key.getKeyType() == KeyType.Escape) {
                 stop.set(true);
                 return true;

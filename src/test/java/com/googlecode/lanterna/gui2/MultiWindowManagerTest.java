@@ -50,20 +50,19 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
         contentArea.add(new Button("Add new window", s -> onNewWindow(textGUI)));
         buttonToggleVirtualScreen = new Button("Virtual Screen: Enabled", s -> {
             virtualScreenEnabled = !virtualScreenEnabled;
-            textGUI.setVirtualScreenEnabled(virtualScreenEnabled);
             buttonToggleVirtualScreen.setLabel("Virtual Screen: " + (virtualScreenEnabled ? "Enabled" : "Disabled"));
         });
+
         contentArea.add(buttonToggleVirtualScreen)
             .add(new EmptySpace(Dimension.ONE))
             .add(new Button("Close", s -> mainWindow.close()));
+
         mainWindow.setComponent(contentArea);
-        textGUI.addListener((textGUI1, keyStroke) -> {
-            if ((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.Tab) ||
-                keyStroke.getKeyType() == KeyType.F6) {
-                ((WindowBasedTextGUI) textGUI1).cycleActiveWindow(false);
-            } else if ((keyStroke.isCtrlDown() && keyStroke.getKeyType() == KeyType.ReverseTab) ||
-                keyStroke.getKeyType() == KeyType.F7) {
-                ((WindowBasedTextGUI) textGUI1).cycleActiveWindow(true);
+        textGUI.addKeyStrokeListener((k, g) -> {
+            if ((k.isCtrlDown() && k.isKeyType(KeyType.Tab)) || k.getKeyType() == KeyType.F6) {
+                ((WindowBasedTextGUI) g).cycleActiveWindow(false);
+            } else if ((k.isCtrlDown() && k.isKeyType(KeyType.ReverseTab)) || k.getKeyType() == KeyType.F7) {
+                ((WindowBasedTextGUI) g).cycleActiveWindow(true);
             } else {
                 return false;
             }
@@ -104,7 +103,7 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
             this.labelUnlockWindow = new Label("true");
             statsTableContainer.add(labelUnlockWindow);
 
-            addWindowListener(new WindowListenerAdapter() {
+            addWindowListener(new WindowMoveListenerAdapter() {
                 @Override
                 public void onMoved(Window window, Point oldPoint, Point newPoint) {
                     labelWindowPosition.setText(newPoint.toString());
@@ -131,8 +130,8 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
         }
 
         @Override
-        public boolean handleInput(KeyStroke keyStroke) {
-            boolean handled = super.handleInput(keyStroke);
+        public boolean onInput(KeyStroke keyStroke) {
+            boolean handled = super.onInput(keyStroke);
             if (!handled) {
                 switch (keyStroke.getKeyType()) {
                     case ArrowDown:

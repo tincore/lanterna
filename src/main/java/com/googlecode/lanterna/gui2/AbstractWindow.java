@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Abstract Window has most of the code requiring for a window to function, all concrete window implementations extends
@@ -37,6 +38,7 @@ import java.util.Set;
  * @author Martin
  */
 public abstract class AbstractWindow extends AbstractRootPane<Window> implements Window {
+    private final CopyOnWriteArrayList<WindowMoveListener> windowMoveListeners = new CopyOnWriteArrayList<>();
     private String title;
     private boolean visible = true;
     private Dimension lastKnownSize;
@@ -45,7 +47,6 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     private Point contentOffset = Point.TOP_LEFT_CORNER;
     private Set<Hint> hints = new HashSet<>();
     private boolean onKeyEscapeClose;
-
     private WindowPostRenderer windowPostRenderer;
     private WindowBasedTextGUI textGUI;
 
@@ -77,8 +78,8 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
 
 
     @Override
-    public void addWindowListener(WindowListener windowListener) {
-        addRootPaneListener(windowListener);
+    public void addWindowListener(WindowMoveListener windowMoveListener) {
+        windowMoveListeners.add(windowMoveListener);
     }
 
     @Override
@@ -195,16 +196,6 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     }
 
     @Override
-    public boolean handleInput(KeyStroke keyStroke) {
-        boolean handled = super.handleInput(keyStroke);
-        if (!handled && onKeyEscapeClose && keyStroke.getKeyType() == KeyType.Escape) {
-            close();
-            return true;
-        }
-        return handled;
-    }
-
-    @Override
     public boolean isHint(Hint hint) {
         return this.hints.contains(hint);
     }
@@ -215,8 +206,19 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     }
 
     @Override
-    public void removeWindowListener(WindowListener windowListener) {
-        removeBasePaneListener(windowListener);
+    public boolean onInput(KeyStroke keyStroke) {
+        boolean handled = super.onInput(keyStroke);
+        // Should add as listener
+        if (!handled && onKeyEscapeClose && keyStroke.isKeyType(KeyType.Escape)) {
+            close();
+            return true;
+        }
+        return handled;
+    }
+
+    @Override
+    public void removeWindowListener(WindowMoveListener windowMoveListener) {
+        windowMoveListeners.remove(windowMoveListener);
     }
 
     Window self() {
@@ -277,11 +279,7 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     public final Window setPosition(Point topLeft) {
         Point oldPoint = this.lastKnownPoint;
         this.lastKnownPoint = topLeft;
-
-        getBasePaneListeners().stream()
-            .filter(l -> l instanceof WindowListener)
-            .forEach(l -> ((WindowListener) l).onMoved(this, oldPoint, topLeft));
-
+        windowMoveListeners.forEach(l -> l.onMoved(this, oldPoint, topLeft));
         return this;
     }
 
@@ -299,12 +297,7 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
             invalidate();
         }
 
-        // Fire listeners
-        for (RootPaneListener<?> listener : getBasePaneListeners()) {
-            if (listener instanceof WindowListener) {
-                ((WindowListener) listener).onResized(this, oldSize, size);
-            }
-        }
+        windowMoveListeners.forEach(l -> l.onResized(this, oldSize, size));
     }
 
     @Override

@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -298,13 +297,14 @@ public class ThemeTest extends AbstractGuiTest {
             Panels.vertical(
                 leftHolder.withBorder(Borders.singleLine()),
                 leftWindowActionBox));
-        window1.addWindowListener(new WindowListenerAdapter() {
+        window1.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
             @Override
-            public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
+            public boolean onBeforeKeyStroke(KeyStroke keyStroke, Window basePane) {
                 if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window2);
-                    deliverEvent.set(false);
+                    return true;
                 }
+                return false;
             }
         });
 
@@ -337,13 +337,14 @@ public class ThemeTest extends AbstractGuiTest {
             Panels.vertical(
                 rightHolder.withBorder(Borders.singleLine()),
                 rightWindowActionBox));
-        window2.addWindowListener(new WindowListenerAdapter() {
+        window2.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
             @Override
-            public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
+            public boolean onBeforeKeyStroke(KeyStroke keyStroke, Window basePane) {
                 if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window1);
-                    deliverEvent.set(false);
+                    return true;
                 }
+                return false;
             }
 
         });

@@ -22,24 +22,16 @@ import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Point;
 
 /**
- * Extended {@link RootPaneListener} for {@link Window} that exposes additional events that are specific to windows
+ * Adapter class for {@link WindowMoveListener} to make it easier to create listeners without having to implement every
+ * interface method.
  */
-public interface WindowListener extends RootPaneListener<Window> {
-    /**
-     * Called whenever the window's position has changed, no matter if it was done by the window manager or the user
-     *
-     * @param window   Window that was repositioned
-     * @param oldPoint Previous position of the window
-     * @param newPoint New position of the window
-     */
-    void onMoved(Window window, Point oldPoint, Point newPoint);
+public class WindowMoveListenerAdapter implements WindowMoveListener {
 
-    /**
-     * Called whenever the window's size has changed, no matter if it was done by the window manager or the user
-     *
-     * @param window  Window that was resized
-     * @param oldSize Previous size of the window
-     * @param newSize New size of the window
-     */
-    void onResized(Window window, Dimension oldSize, Dimension newSize);
+    @Override
+    public void onMoved(Window window, Point oldPoint, Point newPoint) {
+    }
+
+    @Override
+    public void onResized(Window window, Dimension oldSize, Dimension newSize) {
+    }
 }

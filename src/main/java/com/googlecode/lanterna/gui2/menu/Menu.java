@@ -20,16 +20,16 @@
  */
 package com.googlecode.lanterna.gui2.menu;
 
+import com.googlecode.lanterna.gui2.MenuPopupWindow;
+import com.googlecode.lanterna.gui2.RootPaneKeystrokeAdapter;
+import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.googlecode.lanterna.gui2.MenuPopupWindow;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.WindowListenerAdapter;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 
 /**
  * Implementation of a drop-down menu contained in a {@link MenuBar} and also a sub-menu inside another {@link Menu}.
@@ -39,6 +39,7 @@ public class Menu extends MenuItem {
 
     /**
      * Creates a menu with the specified label
+     *
      * @param label Label to use for the menu item that will trigger this menu to pop up
      */
     public Menu(String label) {
@@ -48,6 +49,7 @@ public class Menu extends MenuItem {
 
     /**
      * Adds a new menu item to this menu, this can be either a regular {@link MenuItem} or another {@link Menu}
+     *
      * @param menuItem The item to add to this menu
      * @return Itself
      */
@@ -71,9 +73,9 @@ public class Menu extends MenuItem {
         }
         if (getParent() instanceof MenuBar) {
             final MenuBar menuBar = (MenuBar) getParent();
-            popupMenu.addWindowListener(new WindowListenerAdapter() {
+            popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
                 @Override
-                public void onUnhandledInput(Window basePane, KeyStroke keyStroke, AtomicBoolean hasBeenHandled) {
+                public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
                     if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
                         int thisMenuIndex = menuBar.getChildrenList().indexOf(Menu.this);
                         if (thisMenuIndex > 0) {
@@ -81,6 +83,7 @@ public class Menu extends MenuItem {
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex - 1);
                             nextSelectedMenu.grabFocus();
                             nextSelectedMenu.onClicked();
+                            return true;
                         }
                     } else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
                         int thisMenuIndex = menuBar.getChildrenList().indexOf(Menu.this);
@@ -89,23 +92,27 @@ public class Menu extends MenuItem {
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex + 1);
                             nextSelectedMenu.grabFocus();
                             nextSelectedMenu.onClicked();
+                            return true;
                         }
                     }
+                    return false;
                 }
             });
         }
-        popupMenu.addWindowListener(new WindowListenerAdapter() {
+        popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
             @Override
-            public void onUnhandledInput(Window basePane, KeyStroke keyStroke, AtomicBoolean hasBeenHandled) {
+            public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
                 if (keyStroke.getKeyType() == KeyType.Escape) {
                     popupCancelled.set(true);
                     popupMenu.close();
+                    return true;
                 }
+                return false;
             }
         });
         ((WindowBasedTextGUI) getTextGUI()).addWindowAndWait(popupMenu);
         result = !popupCancelled.get();
-        
+
         return result;
     }
 }

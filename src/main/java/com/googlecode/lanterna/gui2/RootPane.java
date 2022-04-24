@@ -110,10 +110,10 @@ public interface RootPane extends Composite {
      * input, usually sending it to one of its sub-components, but if it isn't able to find any handler for this input
      * it should return {@code false} so that the GUI system can take further decisions on what to do with it.
      *
-     * @param key Keyboard input
+     * @param keyStroke Keyboard input
      * @return {@code true} If the root container could handle the input, false otherwise
      */
-    boolean handleInput(KeyStroke key);
+    boolean onInput(KeyStroke keyStroke);
 
     /**
      * Invalidates the whole root container (including all of its child components) which will cause them all to be
