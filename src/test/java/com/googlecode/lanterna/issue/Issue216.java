@@ -63,7 +63,7 @@ public class Issue216 {
         window.setComponent(panel);
 
         // Create gui and start gui
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        MultiWindowFrame gui = new MultiWindowFrame(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
         gui.addWindowAndWait(window);
     }
 }

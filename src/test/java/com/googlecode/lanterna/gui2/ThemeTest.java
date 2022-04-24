@@ -44,7 +44,7 @@ public class ThemeTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         textGUI.addWindow(new BasicWindow("Theme Tests")
             .setComponent(new ActionListBox()
                 .addItem("Component test", s -> runComponentTest(textGUI))
@@ -54,7 +54,7 @@ public class ThemeTest extends AbstractGuiTest {
             .setHints(Window.Hint.CENTERED));
     }
 
-    private void runComponentTest(WindowBasedTextGUI textGUI) {
+    private void runComponentTest(WindowFrame textGUI) {
         final BasicWindow componentTestChooser = new BasicWindow("Component test");
         componentTestChooser.setHints(Collections.singletonList(Window.Hint.CENTERED));
 
@@ -178,7 +178,7 @@ public class ThemeTest extends AbstractGuiTest {
         textGUI.addWindowAndWait(componentTestChooser);
     }
 
-    private void runCustomTheme(final WindowBasedTextGUI textGUI) {
+    private void runCustomTheme(final WindowFrame textGUI) {
         final BasicWindow customThemeCreator = new BasicWindow("Custom Theme");
         customThemeCreator.setHints(Collections.singletonList(Window.Hint.CENTERED));
 
@@ -244,7 +244,7 @@ public class ThemeTest extends AbstractGuiTest {
         textGUI.addWindowAndWait(customThemeCreator);
     }
 
-    private void runMultiThemeTest(final WindowBasedTextGUI textGUI) {
+    private void runMultiThemeTest(final WindowFrame textGUI) {
         final List<String> themes = new ArrayList<>(LanternaThemes.getRegisteredThemes());
         final int[] windowThemeIndex = new int[]{themes.indexOf("bigsnake"), themes.indexOf("conqueror")};
         final BasicWindow window1 = new BasicWindow("Theme: bigsnake");
@@ -358,12 +358,12 @@ public class ThemeTest extends AbstractGuiTest {
     }
 
     private static class ThemedComponentTestDialog {
-        private final WindowBasedTextGUI textGUI;
+        private final WindowFrame textGUI;
         private final String label;
         private final Component borderedComponent;
         private final Component embeddedComponent;
 
-        public ThemedComponentTestDialog(WindowBasedTextGUI textGUI, String label, Component component) {
+        public ThemedComponentTestDialog(WindowFrame textGUI, String label, Component component) {
             this.textGUI = textGUI;
             this.label = label;
 

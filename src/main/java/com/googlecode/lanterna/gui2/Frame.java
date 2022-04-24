@@ -30,14 +30,7 @@ import java.io.IOException;
  *
  * @author Martin
  */
-public interface TextGUI {
-    /**
-     * Adds a listener to this TextGUI to fire events on.
-     *
-     * @param keyStrokeListener Listener to add
-     */
-    void addKeyStrokeListener(KeyStrokeListener keyStrokeListener);
-
+public interface Frame {
     /**
      * Returns the interactable component currently in focus
      *
@@ -55,14 +48,14 @@ public interface TextGUI {
     TextGUIThread getGUIThread();
 
     /**
-     * Returns the {@link Screen} for this {@link WindowBasedTextGUI}
+     * Returns the {@link Screen} for this {@link WindowFrame}
      *
-     * @return the {@link Screen} used by this {@link WindowBasedTextGUI}
+     * @return the {@link Screen} used by this {@link WindowFrame}
      */
     Screen getScreen();
 
     /**
-     * Returns the theme currently assigned to this {@link TextGUI}
+     * Returns the theme currently assigned to this {@link Frame}
      *
      * @return Currently active {@link Theme}
      */
@@ -75,7 +68,7 @@ public interface TextGUI {
      *
      * @param theme Theme to use as the default theme for this TextGUI
      */
-    void setTheme(Theme theme);
+    Frame setTheme(Theme theme);
 
     /**
      * This method can be used to determine if any component has requested a redraw. If this method returns
@@ -103,7 +96,14 @@ public interface TextGUI {
      *
      * @param keyStrokeListener Listener to remove
      */
-    void removeKeyStrokeListener(KeyStrokeListener keyStrokeListener);
+    void removeKeyStrokeListener();
+
+    /**
+     * Adds a listener to this TextGUI to fire events on.
+     *
+     * @param keyStrokeListener Listener to add
+     */
+    Frame setKeyStrokeListener(KeyStrokeListener keyStrokeListener);
 
     /**
      * Updates the screen, to make any changes visible to the user.
@@ -116,16 +116,18 @@ public interface TextGUI {
      * Listener interface for TextGUI, firing on events related to the overall GUI
      */
     interface KeyStrokeListener {
+        KeyStrokeListener DUMMY = (k, h, g) -> false;
+
         /**
          * Fired either when no component was in focus during a keystroke or if the focused component and all its parent
          * containers chose not to handle the event. This event listener should also return {@code true} if the event
          * was processed in any way that requires the TextGUI to update itself, otherwise {@code false}.
          *
          * @param keyStroke Keystroke that was unhandled
-         * @param textGUI   TextGUI that had the event
+         * @param frame   TextGUI that had the event
          * @return If the outcome of this KeyStroke processed by the implementer requires the TextGUI to re-draw, return
          * {@code true} here, otherwise {@code false}
          */
-        boolean onUnhandledKeyStroke(KeyStroke keyStroke, TextGUI textGUI);
+        boolean onKeyStroke(KeyStroke keyStroke, boolean handled, Frame frame);
     }
 }

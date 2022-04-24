@@ -21,7 +21,7 @@ public class Issue334 {
         panel.add(new Label(""));
 
         // Create gui and start gui
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        MultiWindowFrame gui = new MultiWindowFrame(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
         // Create window to hold the panel
         final BasicWindow window = new BasicWindow();

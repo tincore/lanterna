@@ -34,7 +34,7 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
      * Returns the {@code TextGUI} this {@code TextGUIGraphics} belongs to
      * @return {@code TextGUI} this {@code TextGUIGraphics} belongs to
      */
-    TextGUI getTextGUI();
+    Frame getTextGUI();
 
     @Override
     TextGUIGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException;

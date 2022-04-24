@@ -31,7 +31,7 @@ public class WindowShadowRenderer implements WindowPostRenderer {
     @Override
     public void postRender(
             ThemedTextGraphics textGraphics,
-            TextGUI textGUI,
+            Frame frame,
             Window window) {
 
         Point windowPoint = window.getPosition();

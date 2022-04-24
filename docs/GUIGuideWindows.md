@@ -24,7 +24,7 @@ you create your own windows. This is not a strict requirement but can make it ea
 To show your window, you use the `WindowBasedTextGUI` object you have and call the `addWindow`-method. 
 
     MyWindow myWindow = new MyWindow();
-    textGUI.addWindow(myWindow);
+    frame.addWindow(myWindow);
 
 This call will not block, the window is added to the GUI system and is ready to be drawn.
 

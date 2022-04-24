@@ -20,7 +20,7 @@ package com.googlecode.lanterna.bundle;
 
 import com.googlecode.lanterna.graphics.PropertyTheme;
 import com.googlecode.lanterna.graphics.Theme;
-import com.googlecode.lanterna.gui2.AbstractTextGUI;
+import com.googlecode.lanterna.gui2.AbstractFrame;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class LanternaThemes {
     private static Properties loadPropTheme(String resourceFileName) {
         Properties properties = new Properties();
         try {
-            ClassLoader classLoader = AbstractTextGUI.class.getClassLoader();
+            ClassLoader classLoader = AbstractFrame.class.getClassLoader();
             InputStream resourceAsStream = classLoader.getResourceAsStream(resourceFileName);
             if(resourceAsStream == null) {
                 resourceAsStream = new FileInputStream("src/main/resources/" + resourceFileName);

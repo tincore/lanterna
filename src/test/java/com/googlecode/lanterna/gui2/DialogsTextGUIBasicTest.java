@@ -34,7 +34,7 @@ public class DialogsTextGUIBasicTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        final WindowFrame textGUI = new MultiWindowFrame(screen);
         try {
             final BasicWindow window = new BasicWindow("Dialog test");
 

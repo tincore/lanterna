@@ -11,22 +11,22 @@ import java.util.EnumSet;
  * Created by Martin on 2017-08-11.
  */
 public class DefaultTextGUIGraphics implements TextGUIGraphics {
-    private final TextGUI textGUI;
+    private final Frame frame;
     private final TextGraphics backend;
 
-    DefaultTextGUIGraphics(TextGUI textGUI, TextGraphics backend) {
+    DefaultTextGUIGraphics(Frame frame, TextGraphics backend) {
         this.backend = backend;
-        this.textGUI = textGUI;
+        this.frame = frame;
     }
 
     @Override
-    public TextGUI getTextGUI() {
-        return textGUI;
+    public Frame getTextGUI() {
+        return frame;
     }
 
     @Override
     public DefaultTextGUIGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException {
-        return new DefaultTextGUIGraphics(textGUI, backend.newTextGraphics(topLeftCorner, size));
+        return new DefaultTextGUIGraphics(frame, backend.newTextGraphics(topLeftCorner, size));
     }
 
     @Override

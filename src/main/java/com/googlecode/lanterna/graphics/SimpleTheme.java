@@ -43,7 +43,7 @@ public class SimpleTheme implements Theme {
      * @param editableBackground Background color for editable components, or editable areas of components
      * @param selectedForeground Foreground color for the selection marker when a component has multiple selection states
      * @param selectedBackground Background color for the selection marker when a component has multiple selection states
-     * @param guiBackground Background color of the GUI, if this theme is assigned to the {@link TextGUI}
+     * @param guiBackground Background color of the GUI, if this theme is assigned to the {@link Frame}
      * @return Assembled {@link SimpleTheme} using the parameters from above
      */
     public static SimpleTheme makeTheme(
@@ -80,7 +80,7 @@ public class SimpleTheme implements Theme {
                 .setPreLight(editableForeground, editableBackground);
         theme.addOverride(DefaultWindowDecorationRenderer.class, baseForeground, baseBackground)
                 .setActive(baseForeground, baseBackground, activeStyle);
-        theme.addOverride(GUIBackdrop.class, baseForeground, guiBackground);
+        theme.addOverride(FrameBackdrop.class, baseForeground, guiBackground);
         theme.addOverride(RadioBoxList.class, baseForeground, baseBackground)
                 .setActive(selectedForeground, selectedBackground, activeStyle);
         theme.addOverride(Table.class, baseForeground, baseBackground)

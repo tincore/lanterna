@@ -174,7 +174,7 @@ public class FileDialog extends DialogWindow {
      * @return The file which was selected in the dialog or {@code null} if the dialog was cancelled
      */
     @Override
-    public File show(WindowBasedTextGUI textGUI) {
+    public File show(WindowFrame textGUI) {
         selectedFile = null;
         super.show(textGUI);
         return selectedFile;

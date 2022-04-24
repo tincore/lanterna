@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class TableUnitTests {
 
     private DefaultVirtualTerminal terminal;
-    private MultiWindowTextGUI gui;
+    private MultiWindowFrame gui;
     private BasicWindow window;
     private Table<String> table;
     private TableModel<String> model;
@@ -29,7 +29,7 @@ public class TableUnitTests {
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
         DefaultWindowManager windowManager = new DefaultWindowManager(new EmptyWindowDecorationRenderer(), size);
-        gui = new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen, windowManager, null, new EmptySpace());
+        gui = new MultiWindowFrame(new SeparateTextGUIThread.Factory(), screen, windowManager, null, new EmptySpace());
         window = new BasicWindow();
         window.setHints(Arrays.asList(Hint.NO_DECORATIONS, Hint.FIT_TERMINAL_WINDOW, Hint.FULL_SCREEN));
         table = new Table<>("a", "b");

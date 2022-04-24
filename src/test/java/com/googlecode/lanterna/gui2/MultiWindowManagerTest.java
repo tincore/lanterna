@@ -42,36 +42,39 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
-        textGUI.getBackgroundPane().setComponent(new BackgroundComponent());
-        final Window mainWindow = new BasicWindow("Multi Window Test");
-        Panel contentArea = new Panel();
-        contentArea.setLayoutManager(new LinearLayout(Direction.VERTICAL));
-        contentArea.add(new Button("Add new window", s -> onNewWindow(textGUI)));
+    public void init(final WindowFrame windowFrame) {
+        windowFrame.getBackgroundPane().setComponent(new BackgroundComponent());
+        windowFrame.setKeyStrokeListener((k, h, g) -> {
+            if (h) {
+                return false;
+            }
+            if ((k.isCtrlDown() && k.isKeyType(KeyType.Tab)) || k.getKeyType() == KeyType.F6) {
+                ((WindowFrame) g).cycleActiveWindow(false);
+                return true;
+            } else if ((k.isCtrlDown() && k.isKeyType(KeyType.ReverseTab)) || k.getKeyType() == KeyType.F7) {
+                ((WindowFrame) g).cycleActiveWindow(true);
+                return true;
+            }
+
+            return false;
+        });
+
+
         buttonToggleVirtualScreen = new Button("Virtual Screen: Enabled", s -> {
             virtualScreenEnabled = !virtualScreenEnabled;
             buttonToggleVirtualScreen.setLabel("Virtual Screen: " + (virtualScreenEnabled ? "Enabled" : "Disabled"));
         });
 
-        contentArea.add(buttonToggleVirtualScreen)
-            .add(new EmptySpace(Dimension.ONE))
-            .add(new Button("Close", s -> mainWindow.close()));
-
-        mainWindow.setComponent(contentArea);
-        textGUI.addKeyStrokeListener((k, g) -> {
-            if ((k.isCtrlDown() && k.isKeyType(KeyType.Tab)) || k.getKeyType() == KeyType.F6) {
-                ((WindowBasedTextGUI) g).cycleActiveWindow(false);
-            } else if ((k.isCtrlDown() && k.isKeyType(KeyType.ReverseTab)) || k.getKeyType() == KeyType.F7) {
-                ((WindowBasedTextGUI) g).cycleActiveWindow(true);
-            } else {
-                return false;
-            }
-            return true;
-        });
-        textGUI.addWindow(mainWindow);
+        final Window window = new BasicWindow("Multi Window Test")
+            .setComponent(Panels.vertical()
+                .add(new Button("Add new window", s -> onNewWindow(windowFrame)))
+                .add(buttonToggleVirtualScreen)
+                .add(new EmptySpace(Dimension.ONE))
+                .add(new Button("Close", ON_CLICK_CLOSE_CONTAINER)));
+        windowFrame.addWindow(window);
     }
 
-    private void onNewWindow(WindowBasedTextGUI textGUI) {
+    private void onNewWindow(WindowFrame textGUI) {
         DynamicWindow window = new DynamicWindow();
         List<String> availableThemes = new ArrayList<>(LanternaThemes.getRegisteredThemes());
         String themeName = availableThemes.get(nextTheme++);
@@ -187,13 +190,13 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
         }
     }
 
-    private static class BackgroundComponent extends GUIBackdrop {
+    private static class BackgroundComponent extends FrameBackdrop {
         @Override
         protected ComponentRenderer<EmptySpace> createDefaultRenderer() {
             return new ComponentRenderer<EmptySpace>() {
                 @Override
                 public void drawComponent(TextGUIGraphics graphics, EmptySpace component) {
-                    graphics.applyThemeStyle(component.getTheme().getDefinition(GUIBackdrop.class).getNormal());
+                    graphics.applyThemeStyle(component.getTheme().getDefinition(FrameBackdrop.class).getNormal());
                     graphics.fill('・');
                     String text = "Press <CTRL+Tab>/F6 and <CTRL+Shift+Tab>/F7 to cycle active window";
                     graphics.putString(graphics.getSize().getColumns() - text.length() - 4, graphics.getSize().getRows() - 1, text);

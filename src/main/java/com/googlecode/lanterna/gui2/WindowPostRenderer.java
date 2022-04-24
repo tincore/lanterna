@@ -32,11 +32,11 @@ public interface WindowPostRenderer {
      * You will have a TextGraphics object that can draw to the whole screen, so you need to inspect the window's
      * position and decorated size to figure out where the bounds are
      * @param textGraphics Graphics object you can use to draw with
-     * @param textGUI TextGUI that we are in
+     * @param frame TextGUI that we are in
      * @param window Window that was just rendered
      */
     void postRender(
             ThemedTextGraphics textGraphics,
-            TextGUI textGUI,
+            Frame frame,
             Window window);
 }

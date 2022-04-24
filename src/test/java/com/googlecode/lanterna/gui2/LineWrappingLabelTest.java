@@ -51,8 +51,8 @@ public class LineWrappingLabelTest extends AbstractGuiTest {
     }
 
     @Override
-    protected MultiWindowTextGUI createTextGUI(Screen screen) {
-        return new MultiWindowTextGUI(
+    protected MultiWindowFrame createTextGUI(Screen screen) {
+        return new MultiWindowFrame(
             new SeparateTextGUIThread.Factory(),
             screen,
             new MyWindowManager(),
@@ -61,7 +61,7 @@ public class LineWrappingLabelTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Wrapping label test");
         window.setComponent(new Panel()
             .setLayoutManager(new BorderLayout())
@@ -69,9 +69,12 @@ public class LineWrappingLabelTest extends AbstractGuiTest {
             .add(new Label(BIG_TEXT).withBorder(Borders.doubleLine()).setLayoutData(BorderLayout.Location.CENTER))
             .add(createButtonCloseContainer().setLayoutData(BorderLayout.Location.BOTTOM)));
 
-        textGUI.addKeyStrokeListener((keyStroke, gui) -> {
-            if (keyStroke.isCtrlDown()) {
-                switch (keyStroke.getKeyType()) {
+        textGUI.setKeyStrokeListener((k, h, g) -> {
+            if (h) {
+                return false;
+            }
+            if (k.isCtrlDown()) {
+                switch (k.getKeyType()) {
                     case ArrowUp:
                         if (windowSize.getRows() > 1) {
                             windowSize = windowSize.withRelativeRows(-1);

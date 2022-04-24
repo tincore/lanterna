@@ -38,7 +38,7 @@ public class Issue221 {
                 .addSelectionListener((selected, previous, source) -> System.out.println("Selected Index: " + selected + ", previous: " + previous))
                 .addItem("Item 1", "Item 2", "Item 3")));
 
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        MultiWindowFrame gui = new MultiWindowFrame(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
         gui.addWindowAndWait(window);
     }
 

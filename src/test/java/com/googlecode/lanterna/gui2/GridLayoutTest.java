@@ -29,7 +29,7 @@ public class GridLayoutTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Grid layout test");
 
         EmptySpace visibilityToggleableComponent = new EmptySpace(TextColor.ANSI.CYAN, new Dimension(4, 2));

@@ -555,8 +555,8 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
     protected void showPopup(KeyStroke keyStroke) {
         popupWindow = new PopupWindow();
         popupWindow.setPosition(toGlobal(new Point(0, 1)));
-        ((WindowBasedTextGUI) getTextGUI()).addWindow(popupWindow);
-        ((WindowBasedTextGUI) getTextGUI()).setActiveWindow(popupWindow);
+        ((WindowFrame) getTextGUI()).addWindow(popupWindow);
+        ((WindowFrame) getTextGUI()).setActiveWindow(popupWindow);
     }
 
     private void updateText(String newText) {

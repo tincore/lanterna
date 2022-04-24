@@ -37,7 +37,7 @@ public class Issue409 {
         try {
             Screen screen = new DefaultTerminalFactory().createScreen().start();
 
-            final MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+            final MultiWindowFrame gui = new MultiWindowFrame(screen);
 
             final CyclingThemesTextBox cyclingThemesTextBox = new CyclingThemesTextBox();
             final Window window = new BasicWindow();

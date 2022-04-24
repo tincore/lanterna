@@ -11,7 +11,7 @@ public class Issue380 {
     public static void main(String[] args) throws IOException {
         Screen screen = new DefaultTerminalFactory().createScreen();
         screen.start();
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        MultiWindowFrame gui = new MultiWindowFrame(screen);
         Window window = new GridWindowWithTwoLargeComponents();
         window.setHints(Collections.singletonList(Window.Hint.EXPANDED));
         gui.addWindow(window);

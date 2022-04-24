@@ -29,7 +29,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
     /**
      * Called when a user entered some input which wasn't handled by the focused component. This allows you to catch it
-     * at a {@link RootPane} (or {@link Window}) level and prevent it from being reported to the {@link TextGUI} as an
+     * at a {@link RootPane} (or {@link Window}) level and prevent it from being reported to the {@link Frame} as an
      * unhandled input event.
      *
      * @param keyStroke The unhandled input event

@@ -35,7 +35,7 @@ public class Issue190 {
         Terminal terminal = factory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        MultiWindowFrame gui = new MultiWindowFrame(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
         Panel panel = Panels.border()
             .add(new ActionListBox().withBorder(Borders.singleLine("Channels")), BorderLayout.Location.LEFT);

@@ -25,7 +25,7 @@ import java.util.Collection;
  * of the Window class.
  * @author Martin
  */
-public interface WindowBasedTextGUI extends TextGUI {
+public interface WindowFrame extends Frame {
     /**
      * Returns the window manager that is currently controlling this TextGUI. The window manager is in charge of placing
      * the windows on the surface and also deciding how they behave and move around.
@@ -46,7 +46,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param window Window to add to the GUI
      * @return The WindowBasedTextGUI Itself
      */
-    WindowBasedTextGUI addWindow(Window window);
+    WindowFrame addWindow(Window window);
 
     /**
      * Adds a window to the TextGUI system, depending on the window manager this window may or may not be immediately
@@ -62,7 +62,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param window Window to add to the GUI
      * @return The WindowBasedTextGUI Itself
      */
-    WindowBasedTextGUI addWindowAndWait(Window window);
+    WindowFrame addWindowAndWait(Window window);
 
     /**
      * Removes a window from the TextGUI. This is effectively the same as closing the window. The window will be
@@ -72,7 +72,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param window Window to close
      * @return The WindowBasedTextGUI itself
      */
-    WindowBasedTextGUI removeWindow(Window window);
+    WindowFrame removeWindow(Window window);
 
     /**
      * Returns a list of all windows currently in the TextGUI. The list is unmodifiable and just a snapshot of what the
@@ -87,7 +87,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param activeWindow Window to become active and receive input events
      * @return The WindowBasedTextGUI itself
      */
-    WindowBasedTextGUI setActiveWindow(Window activeWindow);
+    WindowFrame setActiveWindow(Window activeWindow);
 
     /**
      * Returns the window which the TextGUI considers the active one at the time of the method call. The active window
@@ -105,8 +105,8 @@ public interface WindowBasedTextGUI extends TextGUI {
     RootPane getBackgroundPane();
 
     /**
-     * Returns the {@link WindowPostRenderer} for this {@link WindowBasedTextGUI}
-     * @return the {@link WindowPostRenderer} for this {@link WindowBasedTextGUI}
+     * Returns the {@link WindowPostRenderer} for this {@link WindowFrame}
+     * @return the {@link WindowPostRenderer} for this {@link WindowFrame}
      */
     WindowPostRenderer getWindowPostRenderer();
 
@@ -118,7 +118,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param window Window in the stack to move to the top position
      * @return The WindowBasedTextGUI Itself
      */
-    WindowBasedTextGUI moveToTop(Window window);
+    WindowFrame moveToTop(Window window);
 
     /**
      * Takes the previously active window and makes it active, or if in reverse mode, takes the window at the bottom of
@@ -126,7 +126,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * @param reverse Direction to cycle through the windows
      * @return The WindowBasedTextGUI Itself
      */
-    WindowBasedTextGUI cycleActiveWindow(boolean reverse);
+    WindowFrame cycleActiveWindow(boolean reverse);
 
     /**
      * Waits for the specified window to be closed

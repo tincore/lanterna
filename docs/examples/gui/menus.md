@@ -31,10 +31,10 @@ created, each containing two menu items:
         menubar.addMenu(menuFile);
         menuFile.addMenuItem("Open...", new Runnable() {
             public void run() {
-                File file = new FileDialogBuilder().build().showDialog(textGUI);
+                File file = new FileDialogBuilder().build().showDialog(frame);
                 if (file != null)
                     MessageDialog.showMessageDialog(
-                            textGUI, "Open", "Selected file:\n" + file, MessageDialogButton.OK);
+                            frame, "Open", "Selected file:\n" + file, MessageDialogButton.OK);
             }
         });
         menuFile.addMenuItem("Exit", new Runnable() {
@@ -49,13 +49,13 @@ created, each containing two menu items:
         menuHelp.addMenuItem("Homepage", new Runnable() {
             public void run() {
                 MessageDialog.showMessageDialog(
-                        textGUI, "Homepage", "https://github.com/mabe02/lanterna", MessageDialogButton.OK);
+                        frame, "Homepage", "https://github.com/mabe02/lanterna", MessageDialogButton.OK);
             }
         });
         menuHelp.addMenuItem("About", new Runnable() {
             public void run() {
                 MessageDialog.showMessageDialog(
-                        textGUI, "About", "Lanterna drop-down menu", MessageDialogButton.OK);
+                        frame, "About", "Lanterna drop-down menu", MessageDialogButton.OK);
             }
         });
 
@@ -63,7 +63,7 @@ created, each containing two menu items:
         BasicWindow window = new BasicWindow();
         window.setComponent(menubar);
 
-        textGUI.addWindow(window);
+        frame.addWindow(window);
 ```
 
 ### Screenshot

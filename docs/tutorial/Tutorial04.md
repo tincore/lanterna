@@ -33,7 +33,7 @@ if you attempt to mutate the GUI from another thread. Another default setting th
 the background of the GUI will be solid blue.
 
 
-    final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+    final WindowBasedTextGUI frame = new MultiWindowTextGUI(screen);
 
 Creating a new window is relatively uncomplicated, you can optionally supply a title for the window
 
@@ -114,7 +114,7 @@ using one of the pre-defined dialogs when the button is triggered.
     contentPanel.addComponent(new Button("Button", new Runnable() {
         @Override
         public void run() {
-            MessageDialog.showMessageDialog(textGUI, "MessageBox", "This is a message box", MessageDialogButton.OK);
+            MessageDialog.showMessageDialog(frame, "MessageBox", "This is a message box", MessageDialogButton.OK);
         }
     }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER)));
 
@@ -152,7 +152,7 @@ window and wait for it to be closed. This will initiate the event loop and make 
 "Close" button above, we tied a call to the `close()` method on the Window object when the button is
 triggered, this will then break the even loop and our call finally returns.
 
-    textGUI.addWindowAndWait(window);
+    frame.addWindowAndWait(window);
 
 When our call has returned, the window is closed and no longer visible. The screen still contains the last
 state the `TextGUI` left it in, so we can easily add and display another window without any flickering. In

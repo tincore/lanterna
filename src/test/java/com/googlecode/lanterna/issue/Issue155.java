@@ -34,7 +34,7 @@ public class Issue155 {
         Screen screen = new TerminalScreen(term);
         WindowManager windowManager = new DefaultWindowManager();
         Component background = new EmptySpace(TextColor.ANSI.DEFAULT);
-        final WindowBasedTextGUI gui = new MultiWindowTextGUI(screen, windowManager, background);
+        final WindowFrame gui = new MultiWindowFrame(screen, windowManager, background);
         screen.start();
         gui.addWindowAndWait(new BasicWindow("Issue155") {{
             setComponent(createUi(gui, this));
@@ -43,11 +43,11 @@ public class Issue155 {
     }
 
 
-    private static Panel createUi(WindowBasedTextGUI gui, BasicWindow window) {
+    private static Panel createUi(WindowFrame gui, BasicWindow window) {
         return createUi(gui, window, 1);
     }
 
-    private static Panel createUi(WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
+    private static Panel createUi(WindowFrame gui, final BasicWindow window, final int counter) {
         final int nextCounter = counter + 3;
         return Panels.vertical(
                 new Button("Open Dialog (and crush stuff)", openDialog(gui, window, nextCounter)),
@@ -60,7 +60,7 @@ public class Issue155 {
         );
     }
 
-    private static Interactable.ClickListener openDialog(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
+    private static Interactable.ClickListener openDialog(final WindowFrame gui, final BasicWindow window, final int counter) {
         return s -> new ActionListDialogBuilder().
             cancellable(true).
             item("Reinstall UI (this crashes everything)", setupUI(gui, window, counter)).
@@ -68,7 +68,7 @@ public class Issue155 {
             show(gui);
     }
 
-    private static Runnable setupUI(final WindowBasedTextGUI gui, final BasicWindow window, final int counter) {
+    private static Runnable setupUI(final WindowFrame gui, final BasicWindow window, final int counter) {
         return () -> window.setComponent(createUi(gui, window, counter));
     }
 }

@@ -46,7 +46,7 @@ public class DynamicGridLayoutTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Grid layout test");
 
         Panel mainPanel = new Panel();
@@ -87,7 +87,7 @@ public class DynamicGridLayoutTest extends AbstractGuiTest {
         return gridLayout;
     }
 
-    private void onAddComponent(WindowBasedTextGUI textGUI, Panel gridPanel) {
+    private void onAddComponent(WindowFrame textGUI, Panel gridPanel) {
         SelectableComponentType componentType = ListSelectDialog.showDialog(
             textGUI,
             "Add Component",
@@ -122,7 +122,7 @@ public class DynamicGridLayoutTest extends AbstractGuiTest {
         gridPanel.add(component);
     }
 
-    private void onModifyComponent(WindowBasedTextGUI textGUI, Panel panel) {
+    private void onModifyComponent(WindowFrame textGUI, Panel panel) {
         Component[] components = panel.getChildren().toArray(new Component[panel.getComponentCount()]);
         Component component = ListSelectDialog.showDialog(textGUI, "Modify Component", "Select component to modify", 10, components);
         if (component == null) {
@@ -133,12 +133,12 @@ public class DynamicGridLayoutTest extends AbstractGuiTest {
         gridLayoutDataEditor.show(textGUI);
     }
 
-    private void onModifyGrid(WindowBasedTextGUI textGUI, GridLayout gridLayout) {
+    private void onModifyGrid(WindowFrame textGUI, GridLayout gridLayout) {
         GridLayoutEditor gridLayoutEditor = new GridLayoutEditor(gridLayout);
         gridLayoutEditor.show(textGUI);
     }
 
-    private void onResetGrid(WindowBasedTextGUI textGUI, Panel gridPanel) {
+    private void onResetGrid(WindowFrame textGUI, Panel gridPanel) {
         BigInteger columns = TextInputDialog.showNumberDialog(textGUI, "Reset Grid", "Reset grid to how many columns?", "4");
         if (columns == null) {
             return;

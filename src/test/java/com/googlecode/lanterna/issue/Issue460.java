@@ -25,7 +25,7 @@ public class Issue460 {
             .add(new Button("Close", s -> window1.close()), GridLayout.createHorizontallyFilledLayoutData(2)));
 
         // Create gui and start gui
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        MultiWindowFrame gui = new MultiWindowFrame(screen);
         gui.addWindowAndWait(window1);
         screen.stop();
     }

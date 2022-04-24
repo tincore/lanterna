@@ -14,7 +14,7 @@ public class Issue358 {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         Screen screen = new TerminalScreen(terminal);
         screen.start();
-        MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        MultiWindowFrame textGUI = new MultiWindowFrame(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
         String title = "Issue358";
 

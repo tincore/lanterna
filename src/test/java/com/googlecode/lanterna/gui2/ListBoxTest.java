@@ -36,7 +36,7 @@ public class ListBoxTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("ListBox test");
 
         Dimension size = new Dimension(14, 10);

@@ -90,7 +90,7 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The selected item or {@code null} if cancelled
      */
     @SafeVarargs
-    public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, T... items) {
+    public static <T> T showDialog(WindowFrame textGUI, String title, String description, T... items) {
         return showDialog(textGUI, title, description, null, items);
     }
 
@@ -106,7 +106,7 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The selected item or {@code null} if cancelled
      */
     @SafeVarargs
-    public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, int listBoxHeight, T... items) {
+    public static <T> T showDialog(WindowFrame textGUI, String title, String description, int listBoxHeight, T... items) {
         int width = 0;
         for (T item : items) {
             width = Math.max(width, TerminalTextUtils.getColumnWidth(item.toString()));
@@ -127,7 +127,7 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The selected item or {@code null} if cancelled
      */
     @SafeVarargs
-    public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, Dimension listBoxSize, T... items) {
+    public static <T> T showDialog(WindowFrame textGUI, String title, String description, Dimension listBoxSize, T... items) {
         ListSelectDialog<T> listSelectDialog = new ListSelectDialogBuilder<T>()
             .title(title)
             .description(description)
@@ -153,7 +153,7 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The item in the list that was selected or {@code null} if the dialog was cancelled
      */
     @Override
-    public T show(WindowBasedTextGUI textGUI) {
+    public T show(WindowFrame textGUI) {
         result = null;
         super.show(textGUI);
         return result;

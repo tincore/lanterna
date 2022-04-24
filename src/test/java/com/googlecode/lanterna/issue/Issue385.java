@@ -1,9 +1,9 @@
 package com.googlecode.lanterna.issue;
 
 import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.MultiWindowFrame;
 import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.WindowFrame;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
@@ -16,7 +16,7 @@ public class Issue385 {
         Screen screen = terminalFactory.createScreen();
         screen.start();
 
-        final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        final WindowFrame textGUI = new MultiWindowFrame(screen);
 
         final Window window = new BasicWindow("My Root Window");
         window.setHints(Collections.singletonList(Window.Hint.FULL_SCREEN));

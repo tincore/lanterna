@@ -28,7 +28,7 @@ public class MultiButtonTest {
     public static void main(String[] args) throws IOException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
+        MultiWindowFrame textGUI = new MultiWindowFrame(screen);
         textGUI.setEOFWhenNoWindows(true);
         try {
             final BasicWindow window = new BasicWindow("Button test");

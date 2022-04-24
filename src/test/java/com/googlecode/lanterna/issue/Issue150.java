@@ -39,7 +39,7 @@ public class Issue150 {
         Screen screen = new TerminalScreen(term);
         WindowManager windowManager = new DefaultWindowManager();
         Component background = new EmptySpace(TextColor.ANSI.DEFAULT);
-        final WindowBasedTextGUI gui = new MultiWindowTextGUI(screen, windowManager, background);
+        final WindowFrame gui = new MultiWindowFrame(screen, windowManager, background);
         screen.start();
         gui.addWindowAndWait(new BasicWindow("Issue150") {{
             setComponent(createUi());

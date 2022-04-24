@@ -36,7 +36,7 @@ public class WaitingDialog extends DialogWindow {
     }
 
     @Override
-    public Object show(WindowBasedTextGUI textGUI) {
+    public Object show(WindowFrame textGUI) {
         showDialog(textGUI, true);
         return null;
     }
@@ -47,7 +47,7 @@ public class WaitingDialog extends DialogWindow {
      * @param blockUntilClosed If {@code true}, the method call will block until another thread calls {@code close()} on
      *                         the dialog, otherwise the method call returns immediately
      */
-    public void showDialog(WindowBasedTextGUI textGUI, boolean blockUntilClosed) {
+    public void showDialog(WindowFrame textGUI, boolean blockUntilClosed) {
         textGUI.addWindow(this);
 
         if(blockUntilClosed) {
@@ -73,7 +73,7 @@ public class WaitingDialog extends DialogWindow {
      * @param text Text to display on the waiting dialog
      * @return Created waiting dialog
      */
-    public static WaitingDialog showDialog(WindowBasedTextGUI textGUI, String title, String text) {
+    public static WaitingDialog showDialog(WindowFrame textGUI, String title, String text) {
         WaitingDialog waitingDialog = createDialog(title, text);
         waitingDialog.showDialog(textGUI, false);
         return waitingDialog;

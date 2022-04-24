@@ -440,7 +440,7 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         }
 
         @Override
-        public TextGUI getTextGUI() {
+        public Frame getTextGUI() {
             return AbstractRootPane.this.getTextGUI();
         }
 

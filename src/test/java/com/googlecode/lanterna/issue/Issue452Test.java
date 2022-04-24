@@ -123,7 +123,7 @@ public class Issue452Test {
         Terminal terminal = new DefaultVirtualTerminal(new Dimension(100, 100));
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
-        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        WindowFrame textGUI = new MultiWindowFrame(screen);
         Window window = new BasicWindow("needing to get the table drawn");
         window.setComponent(component);
         textGUI.addWindow(window);

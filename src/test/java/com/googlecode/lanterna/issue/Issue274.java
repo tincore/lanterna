@@ -25,7 +25,7 @@ public class Issue274 {
 
         final Screen screen = new TerminalScreen(ter);
         screen.start();
-        final MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        final MultiWindowFrame gui = new MultiWindowFrame(screen);
 
         Panel menubar = new Panel().setLayoutManager(new LinearLayout(Direction.HORIZONTAL).setSpacing(1))
             .add(new TextBox(new Dimension(10, 10), TextBox.Style.MULTI_LINE))

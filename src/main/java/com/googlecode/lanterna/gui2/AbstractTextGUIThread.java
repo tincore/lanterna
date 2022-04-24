@@ -29,15 +29,15 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class AbstractTextGUIThread implements TextGUIThread {
 
-    protected final TextGUI textGUI;
+    protected final Frame frame;
     protected final Queue<Runnable> customTasks;
     protected ExceptionHandler exceptionHandler;
 
     /**
-     * Sets up this {@link AbstractTextGUIThread} for operations on the supplies {@link TextGUI}
-     * @param textGUI Text GUI this {@link TextGUIThread} implementations will be operating on
+     * Sets up this {@link AbstractTextGUIThread} for operations on the supplies {@link Frame}
+     * @param frame Text GUI this {@link TextGUIThread} implementations will be operating on
      */
-    public AbstractTextGUIThread(TextGUI textGUI) {
+    public AbstractTextGUIThread(Frame frame) {
         this.exceptionHandler = new ExceptionHandler() {
             @Override
             public boolean onIOException(IOException e) {
@@ -51,7 +51,7 @@ public abstract class AbstractTextGUIThread implements TextGUIThread {
                 return true;
             }
         };
-        this.textGUI = textGUI;
+        this.frame = frame;
         this.customTasks = new LinkedBlockingQueue<>();
     }
 
@@ -74,15 +74,15 @@ public abstract class AbstractTextGUIThread implements TextGUIThread {
             throw new IllegalStateException("Calling processEventAndUpdate outside of GUI thread");
         }
         try {
-            textGUI.processInput();
+            frame.processInput();
             while (!customTasks.isEmpty()) {
                 Runnable r = customTasks.poll();
                 if (r != null) {
                     r.run();
                 }
             }
-            if (textGUI.isPendingUpdate()) {
-                textGUI.updateScreen();
+            if (frame.isPendingUpdate()) {
+                frame.updateScreen();
                 return true;
             }
             return false;

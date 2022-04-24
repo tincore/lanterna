@@ -94,12 +94,12 @@ public interface RootPane extends Composite {
      *
      * @return The TextGUI this BasePane belongs to
      */
-    TextGUI getTextGUI();
+    Frame getTextGUI();
 
     /**
      * Returns the text GUI {@link Theme} associated with this base pane/window. This is either coming from the
-     * {@link TextGUI} this object is associated with, the theme set as the override through {@link #setTheme(Theme)}
-     * or {@code null} if this base pane/window isn't added to any {@link TextGUI} and doesn't have any override.
+     * {@link Frame} this object is associated with, the theme set as the override through {@link #setTheme(Theme)}
+     * or {@code null} if this base pane/window isn't added to any {@link Frame} and doesn't have any override.
      *
      * @return The {@link Theme} this base pane/window is expected to use when drawing the contents
      */
@@ -161,7 +161,7 @@ public interface RootPane extends Composite {
 
     /**
      * Sets the override {@link Theme} to use for this base pane/window, rather than the default {@link Theme}
-     * associated with the {@link TextGUI} it is attached to. If called with {@code null}, it will clear the override
+     * associated with the {@link Frame} it is attached to. If called with {@code null}, it will clear the override
      * and use the default value instead.
      *
      * @param theme {@link Theme} to assign to this base pane/window, or {@code null} to reset

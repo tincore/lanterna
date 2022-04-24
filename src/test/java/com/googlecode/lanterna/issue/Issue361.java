@@ -24,7 +24,7 @@ public class Issue361 {
         window2.setHints(Collections.<Window.Hint>emptyList());
 
         // Create gui and start gui
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        MultiWindowFrame gui = new MultiWindowFrame(screen);
         gui.addWindow(window2);
         gui.addWindowAndWait(window1);
     }

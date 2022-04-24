@@ -114,7 +114,7 @@ public class SplitPanelTest extends AbstractGuiTest {
     };
     
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("SplitPanelTest");
         window.setTheme(LanternaThemes.getTheme("businessmachine"));
 

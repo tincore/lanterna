@@ -30,7 +30,7 @@ You can also nest `Panel`s:
 	mainPanel.addComponent(rightPanel.withBorder(Borders.singleLine("Right Panel")));
 
 	window.setComponent(mainPanel.withBorder(Borders.singleLine("Main Panel")));
-	textGUI.addWindow(window);
+	frame.addWindow(window);
 ```
 
 In the example above, the "Main Panel" holds two seperate panels: the "Left Panel" and the "Right Panel".

@@ -27,7 +27,7 @@ public class LinearLayoutTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Linear layout test");
         final LinearLayout linearLayout = new LinearLayout(Direction.VERTICAL).setSpacing(1);
         final Panel labelPanel = new Panel().setLayoutManager(linearLayout);

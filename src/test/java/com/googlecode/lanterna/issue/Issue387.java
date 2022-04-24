@@ -37,7 +37,7 @@ public class Issue387 {
 
             window.setComponent(panel);
 
-            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+            MultiWindowFrame gui = new MultiWindowFrame(screen);
             gui.addWindowAndWait(window);
         } catch (IOException e) {
             e.printStackTrace();

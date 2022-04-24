@@ -38,12 +38,12 @@ public abstract class AbstractGuiTest implements TestFixtureTrait {
         return new Button("Close", ON_CLICK_CLOSE_CONTAINER);
     }
 
-    public void afterGUIThreadStarted(WindowBasedTextGUI textGUI) {
+    public void afterGUIThreadStarted(WindowFrame textGUI) {
         // By default do nothing
     }
 
-    protected MultiWindowTextGUI createTextGUI(Screen screen) {
-        return new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen);
+    protected MultiWindowFrame createTextGUI(Screen screen) {
+        return new MultiWindowFrame(new SeparateTextGUIThread.Factory(), screen);
     }
 
     private String extractTheme(String[] args) {
@@ -55,12 +55,12 @@ public abstract class AbstractGuiTest implements TestFixtureTrait {
         return null;
     }
 
-    public abstract void init(WindowBasedTextGUI textGUI);
+    public abstract void init(WindowFrame textGUI);
 
     void run(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        MultiWindowTextGUI textGUI = createTextGUI(screen);
+        MultiWindowFrame textGUI = createTextGUI(screen);
         String theme = extractTheme(args);
         if (theme != null) {
             textGUI.setTheme(LanternaThemes.getTheme(theme));

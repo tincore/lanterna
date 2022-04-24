@@ -93,7 +93,7 @@ public class TextInputDialog extends DialogWindow {
      * @param initialContent What content to place in the text box initially
      * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
      */
-    public static String showDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+    public static String showDialog(WindowFrame textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
             .title(title)
             .description(description)
@@ -111,7 +111,7 @@ public class TextInputDialog extends DialogWindow {
      * @param initialContent What content to place in the text box initially
      * @return The number the user typed into the text box, or {@code null} if the dialog was cancelled
      */
-    public static BigInteger showNumberDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+    public static BigInteger showNumberDialog(WindowFrame textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
             .title(title)
             .description(description)
@@ -131,7 +131,7 @@ public class TextInputDialog extends DialogWindow {
      * @param initialContent What content to place in the text box initially
      * @return The string the user typed into the text box, or {@code null} if the dialog was cancelled
      */
-    public static String showPasswordDialog(WindowBasedTextGUI textGUI, String title, String description, String initialContent) {
+    public static String showPasswordDialog(WindowFrame textGUI, String title, String description, String initialContent) {
         TextInputDialog textInputDialog = new TextInputDialogBuilder()
             .title(title)
             .description(description)
@@ -160,7 +160,7 @@ public class TextInputDialog extends DialogWindow {
     }
 
     @Override
-    public String show(WindowBasedTextGUI textGUI) {
+    public String show(WindowFrame textGUI) {
         result = null;
         super.show(textGUI);
         return result;

@@ -48,7 +48,7 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     private Set<Hint> hints = new HashSet<>();
     private boolean onKeyEscapeClose;
     private WindowPostRenderer windowPostRenderer;
-    private WindowBasedTextGUI textGUI;
+    private WindowFrame textGUI;
 
     public AbstractWindow(Attributes attributes) {
         this("", attributes);
@@ -164,12 +164,12 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     }
 
     @Override
-    public WindowBasedTextGUI getTextGUI() {
+    public WindowFrame getTextGUI() {
         return textGUI;
     }
 
     @Override
-    public void setTextGUI(WindowBasedTextGUI textGUI) {
+    public void setTextGUI(WindowFrame textGUI) {
         //This is kind of stupid check, but might cause it to blow up on people using the library incorrectly instead of
         //just causing weird behaviour
         if (this.textGUI != null && textGUI != null) {
@@ -345,7 +345,7 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
 
     @Override
     public void waitUntilClosed() {
-        WindowBasedTextGUI textGUI = getTextGUI();
+        WindowFrame textGUI = getTextGUI();
         if (textGUI != null) {
             textGUI.waitForWindowToClose(this);
         }

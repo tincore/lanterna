@@ -20,7 +20,7 @@ package com.googlecode.lanterna.gui2.dialogs;
 
 import com.googlecode.lanterna.gui2.AbstractWindow;
 import com.googlecode.lanterna.gui2.Attributes;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.WindowFrame;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,7 +51,7 @@ public abstract class DialogWindow extends AbstractWindow {
      * @param textGUI Text GUI to add the dialog to
      * @return Depending on the {@code DialogWindow} implementation, by default {@code null}
      */
-    public Object show(WindowBasedTextGUI textGUI) {
+    public Object show(WindowFrame textGUI) {
         textGUI.addWindow(this);
 
         //Wait for the window to close, in case the window manager doesn't honor the MODAL hint

@@ -203,7 +203,7 @@ public abstract class AbstractComponent<T extends Component> implements Componen
     }
 
     @Override
-    public TextGUI getTextGUI() {
+    public Frame getTextGUI() {
         if (parent == null) {
             return null;
         }

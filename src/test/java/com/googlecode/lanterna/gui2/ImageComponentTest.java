@@ -28,7 +28,7 @@ public class ImageComponentTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
 
         ImageComponent b = createImageComponent("B", IMAGE_BLANK);
 

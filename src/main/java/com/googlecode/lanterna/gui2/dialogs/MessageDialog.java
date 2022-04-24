@@ -80,7 +80,7 @@ public class MessageDialog extends DialogWindow {
      * @return Which button the user selected
      */
     public static MessageDialogButton showMessageDialog(
-        WindowBasedTextGUI textGUI,
+        WindowFrame textGUI,
         String title,
         String text,
         MessageDialogButton... buttons) {
@@ -103,7 +103,7 @@ public class MessageDialog extends DialogWindow {
      * @return The selected button's enum value
      */
     @Override
-    public MessageDialogButton show(WindowBasedTextGUI textGUI) {
+    public MessageDialogButton show(WindowFrame textGUI) {
         result = null;
         super.show(textGUI);
         return result;

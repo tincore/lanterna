@@ -51,7 +51,7 @@ public class MenuTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         // Create window to hold the menu
         final BasicWindow window = new BasicWindow();
         Panel contentPane = new Panel(new BorderLayout())

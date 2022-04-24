@@ -12,7 +12,7 @@ To create an action list dialog, as with all dialogs, you'll need to create and 
 	screen.startScreen();
 
 	// Setup WindowBasedTextGUI for dialogs
-	final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+	final WindowBasedTextGUI frame = new MultiWindowTextGUI(screen);
 ```
 
 In the following example, an action list dialog box is shown to the user when the button is clicked. When a user activates an action in the list, the corresponding thread is ran.
@@ -40,7 +40,7 @@ In the following example, an action list dialog box is shown to the user when th
 		    }
 		})
 		.build()
-		.showDialog(textGUI);
+		.showDialog(frame);
 ```
 
 ### Screenshot

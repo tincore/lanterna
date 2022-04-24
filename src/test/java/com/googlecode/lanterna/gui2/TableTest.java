@@ -41,11 +41,11 @@ TableTest extends AbstractGuiTest {
         new TableTest().run(args);
     }
 
-    private String askForANumber(WindowBasedTextGUI textGUI, String title) {
+    private String askForANumber(WindowFrame textGUI, String title) {
         return askForANumber(textGUI, title, "");
     }
 
-    private String askForANumber(WindowBasedTextGUI textGUI, String title, String initialNumber) {
+    private String askForANumber(WindowFrame textGUI, String title, String initialNumber) {
         return new TextInputDialogBuilder()
             .title(title)
             .setInitialContent(initialNumber)
@@ -54,14 +54,14 @@ TableTest extends AbstractGuiTest {
             .show(textGUI);
     }
 
-    private String askForAString(WindowBasedTextGUI textGUI, String title) {
+    private String askForAString(WindowFrame textGUI, String title) {
         return new TextInputDialogBuilder()
             .title(title)
             .build()
             .show(textGUI);
     }
 
-    private String chooseAString(WindowBasedTextGUI textGUI, String title, String... items) {
+    private String chooseAString(WindowFrame textGUI, String title, String... items) {
         return new ListSelectDialogBuilder<String>()
             .title(title)
             .addListItems(items)
@@ -70,7 +70,7 @@ TableTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         final Window window = new BasicWindow("Table container test").setHints(Window.Hint.FIT_TERMINAL_WINDOW);
 
         final Table<String> table = new Table<String>("Column 1", "Column 2", "Column 3")
@@ -149,7 +149,7 @@ TableTest extends AbstractGuiTest {
         textGUI.addWindow(window);
     }
 
-    private void onModify(WindowBasedTextGUI textGUI, Table<String> table) {
+    private void onModify(WindowFrame textGUI, Table<String> table) {
         String[] dialogChoices = new String[]{
             "Change table content",
             "Change table style",
@@ -170,7 +170,7 @@ TableTest extends AbstractGuiTest {
         }
     }
 
-    private void onModifyContent(WindowBasedTextGUI textGUI, Table<String> table) {
+    private void onModifyContent(WindowFrame textGUI, Table<String> table) {
         TableModel<String> model = table.getTableModel();
         String columnIndexAsText = askForANumber(textGUI, "Enter column # to modify (0-" + (model.getColumnCount() - 1) + ")");
         if (columnIndexAsText == null) {
@@ -186,7 +186,7 @@ TableTest extends AbstractGuiTest {
         }
     }
 
-    private void onModifyStyle(WindowBasedTextGUI textGUI, Table<String> table) {
+    private void onModifyStyle(WindowFrame textGUI, Table<String> table) {
         String[] dialogChoices = new String[]{
             "Header border style (vertical)",
             "Header border style (horizontal)",
@@ -221,7 +221,7 @@ TableTest extends AbstractGuiTest {
         table.invalidate();
     }
 
-    private void onModifyViewSize(WindowBasedTextGUI textGUI, Table<String> table) {
+    private void onModifyViewSize(WindowFrame textGUI, Table<String> table) {
         String verticalViewSize = askForANumber(textGUI, "Enter number of rows to display at once (0 = all)");
         if (verticalViewSize == null) {
             return;

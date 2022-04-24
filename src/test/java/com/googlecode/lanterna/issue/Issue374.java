@@ -17,7 +17,7 @@ public class Issue374 {
 
         final BasicWindow window = new BasicWindow("FocusTraversalTest");
         window.setHints(Collections.singletonList(Window.Hint.FULL_SCREEN));
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        MultiWindowFrame gui = new MultiWindowFrame(screen);
 
         Panel mainPanel = new Panel(new LinearLayout());
         window.setComponent(mainPanel);

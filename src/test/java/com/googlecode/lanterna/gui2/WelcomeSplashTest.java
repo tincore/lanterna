@@ -36,7 +36,7 @@ public class WelcomeSplashTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         textGUI.getBackgroundPane().setComponent(new EmptySpace(TextColor.ANSI.BLUE) {
             @Override
             protected ComponentRenderer<EmptySpace> createDefaultRenderer() {
@@ -60,7 +60,7 @@ public class WelcomeSplashTest extends AbstractGuiTest {
     }
 
     @Override
-    public void afterGUIThreadStarted(WindowBasedTextGUI textGUI) {
+    public void afterGUIThreadStarted(WindowFrame textGUI) {
         new MessageDialogBuilder()
                 .setTitle("Information")
                 .setText("Welcome to Lanterna!")

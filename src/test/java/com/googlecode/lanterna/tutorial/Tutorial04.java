@@ -55,7 +55,7 @@ public class Tutorial04 {
             if you attempt to mutate the GUI from another thread. Another default setting that will be applied is that
             the background of the GUI will be solid blue.
              */
-            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+            final WindowFrame textGUI = new MultiWindowFrame(screen);
 
             /*
             Creating a new window is relatively uncomplicated, you can optionally supply a title for the window

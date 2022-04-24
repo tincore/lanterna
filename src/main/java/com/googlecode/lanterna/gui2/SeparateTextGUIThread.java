@@ -47,8 +47,8 @@ public class SeparateTextGUIThread extends AbstractTextGUIThread implements Asyn
     private final Thread textGUIThread;
     private final CountDownLatch waitLatch;
 
-    private SeparateTextGUIThread(TextGUI textGUI) {
-        super(textGUI);
+    private SeparateTextGUIThread(Frame frame) {
+        super(frame);
         this.waitLatch = new CountDownLatch(1);
         this.textGUIThread = new Thread("LanternaGUI") {
             @Override
@@ -107,7 +107,7 @@ public class SeparateTextGUIThread extends AbstractTextGUIThread implements Asyn
         try {
             //Draw initial screen, after this only draw when the GUI is marked as invalid
             try {
-                textGUI.updateScreen();
+                frame.updateScreen();
             }
             catch(IOException e) {
                 exceptionHandler.onIOException(e);
@@ -126,9 +126,9 @@ public class SeparateTextGUIThread extends AbstractTextGUIThread implements Asyn
                 }
                 catch(EOFException e) {
                     stop();
-                    if (textGUI instanceof WindowBasedTextGUI) {
+                    if (frame instanceof WindowFrame) {
                         // Close all windows on EOF
-                        for (Window window: ((WindowBasedTextGUI) textGUI).getWindows()) {
+                        for (Window window: ((WindowFrame) frame).getWindows()) {
                             window.close();
                         }
                     }
@@ -160,8 +160,8 @@ public class SeparateTextGUIThread extends AbstractTextGUIThread implements Asyn
      */
     public static class Factory implements TextGUIThreadFactory {
         @Override
-        public TextGUIThread createTextGUIThread(TextGUI textGUI) {
-            return new SeparateTextGUIThread(textGUI);
+        public TextGUIThread createTextGUIThread(Frame frame) {
+            return new SeparateTextGUIThread(frame);
         }
     }
 }

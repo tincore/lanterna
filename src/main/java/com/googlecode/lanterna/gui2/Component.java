@@ -138,7 +138,7 @@ public interface Component extends TextGUIElement, Attributed {
      * or in any other way placed into a GUI system, this method will return null.
      * @return The TextGUI that this component belongs to, or null if none
      */
-    TextGUI getTextGUI();
+    Frame getTextGUI();
 
     /**
      * Returns the {@link Theme} this component should be rendered using. The default implementation through

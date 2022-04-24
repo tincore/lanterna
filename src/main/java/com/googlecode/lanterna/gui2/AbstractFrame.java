@@ -27,8 +27,8 @@ import com.googlecode.lanterna.screen.Screen;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.googlecode.lanterna.gui2.Frame.KeyStrokeListener.DUMMY;
 
 /**
  * This abstract implementation of TextGUI contains some basic management of the underlying Screen and other common code
@@ -36,12 +36,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Martin
  */
-public abstract class AbstractTextGUI implements TextGUI {
+public abstract class AbstractFrame implements Frame {
 
     private final Screen screen;
-    private final List<KeyStrokeListener> keyStrokeListeners = new CopyOnWriteArrayList<>();
     private final TextGUIThread textGUIThread;
 
+    private KeyStrokeListener keyStrokeListener = DUMMY;
     private boolean blockingIO;
     private boolean dirty;
     private Theme theme;
@@ -52,18 +52,13 @@ public abstract class AbstractTextGUI implements TextGUI {
      * @param textGUIThreadFactory Factory class to use for creating the {@code TextGUIThread} class
      * @param screen               What underlying {@code Screen} to use for this text GUI
      */
-    protected AbstractTextGUI(TextGUIThreadFactory textGUIThreadFactory, Screen screen) {
+    protected AbstractFrame(TextGUIThreadFactory textGUIThreadFactory, Screen screen) {
         if (screen == null) {
             throw new IllegalArgumentException("Creating a TextGUI requires an underlying Screen");
         }
         this.screen = screen;
         this.theme = LanternaThemes.getDefaultTheme();
         this.textGUIThread = textGUIThreadFactory.createTextGUIThread(this);
-    }
-
-    @Override
-    public void addKeyStrokeListener(KeyStrokeListener keyStrokeListener) {
-        keyStrokeListeners.add(keyStrokeListener);
     }
 
     /**
@@ -94,13 +89,6 @@ public abstract class AbstractTextGUI implements TextGUI {
     @Override
     public Theme getTheme() {
         return theme;
-    }
-
-    @Override
-    public void setTheme(Theme theme) {
-        if (theme != null) {
-            this.theme = theme;
-        }
     }
 
     /**
@@ -163,11 +151,7 @@ public abstract class AbstractTextGUI implements TextGUI {
                     throw new EOFException();
                 }
                 boolean handled = onInput(keyStroke);
-                if (!handled) {
-                    for (KeyStrokeListener keyStrokeListener : keyStrokeListeners) {
-                        handled = keyStrokeListener.onUnhandledKeyStroke(keyStroke, this) || handled;
-                    }
-                }
+                handled = keyStrokeListener.onKeyStroke(keyStroke, handled, this) || handled;
                 dirty = handled || dirty;
                 keyStroke = pollInput();
             } while (keyStroke != null);
@@ -188,8 +172,22 @@ public abstract class AbstractTextGUI implements TextGUI {
     }
 
     @Override
-    public void removeKeyStrokeListener(KeyStrokeListener keyStrokeListener) {
-        keyStrokeListeners.remove(keyStrokeListener);
+    public void removeKeyStrokeListener() {
+        keyStrokeListener = DUMMY;
+    }
+
+    @Override
+    public Frame setKeyStrokeListener(KeyStrokeListener keyStrokeListener) {
+        this.keyStrokeListener = keyStrokeListener;
+        return this;
+    }
+
+    @Override
+    public Frame setTheme(Theme theme) {
+        if (theme != null) {
+            this.theme = theme;
+        }
+        return this;
     }
 
     @Override

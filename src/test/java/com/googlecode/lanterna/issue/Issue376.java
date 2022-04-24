@@ -10,7 +10,7 @@ public class Issue376 {
     public static void main(String... args) throws IOException {
         Screen screen = new DefaultTerminalFactory().createScreen();
         screen.start();
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+        MultiWindowFrame gui = new MultiWindowFrame(screen);
         Window window = new LabelWithTabWindow();
         gui.addWindow(window);
         gui.waitForWindowToClose(window);

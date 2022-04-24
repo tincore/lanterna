@@ -28,7 +28,7 @@ public class TextBoxTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("TextBoxTest");
         Panel mainPanel = new Panel();
         mainPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));

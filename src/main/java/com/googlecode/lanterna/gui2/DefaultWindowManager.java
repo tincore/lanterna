@@ -98,7 +98,7 @@ public class DefaultWindowManager implements WindowManager {
     }
 
     @Override
-    public void onAdded(WindowBasedTextGUI textGUI, Window window, List<Window> allWindows) {
+    public void onAdded(WindowFrame textGUI, Window window, List<Window> allWindows) {
         WindowDecorationRenderer decorationRenderer = getWindowDecorationRenderer(window);
         Dimension expectedDecoratedSize = decorationRenderer.getDecoratedSize(window, window.getPreferredSize());
         window.setDecoratedSize(expectedDecoratedSize);
@@ -129,12 +129,12 @@ public class DefaultWindowManager implements WindowManager {
     }
 
     @Override
-    public void onRemoved(WindowBasedTextGUI textGUI, Window window, List<Window> allWindows) {
+    public void onRemoved(WindowFrame textGUI, Window window, List<Window> allWindows) {
         //NOP
     }
 
     @Override
-    public void prepareWindows(WindowBasedTextGUI textGUI, List<Window> allWindows, Dimension screenSize) {
+    public void prepareWindows(WindowFrame textGUI, List<Window> allWindows, Dimension screenSize) {
         this.lastKnownScreenSize = screenSize;
         for(Window window: allWindows) {
             prepareWindow(screenSize, window);

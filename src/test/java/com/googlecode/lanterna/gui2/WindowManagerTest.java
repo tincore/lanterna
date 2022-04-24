@@ -12,12 +12,12 @@ public class WindowManagerTest extends AbstractGuiTest {
     }
 
     @Override
-    protected MultiWindowTextGUI createTextGUI(Screen screen) {
-        return new MultiWindowTextGUI(new SeparateTextGUIThread.Factory(), screen, new CustomWindowManager());
+    protected MultiWindowFrame createTextGUI(Screen screen) {
+        return new MultiWindowFrame(new SeparateTextGUIThread.Factory(), screen, new CustomWindowManager());
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final Window mainWindow = new BasicWindow("Window Manager Test");
         mainWindow.setComponent(new Panel().setLayoutManager(new LinearLayout(Direction.VERTICAL))
             .add(new EmptySpace(Dimension.ONE))

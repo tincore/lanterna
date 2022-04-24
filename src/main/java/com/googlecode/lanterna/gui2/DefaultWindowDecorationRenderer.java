@@ -34,7 +34,7 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
     private static final int TITLE_POSITION_WITHOUT_PADDING = 3;
 
     @Override
-    public TextGUIGraphics draw(WindowBasedTextGUI textGUI, TextGUIGraphics graphics, Window window) {
+    public TextGUIGraphics draw(WindowFrame textGUI, TextGUIGraphics graphics, Window window) {
         String title = window.getTitle();
         if(title == null) {
             title = "";

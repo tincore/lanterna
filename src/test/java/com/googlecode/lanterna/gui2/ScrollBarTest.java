@@ -37,7 +37,7 @@ public class ScrollBarTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow basicWindow = new BasicWindow("ScrollBar test");
         Panel contentPanel = new Panel();
         contentPanel.setLayoutManager(new GridLayout(2));

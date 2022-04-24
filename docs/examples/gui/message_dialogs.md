@@ -12,7 +12,7 @@ To create a message dialog, as with all dialogs, you'll need to create and pass 
 	screen.startScreen();
 
 	// Setup WindowBasedTextGUI for dialogs
-	final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+	final WindowBasedTextGUI frame = new MultiWindowTextGUI(screen);
 ```
 
 In the following example, a message box is shown to the user when the button is clicked:
@@ -21,7 +21,7 @@ In the following example, a message box is shown to the user when the button is 
 	panel.addComponent(new Button("Test", new Runnable() {
 		@Override
 		public void run() {
-		    MessageDialog.showMessageDialog(textGUI, "test", "test");
+		    MessageDialog.showMessageDialog(frame, "test", "test");
 		}
 	}));
 ```
@@ -29,7 +29,7 @@ In the following example, a message box is shown to the user when the button is 
 As you can see, it's incredibly easy to create and show a message dialog:
 
 ```
-	MessageDialog.showMessageDialog(textGUI, "Message", "Here is a message dialog!");
+	MessageDialog.showMessageDialog(frame, "Message", "Here is a message dialog!");
 ```
 
 You can also use a `MessageDialogBuilder` to build up and show a message dialog:
@@ -39,7 +39,7 @@ You can also use a `MessageDialogBuilder` to build up and show a message dialog:
 		.setTitle("Here is the title")
 		.setText("Here is a message")
 		.build()
-		.showDialog(textGUI);
+		.showDialog(frame);
 ```
 
 You can also change the button on the `MessageDialog`:
@@ -50,7 +50,7 @@ You can also change the button on the `MessageDialog`:
 		.setText("Here is a message")
 		.addButton(MessageDialogButton.Close)
 		.build()
-		.showDialog(textGUI);
+		.showDialog(frame);
 ```
 
 The following buttons are available:

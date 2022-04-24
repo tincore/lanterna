@@ -12,7 +12,7 @@ To create an file dialog, as with all dialogs, you'll need to create and pass in
 	screen.startScreen();
 
 	// Setup WindowBasedTextGUI for dialogs
-	final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+	final WindowBasedTextGUI frame = new MultiWindowTextGUI(screen);
 ```
 
 In the following example, a file dialog is shown to the user when the button is clicked. When the user selects and submits a file, the full file path of the selected file is returned and stored in the variable `input`:
@@ -26,7 +26,7 @@ In the following example, a file dialog is shown to the user when the button is 
 								.setDescription("Choose a file")
 								.setActionLabel("Open")
 								.build()
-								.showDialog(textGUI);
+								.showDialog(frame);
 		}
 	}));
 ```

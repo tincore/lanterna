@@ -58,7 +58,7 @@ public class Issue212 {
         screen.start();
 
         // Create gui and start gui
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen,
+        MultiWindowFrame gui = new MultiWindowFrame(screen,
             new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
         gui.addWindowAndWait(win);
 

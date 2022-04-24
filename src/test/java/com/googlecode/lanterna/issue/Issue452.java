@@ -130,7 +130,7 @@ public class Issue452 {
             .setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE).setInitialTerminalSize(new Dimension(100, 100))
             .createScreen()) {
             screen.start();
-            WindowBasedTextGUI gui = new MultiWindowTextGUI(screen);
+            WindowFrame gui = new MultiWindowFrame(screen);
             Window window = new BasicWindow("Issue452");
             Panel content = new Panel(new GridLayout(GRID_WIDTH));
             GridLayout gridLayout = (GridLayout) content.getLayoutManager();

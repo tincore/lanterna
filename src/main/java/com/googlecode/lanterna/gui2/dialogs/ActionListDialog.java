@@ -97,7 +97,7 @@ public class ActionListDialog extends DialogWindow {
      * @param items       Items in the {@code ActionListBox}, the label will be taken from each {@code Runnable} by calling
      *                    {@code toString()} on each one
      */
-    public static void showDialog(WindowBasedTextGUI textGUI, String title, String description, ActionListBox.Item... items) {
+    public static void showDialog(WindowFrame textGUI, String title, String description, ActionListBox.Item... items) {
         ActionListDialog actionListDialog = new ActionListDialogBuilder()
             .title(title)
             .description(description)

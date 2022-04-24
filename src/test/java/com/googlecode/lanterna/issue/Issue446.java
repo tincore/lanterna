@@ -34,7 +34,7 @@ public class Issue446 {
         Terminal terminal = terminalFactory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
-        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        WindowFrame textGUI = new MultiWindowFrame(screen);
         textGUI.addWindowAndWait(buildWindow());
     }
 }

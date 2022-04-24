@@ -24,7 +24,7 @@ public class Issue384 {
     public static void main(String[] args) throws IOException {
         final Screen screen = new DefaultTerminalFactory().createScreen();
         screen.start();
-        final MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
+        final MultiWindowFrame textGUI = new MultiWindowFrame(screen);
         final Window window = new BasicWindow("Table container test");
         window.setHints(Collections.singletonList(Window.Hint.FIXED_SIZE));
         window.setFixedSize(new Dimension(60, 14));
@@ -53,7 +53,7 @@ public class Issue384 {
         screen.stop();
     }
 
-    private static void showExpandableColumnsEditor(MultiWindowTextGUI textGUI, final DefaultTableRenderer<String> tableRenderer) {
+    private static void showExpandableColumnsEditor(MultiWindowFrame textGUI, final DefaultTableRenderer<String> tableRenderer) {
         final DialogWindow dialogWindow = new DialogWindow("Select expandable columns") {
         };
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));

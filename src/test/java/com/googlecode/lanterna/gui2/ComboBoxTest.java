@@ -33,7 +33,7 @@ public class ComboBoxTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("ComboBoxTest");
         Panel mainPanel = new Panel();
 

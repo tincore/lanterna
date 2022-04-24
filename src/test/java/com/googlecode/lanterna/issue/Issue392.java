@@ -2,7 +2,7 @@ package com.googlecode.lanterna.issue;
 
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Button;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.MultiWindowFrame;
 import com.googlecode.lanterna.gui2.TextGUIThread;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -10,14 +10,14 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 
 public class Issue392 {
-    private static MultiWindowTextGUI textGUI;
+    private static MultiWindowFrame textGUI;
 
     public static void main(String[] args) throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Terminal terminal = terminalFactory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
-        textGUI = new MultiWindowTextGUI(screen);
+        textGUI = new MultiWindowFrame(screen);
         setExceptionHandler();
         BasicWindow window = new BasicWindow();
 

@@ -23,7 +23,7 @@ import com.googlecode.lanterna.graphics.DefaultMutableThemeStyle;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.DefaultWindowManager;
 import com.googlecode.lanterna.gui2.EmptySpace;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.MultiWindowFrame;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
@@ -51,7 +51,7 @@ class Issue453 {
         public LanternaTerminalWriter(String[] args) throws IOException {
             screen = new TestTerminalFactory(args).createScreen();
             screen.start();
-            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(),
+            MultiWindowFrame gui = new MultiWindowFrame(screen, new DefaultWindowManager(),
     				new EmptySpace(TextColor.ANSI.BLACK));
             
             assertNotNull(new DefaultMutableThemeStyle(TextColor.ANSI.WHITE, TextColor.ANSI.BLACK, new SGR[] {}));

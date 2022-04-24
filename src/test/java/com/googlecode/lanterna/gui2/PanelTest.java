@@ -26,7 +26,7 @@ public class PanelTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Grid layout test");
 
         Panel mainPanel = new Panel();

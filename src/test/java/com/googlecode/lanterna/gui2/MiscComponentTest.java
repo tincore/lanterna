@@ -31,7 +31,7 @@ public class MiscComponentTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Grid layout test");
         final Panel leftPanel = new Panel();
         Panel checkBoxPanel = new Panel();

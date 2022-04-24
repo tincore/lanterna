@@ -24,7 +24,7 @@ public class Issue359 {
             window.setComponent(button);
             window.setComponent(button.withBorder(Borders.singleLine("Border")));
 
-            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
+            MultiWindowFrame gui = new MultiWindowFrame(screen);
             gui.addWindowAndWait(window);
         } catch (IOException e) {
             e.printStackTrace();

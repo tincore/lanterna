@@ -32,7 +32,7 @@ import java.util.List;
 public interface WindowManager {
 
     /**
-     * Will be polled by the the {@link WindowBasedTextGUI} to see if the window manager believes an update is required.
+     * Will be polled by the the {@link WindowFrame} to see if the window manager believes an update is required.
      * For example, it could be that there is no input, no events and none of the components are invalid, but the window
      * manager decides for some other reason that the GUI needs to be updated, in that case you should return
      * {@code true} here. Please note that returning {@code false} will not prevent updates from happening, it's just
@@ -55,7 +55,7 @@ public interface WindowManager {
      * @param window Window that was added
      * @param allWindows All windows, including the new window, in the GUI
      */
-    void onAdded(WindowBasedTextGUI textGUI, Window window, List<Window> allWindows);
+    void onAdded(WindowFrame textGUI, Window window, List<Window> allWindows);
 
     /**
      * Called whenever a window is removed from a {@code WindowBasedTextGUI}. This gives the window manager an
@@ -65,7 +65,7 @@ public interface WindowManager {
      * @param allWindows All windows, excluding the removed window, in the GUI
      */
     @SuppressWarnings("EmptyMethod")
-    void onRemoved(WindowBasedTextGUI textGUI, Window window, List<Window> allWindows);
+    void onRemoved(WindowFrame textGUI, Window window, List<Window> allWindows);
 
     /**
      * Called by the GUI system before iterating through all windows during the drawing process. The window manager
@@ -79,5 +79,5 @@ public interface WindowManager {
      * @param allWindows All windows that are going to be drawn, in the order they will be drawn
      * @param screenSize Size of the terminal that is available to draw on
      */
-    void prepareWindows(WindowBasedTextGUI textGUI, List<Window> allWindows, Dimension screenSize);
+    void prepareWindows(WindowFrame textGUI, List<Window> allWindows, Dimension screenSize);
 }

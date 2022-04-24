@@ -36,7 +36,7 @@ public class SimpleWindowManagerTest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(final WindowBasedTextGUI textGUI) {
+    public void init(final WindowFrame textGUI) {
         textGUI.addWindow(new BasicWindow("Choose test")
             .setComponent(new Panel(new LinearLayout(Direction.VERTICAL))
                 .add(new Button("Centered window", s -> textGUI.addWindow(new CenteredWindow())))

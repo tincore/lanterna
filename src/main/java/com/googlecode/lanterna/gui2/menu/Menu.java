@@ -23,7 +23,7 @@ package com.googlecode.lanterna.gui2.menu;
 import com.googlecode.lanterna.gui2.MenuPopupWindow;
 import com.googlecode.lanterna.gui2.RootPaneKeystrokeAdapter;
 import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.WindowFrame;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 
@@ -110,7 +110,7 @@ public class Menu extends MenuItem {
                 return false;
             }
         });
-        ((WindowBasedTextGUI) getTextGUI()).addWindowAndWait(popupMenu);
+        ((WindowFrame) getTextGUI()).addWindowAndWait(popupMenu);
         result = !popupCancelled.get();
 
         return result;

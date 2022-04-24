@@ -42,12 +42,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * it's very likely this is what you want to use.
  * <p>
  * Note: This class used to always wrap the {@link Screen} object with a {@link VirtualScreen} to ensure that the UI
- * always fits. As of 3.1.0, we don't do this anymore so when you create the {@link MultiWindowTextGUI} you can wrap
+ * always fits. As of 3.1.0, we don't do this anymore so when you create the {@link MultiWindowFrame} you can wrap
  * the screen parameter yourself if you want to keep this behavior.
  *
  * @author Martin
  */
-public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTextGUI {
+public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
     private final WindowManager windowManager;
     private final RootPane backgroundPane;
     private final WindowList windowList;
@@ -67,7 +67,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      *
      * @param screen Screen to use as the backend for drawing operations
      */
-    public MultiWindowTextGUI(Screen screen) {
+    public MultiWindowFrame(Screen screen) {
         this(new SameTextGUIThread.Factory(), screen);
     }
 
@@ -79,12 +79,12 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param guiThreadFactory Factory implementation to use when creating the {@code TextGUIThread}
      * @param screen           Screen to use as the backend for drawing operations
      */
-    public MultiWindowTextGUI(TextGUIThreadFactory guiThreadFactory, Screen screen) {
+    public MultiWindowFrame(TextGUIThreadFactory guiThreadFactory, Screen screen) {
         this(guiThreadFactory,
             screen,
             new DefaultWindowManager(),
             null,
-            new GUIBackdrop());
+            new FrameBackdrop());
     }
 
     /**
@@ -96,12 +96,12 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param screen           Screen to use as the backend for drawing operations
      * @param windowManager    Custom window manager to use
      */
-    public MultiWindowTextGUI(TextGUIThreadFactory guiThreadFactory, Screen screen, WindowManager windowManager) {
+    public MultiWindowFrame(TextGUIThreadFactory guiThreadFactory, Screen screen, WindowManager windowManager) {
         this(guiThreadFactory,
             screen,
             windowManager,
             null,
-            new GUIBackdrop());
+            new FrameBackdrop());
     }
 
     /**
@@ -114,7 +114,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * or you should change the theme. Using this constructor won't work well with theming.
      */
     @Deprecated
-    public MultiWindowTextGUI(
+    public MultiWindowFrame(
         Screen screen,
         TextColor backgroundColor) {
 
@@ -130,7 +130,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param windowManager Window manager implementation to use
      * @param background    Component to use as the background of the GUI, behind all the windows
      */
-    public MultiWindowTextGUI(
+    public MultiWindowFrame(
         Screen screen,
         WindowManager windowManager,
         Component background) {
@@ -149,7 +149,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param postRenderer  {@code WindowPostRenderer} object to invoke after each window has been drawn
      * @param background    Component to use as the background of the GUI, behind all the windows
      */
-    public MultiWindowTextGUI(
+    public MultiWindowFrame(
         Screen screen,
         WindowManager windowManager,
         WindowPostRenderer postRenderer,
@@ -171,7 +171,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param postRenderer     {@code WindowPostRenderer} object to invoke after each window has been drawn
      * @param background       Component to use as the background of the GUI, behind all the windows
      */
-    public MultiWindowTextGUI(
+    public MultiWindowFrame(
         TextGUIThreadFactory guiThreadFactory,
         Screen screen,
         WindowManager windowManager,
@@ -185,7 +185,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
         }
         if (background == null) {
             //Use a sensible default instead of throwing
-            background = new GUIBackdrop();
+            background = new FrameBackdrop();
         }
         this.windowManager = windowManager;
         this.backgroundPane = new AbstractRootPane<>(Attributes.EMPTY) {
@@ -194,8 +194,8 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             }
 
             @Override
-            public TextGUI getTextGUI() {
-                return MultiWindowTextGUI.this;
+            public Frame getTextGUI() {
+                return MultiWindowFrame.this;
             }
 
             RootPane self() {
@@ -214,7 +214,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public synchronized WindowBasedTextGUI addWindow(Window window) {
+    public synchronized WindowFrame addWindow(Window window) {
         //To protect against NPE if the user forgot to set a content component
         if (window.getComponent() == null) {
             window.setComponent(new EmptySpace(Dimension.ONE));
@@ -233,7 +233,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public WindowBasedTextGUI addWindowAndWait(Window window) {
+    public WindowFrame addWindowAndWait(Window window) {
         addWindow(window);
         window.waitUntilClosed();
         return this;
@@ -248,7 +248,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
      * @param reverse Direction to cycle through the windows
      * @return Itself
      */
-    public synchronized WindowBasedTextGUI cycleActiveWindow(boolean reverse) {
+    public synchronized WindowFrame cycleActiveWindow(boolean reverse) {
         windowList.cycleActiveWindow(reverse);
         return this;
     }
@@ -309,7 +309,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public synchronized MultiWindowTextGUI setActiveWindow(Window activeWindow) {
+    public synchronized MultiWindowFrame setActiveWindow(Window activeWindow) {
         windowList.setActiveWindow(activeWindow);
         return this;
     }
@@ -386,14 +386,14 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
         return super.isPendingUpdate() || backgroundPane.isInvalid() || windowManager.isInvalid();
     }
 
-    public synchronized WindowBasedTextGUI moveToBottom(Window window) {
+    public synchronized WindowFrame moveToBottom(Window window) {
         windowList.moveToBottom(window);
         invalidate();
         return this;
     }
 
     @Override
-    public synchronized WindowBasedTextGUI moveToTop(Window window) {
+    public synchronized WindowFrame moveToTop(Window window) {
         windowList.moveToTop(window);
         invalidate();
         return this;
@@ -473,7 +473,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public synchronized WindowBasedTextGUI removeWindow(Window window) {
+    public synchronized WindowFrame removeWindow(Window window) {
         boolean contained = windowList.removeWindow(window);
         if (!contained) {
             //Didn't contain this window

@@ -12,7 +12,7 @@ To create a directory dialog, as with all dialogs, you'll need to create and pas
 	screen.startScreen();
 
 	// Setup WindowBasedTextGUI for dialogs
-	final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+	final WindowBasedTextGUI frame = new MultiWindowTextGUI(screen);
 ```
 
 In the following example, a direcotry dialog is shown to the user when the button is clicked. 
@@ -28,7 +28,7 @@ is returned and stored in the variable `input` and printed to stdout:
 				.setDescription("Choose a directory")
 				.setActionLabel("Select")
 				.build()
-				.showDialog(textGUI);
+				.showDialog(frame);
 			System.out.println(input);
 		}
 	}));

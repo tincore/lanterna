@@ -246,7 +246,7 @@ public interface Window extends RootPane {
     Window setSize(Dimension size);
 
     @Override
-    WindowBasedTextGUI getTextGUI();
+    WindowFrame getTextGUI();
 
     /**
      * DON'T CALL THIS METHOD YOURSELF, it is called automatically by the TextGUI system when you add a window. If you
@@ -255,7 +255,7 @@ public interface Window extends RootPane {
      *
      * @param textGUI TextGUI this window belongs to from now on
      */
-    void setTextGUI(WindowBasedTextGUI textGUI);
+    void setTextGUI(WindowFrame textGUI);
 
     /**
      * This method returns the title of the window, which is normally drawn at the top-left corder of the window

@@ -25,8 +25,8 @@ package com.googlecode.lanterna.gui2;
 public interface TextGUIThreadFactory {
     /**
      * Creates a new {@code TextGUIThread} objects
-     * @param textGUI {@code TextGUI} this {@code TextGUIThread} should be associated with
+     * @param frame {@code TextGUI} this {@code TextGUIThread} should be associated with
      * @return The new {@code TextGUIThread}
      */
-    TextGUIThread createTextGUIThread(TextGUI textGUI);
+    TextGUIThread createTextGUIThread(Frame frame);
 }

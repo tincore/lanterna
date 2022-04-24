@@ -32,7 +32,7 @@ public class MultiLabelTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         Screen screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        WindowFrame textGUI = new MultiWindowFrame(screen);
         try {
             final BasicWindow window = new BasicWindow("Label test");
             window.setComponent(new Panel()

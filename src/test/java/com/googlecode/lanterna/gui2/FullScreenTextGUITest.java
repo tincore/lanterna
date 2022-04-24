@@ -37,26 +37,27 @@ public class FullScreenTextGUITest {
         screen.start();
 
         final AtomicBoolean stop = new AtomicBoolean(false);
-        MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
-        textGUI.addKeyStrokeListener((key, g) -> {
-            if(key.getKeyType() == KeyType.Escape) {
+        MultiWindowFrame multiWindowFrame = new MultiWindowFrame(screen);
+        multiWindowFrame.setKeyStrokeListener((k, h, g) -> {
+            if (h) {
+                return false;
+            }
+            if (k.getKeyType() == KeyType.Escape) {
                 stop.set(true);
                 return true;
             }
             return false;
         });
         try {
-            textGUI.getBackgroundPane().setComponent(new BIOS());
-            while(!stop.get()) {
-                if(!textGUI.getGUIThread().processEventsAndUpdate()) {
+            multiWindowFrame.getBackgroundPane().setComponent(new BIOS());
+            while (!stop.get()) {
+                if (!multiWindowFrame.getGUIThread().processEventsAndUpdate()) {
                     Thread.sleep(1);
                 }
             }
-        }
-        catch (EOFException ignore) {
+        } catch (EOFException ignore) {
             // Terminal closed
-        }
-        finally {
+        } finally {
             screen.stop();
         }
     }
@@ -64,16 +65,16 @@ public class FullScreenTextGUITest {
     private static class BIOS extends Panel {
         private final TextImage background;
         private final Label helpLabel;
-        
+
         private BIOS() {
             setLayoutManager(new AbsoluteLayout());
             background = createBackground();
-            
+
             helpLabel = new Label("");
             helpLabel.setForegroundColor(TextColor.ANSI.YELLOW);
             helpLabel.setBackgroundColor(TextColor.ANSI.BLUE);
             helpLabel.addStyle(SGR.BOLD);
-            
+
             BIOSButton button1 = new BIOSButton("Standard Lanterna Features", "Time, Date, Type...");
             BIOSButton button2 = new BIOSButton("Advanced Lanterna Features", "Well, what could this possibly be?");
             BIOSButton button3 = new BIOSButton("Advanced Terminal Features", "As you can see, I can change the description here");
@@ -88,7 +89,7 @@ public class FullScreenTextGUITest {
             BIOSButton button12 = new BIOSButton("Set User Password", "What would you even need this for?");
             BIOSButton button13 = new BIOSButton("Save & Exit Setup", "...and then you can have some cake!");
             BIOSButton button14 = new BIOSButton("Exit Without Saving", "僕の事が思い出せなくても泣かないでね");
-            
+
             button1.setSize(new Dimension(35, 1));
             button1.setPosition(new Point(3, 3));
             button2.setSize(new Dimension(35, 1));
@@ -103,7 +104,7 @@ public class FullScreenTextGUITest {
             button6.setPosition(new Point(3, 13));
             button7.setSize(new Dimension(35, 1));
             button7.setPosition(new Point(3, 15));
-            
+
             button8.setSize(new Dimension(35, 1));
             button8.setPosition(new Point(43, 3));
             button9.setSize(new Dimension(35, 1));
@@ -118,11 +119,11 @@ public class FullScreenTextGUITest {
             button13.setPosition(new Point(43, 13));
             button14.setSize(new Dimension(35, 1));
             button14.setPosition(new Point(43, 15));
-            
+
             helpLabel.setPosition(new Point(2, 22));
             helpLabel.setSize(new Dimension(76, 1));
             add(helpLabel);
-            for(BIOSButton button: Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9, button10, button11, button12, button13, button14)) {
+            for (BIOSButton button : Arrays.asList(button1, button2, button3, button4, button5, button6, button7, button8, button9, button10, button11, button12, button13, button14)) {
                 add(button);
             }
             add(button14);
@@ -157,41 +158,41 @@ public class FullScreenTextGUITest {
             graphics.setCharacter(0, 20, Symbols.DOUBLE_LINE_T_SINGLE_RIGHT);
             graphics.drawLine(1, 20, 78, 20, Symbols.SINGLE_LINE_HORIZONTAL);
             graphics.setCharacter(79, 20, Symbols.DOUBLE_LINE_T_SINGLE_LEFT);
-            
+
             graphics.putString(2, 18, "Esc : Quit");
-            graphics.putString(42, 18, Symbols.ARROW_UP + " " + Symbols.ARROW_DOWN + " " + Symbols.ARROW_RIGHT + " " + 
-                    Symbols.ARROW_LEFT + "   : Select Item");
+            graphics.putString(42, 18, Symbols.ARROW_UP + " " + Symbols.ARROW_DOWN + " " + Symbols.ARROW_RIGHT + " " +
+                Symbols.ARROW_LEFT + "   : Select Item");
             graphics.putString(2, 19, "F10 : Save & Exit Setup");
             return image;
         }
-        
+
         @Override
         protected ComponentRenderer<Panel> createDefaultRenderer() {
-            final DefaultPanelRenderer panelRenderer = (DefaultPanelRenderer)super.createDefaultRenderer();
+            final DefaultPanelRenderer panelRenderer = (DefaultPanelRenderer) super.createDefaultRenderer();
 
             // Turn off clearing the main area since we'll be using a custom renderer below to prepare the background
             panelRenderer.setFillAreaBeforeDrawingComponents(false);
 
             return new ComponentRenderer<Panel>() {
                 @Override
-                public Dimension getPreferredSize(Panel component) {
-                    return new Dimension(80, 24);
-                }
-
-                @Override
                 public void drawComponent(TextGUIGraphics graphics, Panel component) {
                     //Clear all data
                     graphics.setBackgroundColor(TextColor.ANSI.BLACK).fill(' ');
-                    
+
                     //Draw the background image
                     graphics.drawImage(Point.TOP_LEFT_CORNER, background);
-                    
+
                     //Then draw all the child components
                     panelRenderer.drawComponent(graphics, BIOS.this);
                 }
+
+                @Override
+                public Dimension getPreferredSize(Panel component) {
+                    return new Dimension(80, 24);
+                }
             };
         }
-        
+
         private class BIOSButton extends Button {
             private final String description;
 
@@ -201,14 +202,23 @@ public class FullScreenTextGUITest {
                 setRenderer(newRenderer());
             }
 
-            @Override
-            public void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus) {
-                super.onFocusGain(direction, previouslyInFocus);
-                helpLabel.setText(description);
-            }
-
             private ButtonRenderer newRenderer() {
                 return new ButtonRenderer() {
+                    @Override
+                    public void drawComponent(TextGUIGraphics graphics, Button component) {
+                        graphics.setBackgroundColor(TextColor.ANSI.BLUE);
+                        graphics.fill(' ');
+                        if (isFocused()) {
+                            graphics.setForegroundColor(TextColor.ANSI.WHITE);
+                            graphics.setBackgroundColor(TextColor.ANSI.RED);
+                        } else {
+                            graphics.setForegroundColor(TextColor.ANSI.YELLOW);
+                            graphics.setBackgroundColor(TextColor.ANSI.BLUE);
+                        }
+                        graphics.setModifiers(EnumSet.of(SGR.BOLD));
+                        graphics.putString(0, 0, "  " + getLabel());
+                    }
+
                     @Override
                     public Point getCursorLocation(Button component) {
                         return null;
@@ -218,23 +228,13 @@ public class FullScreenTextGUITest {
                     public Dimension getPreferredSize(Button component) {
                         return new Dimension(TerminalTextUtils.getColumnWidth(getLabel()), 1);
                     }
-
-                    @Override
-                    public void drawComponent(TextGUIGraphics graphics, Button component) {
-                        graphics.setBackgroundColor(TextColor.ANSI.BLUE);
-                        graphics.fill(' ');
-                        if(isFocused()) {
-                            graphics.setForegroundColor(TextColor.ANSI.WHITE);
-                            graphics.setBackgroundColor(TextColor.ANSI.RED);
-                        }
-                        else {
-                            graphics.setForegroundColor(TextColor.ANSI.YELLOW);
-                            graphics.setBackgroundColor(TextColor.ANSI.BLUE);
-                        }
-                        graphics.setModifiers(EnumSet.of(SGR.BOLD));
-                        graphics.putString(0, 0, "  " + getLabel());
-                    }
                 };
+            }
+
+            @Override
+            public void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus) {
+                super.onFocusGain(direction, previouslyInFocus);
+                helpLabel.setText(description);
             }
         }
     }

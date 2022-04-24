@@ -33,7 +33,7 @@ public class InputUITest extends AbstractGuiTest {
     }
 
     @Override
-    public void init(WindowBasedTextGUI textGUI) {
+    public void init(WindowFrame textGUI) {
         final BasicWindow window = new BasicWindow("Input test");
 
         Interactable interactable = new AbstractInteractableComponent(Attributes.EMPTY) {
