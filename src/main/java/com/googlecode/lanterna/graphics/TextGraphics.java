@@ -49,7 +49,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * this area will be silently ignored.
      * @return Size of the writable area that this TextGraphics can write too
      */
-    TerminalSize getSize();
+    Dimension getSize();
 
     /**
      * Creates a new TextGraphics of the same type as this one, using the same underlying subsystem. Using this method,
@@ -65,7 +65,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @throws java.lang.IllegalArgumentException If the size the of new TextGraphics exceeds the dimensions of this
      * TextGraphics in any way.
      */
-    TextGraphics newTextGraphics(TerminalPosition topLeftCorner, TerminalSize size) throws IllegalArgumentException;
+    TextGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException;
 
     /**
      * Retrieves the current tab behaviour, which is what the TextGraphics will use when expanding \t characters to
@@ -109,20 +109,20 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
 
     /**
      * Sets the character at the current position to the specified value
-     * @param position position of the location to set the character
+     * @param point position of the location to set the character
      * @param character Character to set at the current position
      * @return Itself
      */
-    TextGraphics setCharacter(TerminalPosition position, char character);
+    TextGraphics setCharacter(Point point, char character);
 
     /**
      * Sets the character at the current position to the specified value, without using the current colors and modifiers
      * of this TextGraphics.
-     * @param position position of the location to set the character
+     * @param point position of the location to set the character
      * @param character Character data to set at the current position
      * @return Itself
      */
-    TextGraphics setCharacter(TerminalPosition position, TextCharacter character);
+    TextGraphics setCharacter(Point point, TextCharacter character);
 
     /**
      * Draws a line from a specified position to a specified position, using a supplied character. The current
@@ -132,7 +132,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character Character to use for the line
      * @return Itself
      */
-    TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, char character);
+    TextGraphics drawLine(Point fromPoint, Point toPoint, char character);
 
     /**
      * Draws a line from a specified position to a specified position, using a supplied TextCharacter. The current
@@ -143,7 +143,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character Character data to use for the line, including character, colors and modifiers
      * @return Itself
      */
-    TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, TextCharacter character);
+    TextGraphics drawLine(Point fromPoint, Point toPoint, TextCharacter character);
     
     /**
      * Draws a line from a specified position to a specified position, using a supplied character. The current
@@ -180,7 +180,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character to use when drawing the lines of the triangle
      * @return Itself
      */
-    TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character);
+    TextGraphics drawTriangle(Point p1, Point p2, Point p3, char character);
 
     /**
      * Draws the outline of a triangle on the screen, using a supplied character. The triangle will begin at p1, go
@@ -192,7 +192,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character data to use when drawing the lines of the triangle
      * @return Itself
      */
-    TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character);
+    TextGraphics drawTriangle(Point p1, Point p2, Point p3, TextCharacter character);
 
     /**
      * Draws a filled triangle, using a supplied character. The triangle will begin at p1, go
@@ -204,7 +204,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character to use when drawing the triangle
      * @return Itself
      */
-    TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character);
+    TextGraphics fillTriangle(Point p1, Point p2, Point p3, char character);
 
     /**
      * Draws a filled triangle, using a supplied character. The triangle will begin at p1, go
@@ -216,7 +216,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character data to use when drawing the triangle
      * @return Itself
      */
-    TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character);
+    TextGraphics fillTriangle(Point p1, Point p2, Point p3, TextCharacter character);
 
     /**
      * Draws the outline of a rectangle with a particular character (and the currently active colors and
@@ -231,7 +231,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character to use when drawing the outline of the rectangle
      * @return Itself
      */
-    TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character);
+    TextGraphics drawRectangle(Point topLeft, Dimension size, char character);
 
     /**
      * Draws the outline of a rectangle with a particular TextCharacter, ignoring the current colors and modifiers of
@@ -246,7 +246,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character data to use when drawing the outline of the rectangle
      * @return Itself
      */
-    TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character);
+    TextGraphics drawRectangle(Point topLeft, Dimension size, TextCharacter character);
 
     /**
      * Takes a rectangle and fills it with a particular character (and the currently active colors and
@@ -261,7 +261,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character to use when filling the rectangle
      * @return Itself
      */
-    TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character);
+    TextGraphics fillRectangle(Point topLeft, Dimension size, char character);
 
     /**
      * Takes a rectangle and fills it using a particular TextCharacter, ignoring the current colors and modifiers of
@@ -276,7 +276,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param character What character data to use when filling the rectangle
      * @return Itself
      */
-    TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character);
+    TextGraphics fillRectangle(Point topLeft, Dimension size, TextCharacter character);
     
     /**
      * Takes a TextImage and draws it on the surface this TextGraphics is targeting, given the coordinates on the target
@@ -286,7 +286,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * @param image Image to draw
      * @return Itself
      */
-    TextGraphics drawImage(TerminalPosition topLeft, TextImage image);
+    TextGraphics drawImage(Point topLeft, TextImage image);
 
     /**
      * Takes a TextImage and draws it on the surface this TextGraphics is targeting, given the coordinates on the target
@@ -300,7 +300,7 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      *                        position
      * @return Itself
      */
-    TextGraphics drawImage(TerminalPosition topLeft, TextImage image, TerminalPosition sourceImageTopLeft, TerminalSize sourceImageSize);
+    TextGraphics drawImage(Point topLeft, TextImage image, Point sourceImageTopLeft, Dimension sourceImageSize);
 
     /**
      * Puts a string on the screen at the specified position with the current colors and modifiers. If the string
@@ -318,11 +318,11 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * <pre>
      *  putString(position.getColumn(), position.getRow(), string);
      * </pre>
-     * @param position Position to put the string at
+     * @param point Position to put the string at
      * @param string String to put on the screen
      * @return Itself
      */
-    TextGraphics putString(TerminalPosition position, String string);
+    TextGraphics putString(Point point, String string);
 
     /**
      * Puts a string on the screen at the specified position with the current colors and modifiers. If the string
@@ -343,13 +343,13 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * <pre>
      *  putString(position.getColumn(), position.getRow(), string, modifiers, optionalExtraModifiers);
      * </pre>
-     * @param position Position to put the string at
+     * @param point Position to put the string at
      * @param string String to put on the screen
      * @param extraModifier Modifier to apply to the string
      * @param optionalExtraModifiers Optional extra modifiers to apply to the string
      * @return Itself
      */
-    TextGraphics putString(TerminalPosition position, String string, SGR extraModifier, SGR... optionalExtraModifiers);
+    TextGraphics putString(Point point, String string, SGR extraModifier, SGR... optionalExtraModifiers);
 
     /**
      * Puts a string on the screen at the specified position with the current colors and modifiers. If the string
@@ -411,19 +411,19 @@ public interface TextGraphics extends StyleSet<TextGraphics> {
      * </ul>
      * When the call is complete, the {@link TextGraphics} object will return to the color/style state it was in at the
      * start of the call.
-     * @param position Position to put the string at
+     * @param point Position to put the string at
      * @param string String to put on the screen
      * @return Itself
      */
-    TextGraphics putCSIStyledString(TerminalPosition position, String string);
+    TextGraphics putCSIStyledString(Point point, String string);
 
     /**
      * Returns the character at the specific position in the terminal. May return {@code null} if the TextGraphics
      * implementation doesn't support it or doesn't know what the character is.
-     * @param position Position to return the character for
+     * @param point Position to return the character for
      * @return The text character at the specified position or {@code null} if not available
      */
-    TextCharacter getCharacter(TerminalPosition position);
+    TextCharacter getCharacter(Point point);
 
     /**
      * Returns the character at the specific position in the terminal. May return {@code null} if the TextGraphics

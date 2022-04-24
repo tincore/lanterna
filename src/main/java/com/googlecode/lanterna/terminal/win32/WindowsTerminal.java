@@ -7,8 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Point;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.input.BasicCharacterPattern;
 import com.googlecode.lanterna.input.CharacterPattern;
 import com.googlecode.lanterna.input.KeyDecodingProfile;
@@ -112,12 +112,12 @@ public class WindowsTerminal extends UnixLikeTerminal {
 	}
 
 	@Override
-	protected TerminalSize findTerminalSize() {
+	protected Dimension findTerminalSize() {
 		CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = new CONSOLE_SCREEN_BUFFER_INFO();
 		Wincon.INSTANCE.GetConsoleScreenBufferInfo(CONSOLE_OUTPUT.getHandle(), screenBufferInfo);
 		int columns = screenBufferInfo.srWindow.Right - screenBufferInfo.srWindow.Left + 1;
 		int rows = screenBufferInfo.srWindow.Bottom - screenBufferInfo.srWindow.Top + 1;
-		return new TerminalSize(columns, rows);
+		return new Dimension(columns, rows);
 	}
 
 	@Override
@@ -125,12 +125,12 @@ public class WindowsTerminal extends UnixLikeTerminal {
 		// ignore
 	}
 
-	public TerminalPosition getCursorPosition() {
+	public Point getCursorPosition() {
 		CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo = new CONSOLE_SCREEN_BUFFER_INFO();
 		Wincon.INSTANCE.GetConsoleScreenBufferInfo(CONSOLE_OUTPUT.getHandle(), screenBufferInfo);
 		int column = screenBufferInfo.dwCursorPosition.X - screenBufferInfo.srWindow.Left;
 		int row = screenBufferInfo.dwCursorPosition.Y - screenBufferInfo.srWindow.Top;
-		return new TerminalPosition(column, row);
+		return new Point(column, row);
 	}
 
 	private int getConsoleInputMode() {

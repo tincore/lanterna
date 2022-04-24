@@ -18,9 +18,8 @@
  */
 package com.googlecode.lanterna.terminal.swing;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -87,7 +86,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
 
     /**
      * Creates a new SwingTerminal component using custom settings and no scroll controller.
-     * @param initialTerminalSize Initial size of the terminal, which will be used when calculating the preferred size
+     * @param initialDimension Initial size of the terminal, which will be used when calculating the preferred size
      *                            of the component. If null, it will default to 80x25. If the AWT layout manager forces
      *                            the component to a different size, the value of this parameter won't have any meaning
      * @param deviceConfiguration Device configuration to use for this SwingTerminal
@@ -95,12 +94,12 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
      * @param colorConfiguration Color configuration to use for this SwingTerminal
      */
     public SwingTerminal(
-            TerminalSize initialTerminalSize,
+            com.googlecode.lanterna.Dimension initialDimension,
             TerminalEmulatorDeviceConfiguration deviceConfiguration,
             SwingTerminalFontConfiguration fontConfiguration,
             TerminalEmulatorColorConfiguration colorConfiguration) {
 
-        this(initialTerminalSize,
+        this(initialDimension,
                 deviceConfiguration,
                 fontConfiguration,
                 colorConfiguration,
@@ -132,7 +131,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
      * Creates a new SwingTerminal component using custom settings and a custom scroll controller. The scrolling
      * controller will be notified when the terminal's history size grows and will be called when this class needs to
      * figure out the current scrolling position.
-     * @param initialTerminalSize Initial size of the terminal, which will be used when calculating the preferred size
+     * @param initialDimension Initial size of the terminal, which will be used when calculating the preferred size
      *                            of the component. If null, it will default to 80x25. If the AWT layout manager forces
      *                            the component to a different size, the value of this parameter won't have any meaning
      * @param deviceConfiguration Device configuration to use for this SwingTerminal
@@ -142,7 +141,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
      *                         scrollable area has changed
      */
     public SwingTerminal(
-            TerminalSize initialTerminalSize,
+            com.googlecode.lanterna.Dimension initialDimension,
             TerminalEmulatorDeviceConfiguration deviceConfiguration,
             SwingTerminalFontConfiguration fontConfiguration,
             TerminalEmulatorColorConfiguration colorConfiguration,
@@ -176,7 +175,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
         terminalImplementation = new SwingTerminalImplementation(
                 this,
                 fontConfiguration,
-                initialTerminalSize,
+            initialDimension,
                 deviceConfiguration,
                 colorConfiguration,
                 scrollController);
@@ -214,7 +213,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
      * @return The terminal's preferred size in pixels
      */
     @Override
-    public synchronized Dimension getPreferredSize() {
+    public synchronized java.awt.Dimension getPreferredSize() {
         return terminalImplementation.getPreferredSize();
     }
 
@@ -275,12 +274,12 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
     }
 
     @Override
-    public void setCursorPosition(TerminalPosition position) {
-        terminalImplementation.setCursorPosition(position);
+    public void setCursorPosition(com.googlecode.lanterna.Point point) {
+        terminalImplementation.setCursorPosition(point);
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public com.googlecode.lanterna.Point getCursorPosition() {
         return terminalImplementation.getCursorPosition();
     }
 
@@ -325,7 +324,7 @@ public class SwingTerminal extends JComponent implements IOSafeTerminal {
     }
 
     @Override
-    public TerminalSize getTerminalSize() {
+    public Dimension getTerminalSize() {
         return terminalImplementation.getTerminalSize();
     }
 

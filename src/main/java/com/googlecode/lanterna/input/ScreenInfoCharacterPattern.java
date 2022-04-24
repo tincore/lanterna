@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.input;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 
 /**
  * This class recognizes character combinations which are actually a cursor position report. See
@@ -38,7 +38,7 @@ public class ScreenInfoCharacterPattern extends EscapeSequenceCharacterPattern {
         if (num1 == 1 && num2 <= 8) {
             return null; // nope: much more likely it's an F3 with modifiers
         }
-        TerminalPosition pos = new TerminalPosition(num2, num1);
+        Point pos = new Point(num2, num1);
         return new ScreenInfoAction(pos); // yep
     }
 
@@ -53,7 +53,7 @@ public class ScreenInfoCharacterPattern extends EscapeSequenceCharacterPattern {
             int col = 1 + (ks.isAltDown()  ? ALT  : 0)
                         + (ks.isCtrlDown() ? CTRL : 0)
                         + (ks.isShiftDown()? SHIFT: 0);
-            TerminalPosition pos = new TerminalPosition(col,1);
+            Point pos = new Point(col,1);
             return new ScreenInfoAction(pos);
         default:  return null;
         }

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.swing.SwingTerminal;
 import java.awt.event.ActionEvent;
@@ -55,7 +55,7 @@ public class NewSwingTerminalTest extends javax.swing.JFrame {
             }
 
             private void drawRandomHello(IOSafeTerminal terminal) {
-                TerminalSize size = terminal.getTerminalSize();
+                Dimension size = terminal.getTerminalSize();
                 if(size.getColumns() > 6 && size.getRows() > 1) {
                     int positionX = RANDOM.nextInt(size.getColumns() - 6);
                     int positionY = RANDOM.nextInt(size.getRows());

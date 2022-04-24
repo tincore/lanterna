@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MultiWindowManagerTest extends TestBase {
+public class MultiWindowManagerTest extends AbstractGuiTest {
 
     private static final AtomicInteger WINDOW_COUNTER = new AtomicInteger(0);
     private static int nextTheme = 0;
@@ -54,7 +54,7 @@ public class MultiWindowManagerTest extends TestBase {
             buttonToggleVirtualScreen.setLabel("Virtual Screen: " + (virtualScreenEnabled ? "Enabled" : "Disabled"));
         });
         contentArea.add(buttonToggleVirtualScreen)
-            .add(new EmptySpace(TerminalSize.ONE))
+            .add(new EmptySpace(Dimension.ONE))
             .add(new Button("Close", s -> mainWindow.close()));
         mainWindow.setComponent(contentArea);
         textGUI.addListener((textGUI1, keyStroke) -> {
@@ -79,7 +79,7 @@ public class MultiWindowManagerTest extends TestBase {
         if (nextTheme == availableThemes.size()) {
             nextTheme = 0;
         }
-        window.setTheme(LanternaThemes.getRegisteredTheme(themeName));
+        window.setTheme(LanternaThemes.getTheme(themeName));
         textGUI.addWindow(window);
     }
 
@@ -106,12 +106,12 @@ public class MultiWindowManagerTest extends TestBase {
 
             addWindowListener(new WindowListenerAdapter() {
                 @Override
-                public void onMoved(Window window, TerminalPosition oldPosition, TerminalPosition newPosition) {
-                    labelWindowPosition.setText(newPosition.toString());
+                public void onMoved(Window window, Point oldPoint, Point newPoint) {
+                    labelWindowPosition.setText(newPoint.toString());
                 }
 
                 @Override
-                public void onResized(Window window, TerminalSize oldSize, TerminalSize newSize) {
+                public void onResized(Window window, Dimension oldSize, Dimension newSize) {
                     labelWindowSize.setText(newSize.toString());
                 }
             });
@@ -119,9 +119,9 @@ public class MultiWindowManagerTest extends TestBase {
             Panel contentArea = new Panel()
                 .setLayoutManager(new GridLayout(1))
                 .add(statsTableContainer)
-                .add(new EmptySpace(TerminalSize.ONE))
+                .add(new EmptySpace(Dimension.ONE))
                 .add(new Label("Move window with ALT+Arrow\n" + "Resize window with CTRL+Arrow"))
-                .add(new EmptySpace(TerminalSize.ONE)
+                .add(new EmptySpace(Dimension.ONE)
                     .setLayoutData(
                         GridLayout.createLayoutData(GridLayout.Alignment.FILL, GridLayout.Alignment.FILL, true, true)))
                 .add(Panels.horizontal(
@@ -131,41 +131,41 @@ public class MultiWindowManagerTest extends TestBase {
         }
 
         @Override
-        public boolean handleInput(KeyStroke key) {
-            boolean handled = super.handleInput(key);
+        public boolean handleInput(KeyStroke keyStroke) {
+            boolean handled = super.handleInput(keyStroke);
             if (!handled) {
-                switch (key.getKeyType()) {
+                switch (keyStroke.getKeyType()) {
                     case ArrowDown:
-                        if (key.isAltDown()) {
+                        if (keyStroke.isAltDown()) {
                             setPosition(getPosition().withRelativeRow(1));
-                        } else if (key.isCtrlDown()) {
+                        } else if (keyStroke.isCtrlDown()) {
                             setFixedSize(getSize().withRelativeRows(1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowLeft:
-                        if (key.isAltDown()) {
+                        if (keyStroke.isAltDown()) {
                             setPosition(getPosition().withRelativeColumn(-1));
-                        } else if (key.isCtrlDown() && getSize().getColumns() > 1) {
+                        } else if (keyStroke.isCtrlDown() && getSize().getColumns() > 1) {
                             setFixedSize(getSize().withRelativeColumns(-1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowRight:
-                        if (key.isAltDown()) {
+                        if (keyStroke.isAltDown()) {
                             setPosition(getPosition().withRelativeColumn(1));
-                        } else if (key.isCtrlDown()) {
+                        } else if (keyStroke.isCtrlDown()) {
                             setFixedSize(getSize().withRelativeColumns(1));
                             labelUnlockWindow.setText("false");
                         }
                         handled = true;
                         break;
                     case ArrowUp:
-                        if (key.isAltDown()) {
+                        if (keyStroke.isAltDown()) {
                             setPosition(getPosition().withRelativeRow(-1));
-                        } else if (key.isCtrlDown() && getSize().getRows() > 1) {
+                        } else if (keyStroke.isCtrlDown() && getSize().getRows() > 1) {
                             setFixedSize(getSize().withRelativeRows(-1));
                             labelUnlockWindow.setText("false");
                         }
@@ -201,8 +201,8 @@ public class MultiWindowManagerTest extends TestBase {
                 }
 
                 @Override
-                public TerminalSize getPreferredSize(EmptySpace component) {
-                    return TerminalSize.ONE;
+                public Dimension getPreferredSize(EmptySpace component) {
+                    return Dimension.ONE;
                 }
             };
         }

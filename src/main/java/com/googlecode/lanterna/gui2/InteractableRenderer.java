@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 
 /**
  * Extended interface for component renderers used with interactable components. Because only the renderer knows what
@@ -29,5 +29,5 @@ import com.googlecode.lanterna.TerminalPosition;
  * @param <T> Type of the component this {@code InteractableRenderer} is designed for
  */
 public interface InteractableRenderer<T extends Component & Interactable> extends ComponentRenderer<T> {
-    TerminalPosition getCursorLocation(T component);
+    Point getCursorLocation(T component);
 }

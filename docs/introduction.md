@@ -50,8 +50,8 @@ sufficient with most terminals, but you may want to present the user with an opt
 ## How big is the terminal?
 Yet another problem is how to know the size of the terminal. There are ways of figuring this out through C APIs for most 
 platforms but since Lanterna is intended to be 100% Java code, we can't do that. Instead, Lanterna is doing a bit of a 
-hack by memorizing the cursor location, then moving it to 5000x5000 and asking the terminal to print the position. Since 
-most terminal won't be that big, the cursor will end up in the bottom right corner and report this position when we ask 
+hack by memorizing the cursor location, then moving it to 5000x5000 and asking the terminal to print the point. Since 
+most terminal won't be that big, the cursor will end up in the bottom right corner and report this point when we ask 
 to print it. This will be the size of the terminal.
 
 ### What if it doesn't work?

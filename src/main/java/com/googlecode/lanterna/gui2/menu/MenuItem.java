@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.gui2.menu;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.gui2.*;
@@ -86,18 +86,18 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
     }
 
     @Override
-    protected Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isActivationStroke(keyStroke)) {
             if (onClicked()) {
-                BasePane basePane = getBasePane();
-                if (basePane instanceof Window && ((Window) basePane).isHint(Window.Hint.MENU_POPUP)) {
-                    ((Window) basePane).close();
+                RootPane rootPane = getRootPane();
+                if (rootPane instanceof Window && ((Window) rootPane).isHint(Window.Hint.MENU_POPUP)) {
+                    ((Window) rootPane).close();
                 }
             }
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         } else if (isMouseMove(keyStroke)) {
-            takeFocus();
-            return Result.HANDLED;
+            grabFocus();
+            return KeyStrokeResult.HANDLED;
         } else {
             return super.onKeyStroke(keyStroke);
         }
@@ -152,17 +152,17 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         }
 
         @Override
-        public TerminalPosition getCursorLocation(MenuItem component) {
+        public Point getCursorLocation(MenuItem component) {
             return null;
         }
 
         @Override
-        public TerminalSize getPreferredSize(MenuItem component) {
+        public Dimension getPreferredSize(MenuItem component) {
             int preferredWidth = TerminalTextUtils.getColumnWidth(component.getLabel()) + 2;
             if (component instanceof Menu && !(component.getParent() instanceof MenuBar)) {
                 preferredWidth += 2;
             }
-            return TerminalSize.ONE.withColumns(preferredWidth);
+            return Dimension.ONE.withColumns(preferredWidth);
         }
     }
 }

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -55,7 +55,7 @@ public class AnimatedLabel extends Label {
     }
 
     private final List<String[]> frames;
-    private TerminalSize combinedMaximumPreferredSize;
+    private Dimension combinedMaximumPreferredSize;
     private int currentFrame;
 
     /**
@@ -68,7 +68,7 @@ public class AnimatedLabel extends Label {
         super(firstFrameText);
         frames = new ArrayList<>();
         currentFrame = 0;
-        combinedMaximumPreferredSize = TerminalSize.ZERO;
+        combinedMaximumPreferredSize = Dimension.ZERO;
 
         String[] lines = splitIntoMultipleLines(firstFrameText);
         frames.add(lines);
@@ -76,7 +76,7 @@ public class AnimatedLabel extends Label {
     }
 
     @Override
-    protected synchronized TerminalSize calculatePreferredSize() {
+    protected synchronized Dimension calculatePreferredSize() {
         return super.calculatePreferredSize().max(combinedMaximumPreferredSize);
     }
 
@@ -169,7 +169,7 @@ public class AnimatedLabel extends Label {
                 canCloseTimer();
             }
             else {
-                if(animatedLabel.getBasePane() == null) {
+                if(animatedLabel.getRootPane() == null) {
                     animatedLabel.stopAnimation();
                 }
                 else {

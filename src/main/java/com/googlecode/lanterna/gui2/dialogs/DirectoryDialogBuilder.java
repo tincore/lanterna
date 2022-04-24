@@ -20,7 +20,7 @@
 
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.LocalizedString;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class DirectoryDialogBuilder extends AbstractDialogBuilder<DirectoryDialo
 
     private String actionLabel;
 
-    private TerminalSize suggestedSize;
+    private Dimension suggestedSize;
 
     private File selectedDir;
 
@@ -48,7 +48,7 @@ public class DirectoryDialogBuilder extends AbstractDialogBuilder<DirectoryDialo
     public DirectoryDialogBuilder() {
         super("DirectoryDialog");
         actionLabel = LocalizedString.OK.toString();
-        suggestedSize = new TerminalSize(45, 10);
+        suggestedSize = new Dimension(45, 10);
         showHiddenDirectories = false;
         selectedDir = null;
     }
@@ -86,7 +86,7 @@ public class DirectoryDialogBuilder extends AbstractDialogBuilder<DirectoryDialo
      * @param suggestedSize Suggested size for the file dialog
      * @return Itself
      */
-    public DirectoryDialogBuilder setSuggestedSize(TerminalSize suggestedSize) {
+    public DirectoryDialogBuilder setSuggestedSize(Dimension suggestedSize) {
         this.suggestedSize = suggestedSize;
         return this;
     }
@@ -96,7 +96,7 @@ public class DirectoryDialogBuilder extends AbstractDialogBuilder<DirectoryDialo
      *
      * @return Suggested size for the file dialog
      */
-    public TerminalSize getSuggestedSize() {
+    public Dimension getSuggestedSize() {
         return suggestedSize;
     }
 

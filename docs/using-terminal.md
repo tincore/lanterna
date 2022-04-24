@@ -60,7 +60,7 @@ It's always recommended to enter private mode when you start your GUI and exit w
 
 ## Moving the cursor
 When you start your GUI, you can never make any assumptions on where the text cursor is. Since text printing will always
-appear at the text cursor position, it is very important to be able to move this around. Here is how you do it:
+appear at the text cursor point, it is very important to be able to move this around. Here is how you do it:
 
     terminal.setCursorPosition(10, 5);
 
@@ -89,7 +89,7 @@ character.
     terminal.putCharacter('!');
     terminal.setCursorPosition(0, 0);
 
-Notice that just like when you type in text manually, the cursor position will move one column to the right for every 
+Notice that just like when you type in text manually, the cursor point will move one column to the right for every 
 character you put. What happens after you put a character on the last column is undefined and may differ between 
 different terminal emulators. You should always use the `moveCursor(..)` method to place the cursor somewhere else after 
 writing something to the end of the row.

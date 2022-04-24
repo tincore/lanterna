@@ -8,7 +8,7 @@ In this example, we'll create a simple calculator.
 ```
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -66,7 +66,7 @@ Running the above code will show the user a simple form, showing two text boxes 
 Hmm... this example is ok, but what if we wanted to do more than just add numbers? Let's add a combobox which allows the user to select between addition and subtraction:
 
 ```
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;

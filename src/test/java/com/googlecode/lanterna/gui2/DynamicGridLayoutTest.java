@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.dialogs.DialogWindow;
 import com.googlecode.lanterna.gui2.dialogs.ListSelectDialog;
@@ -30,7 +30,7 @@ import java.math.BigInteger;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-public class DynamicGridLayoutTest extends TestBase {
+public class DynamicGridLayoutTest extends AbstractGuiTest {
     private static final TextColor[] GOOD_COLORS = new TextColor[]{
         TextColor.ANSI.RED, TextColor.ANSI.BLUE, TextColor.ANSI.CYAN,
         TextColor.ANSI.GREEN, TextColor.ANSI.MAGENTA, TextColor.ANSI.YELLOW
@@ -57,7 +57,7 @@ public class DynamicGridLayoutTest extends TestBase {
         gridPanel.setLayoutManager(gridLayout);
 
         for (int i = 0; i < 16; i++) {
-            gridPanel.add(new EmptySpace(getRandomColor(), new TerminalSize(4, 1)));
+            gridPanel.add(new EmptySpace(getRandomColor(), new Dimension(4, 1)));
         }
 
         Panel controlPanel = new Panel();
@@ -110,7 +110,7 @@ public class DynamicGridLayoutTest extends TestBase {
                 if (sizeString == null) {
                     return;
                 }
-                TerminalSize size = new TerminalSize(Integer.parseInt(sizeString.split("x")[0]), Integer.parseInt(sizeString.split("x")[1]));
+                Dimension size = new Dimension(Integer.parseInt(sizeString.split("x")[0]), Integer.parseInt(sizeString.split("x")[1]));
                 component = componentType == SelectableComponentType.Block ? new EmptySpace(getRandomColor(), size) : new TextBox(size);
                 break;
 
@@ -152,7 +152,7 @@ public class DynamicGridLayoutTest extends TestBase {
         gridPanel.setLayoutManager(newGridLayout(columns.intValue()));
         //noinspection ConstantConditions
         for (int i = 0; i < prepopulate.intValue(); i++) {
-            gridPanel.add(new EmptySpace(getRandomColor(), new TerminalSize(4, 1)));
+            gridPanel.add(new EmptySpace(getRandomColor(), new Dimension(4, 1)));
         }
     }
 
@@ -207,11 +207,11 @@ public class DynamicGridLayoutTest extends TestBase {
             contentPane.add(textBoxBottomMargin);
 
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
             contentPane.add(
                 new Separator(Direction.HORIZONTAL).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
 
             Button okButton = new Button("OK", s -> {
                 gridLayout.setHorizontalSpacing(Integer.parseInt(textBoxHorizontalSpacing.getTextOrDefault("0")));
@@ -254,7 +254,7 @@ public class DynamicGridLayoutTest extends TestBase {
             contentPane.add(radioBoxesHorizontalAlignment);
 
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
 
             contentPane.add(new Label("Vertical alignment:"));
             final RadioBoxList<GridLayout.Alignment> radioBoxesVerticalAlignment = new RadioBoxList<>();
@@ -266,7 +266,7 @@ public class DynamicGridLayoutTest extends TestBase {
             contentPane.add(radioBoxesVerticalAlignment);
 
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
 
             contentPane.add(new Label("Grab extra horizontal space:"));
             final CheckBox checkBoxGrabExtraHorizontalSpace = new CheckBox("");
@@ -279,26 +279,26 @@ public class DynamicGridLayoutTest extends TestBase {
             contentPane.add(checkBoxGrabExtraVerticalSpace);
 
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
 
             Pattern numberPattern = Pattern.compile("[1-9][0-9]*");
 
             contentPane.add(new Label("Horizontal span:"));
-            final TextBox textBoxHorizontalSpan = new TextBox(new TerminalSize(5, 1), gridLayoutData.horizontalSpan + "");
+            final TextBox textBoxHorizontalSpan = new TextBox(new Dimension(5, 1), gridLayoutData.horizontalSpan + "");
             textBoxHorizontalSpan.setValidationPattern(numberPattern);
             contentPane.add(textBoxHorizontalSpan);
 
             contentPane.add(new Label("Vertical span:"));
-            final TextBox textBoxVerticalSpan = new TextBox(new TerminalSize(5, 1), gridLayoutData.verticalSpan + "");
+            final TextBox textBoxVerticalSpan = new TextBox(new Dimension(5, 1), gridLayoutData.verticalSpan + "");
             textBoxVerticalSpan.setValidationPattern(numberPattern);
             contentPane.add(textBoxVerticalSpan);
 
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
             contentPane.add(
                 new Separator(Direction.HORIZONTAL).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
             contentPane.add(
-                new EmptySpace(TerminalSize.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+                new EmptySpace(Dimension.ONE).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
 
             Button okButton = new Button("OK", s -> {
                 component.setLayoutData(

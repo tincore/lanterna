@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -35,7 +35,7 @@ import com.googlecode.lanterna.input.KeyStroke;
  * @author Martin
  * @see Panel
  */
-public interface BasePane extends Composite {
+public interface RootPane extends Composite {
 
     /**
      * Called by the GUI system (or something imitating the GUI system) to draw the root container. The TextGUIGraphics
@@ -50,19 +50,10 @@ public interface BasePane extends Composite {
      * terminal into a position relative to the top-left corner of the base pane. Calling
      * {@code fromGlobal(toGlobal(..))} should return the exact same position.
      *
-     * @param position Position expressed in global coordinates to translate to local coordinates of this BasePane
+     * @param point Position expressed in global coordinates to translate to local coordinates of this BasePane
      * @return The global coordinates expressed as local coordinates
      */
-    TerminalPosition fromGlobal(TerminalPosition position);
-
-//    /**
-//     * Returns the component that is the content of the BasePane. This is probably the root of a hierarchy of nested
-//     * Panels but it could also be a single component.
-//     *
-//     * @return Component which is the content of this BasePane
-//     */
-//    @Override
-//    Component getComponent();
+    Point fromGlobal(Point point);
 
     /**
      * Returns the position of where to put the terminal cursor according to this root container. This is typically
@@ -72,7 +63,7 @@ public interface BasePane extends Composite {
      *
      * @return Local position of where to place the cursor, or {@code null} if the cursor shouldn't be visible
      */
-    TerminalPosition getCursorPosition();
+    Point getCursorPosition();
 
     /**
      * Returns the component in the root container that currently has input focus. There can only be one component at a
@@ -115,15 +106,6 @@ public interface BasePane extends Composite {
     Theme getTheme();
 
     /**
-     * Sets the override {@link Theme} to use for this base pane/window, rather than the default {@link Theme}
-     * associated with the {@link TextGUI} it is attached to. If called with {@code null}, it will clear the override
-     * and use the default value instead.
-     *
-     * @param theme {@link Theme} to assign to this base pane/window, or {@code null} to reset
-     */
-    void setTheme(Theme theme);
-
-    /**
      * Called by the GUI system to delegate a keyboard input event. The root container will decide what to do with this
      * input, usually sending it to one of its sub-components, but if it isn't able to find any handler for this input
      * it should return {@code false} so that the GUI system can take further decisions on what to do with it.
@@ -159,17 +141,6 @@ public interface BasePane extends Composite {
      */
     void setEnableDirectionBasedMovements(boolean enableDirectionBasedMovements);
 
-//    /**
-//     * Sets the top-level component inside this BasePane. If you want it to contain only one component, you can set it
-//     * directly, but for more complicated GUIs you probably want to create a hierarchy of panels and set the first one
-//     * here.
-//     *
-//     * @param component Component which this BasePane is using as it's content
-//     * @return
-//     */
-//    @Override
-//    <T extends Composite> T setComponent(Component component);
-
     /**
      * Sets the active {@link MenuBar} for this base pane/window. The menu will be rendered at the top (inside the
      * window decorations if set on a window), if set. If called with {@code null}, any previously set menu bar is
@@ -178,6 +149,7 @@ public interface BasePane extends Composite {
      * @param menubar The {@link MenuBar} to assign to this pane/window
      */
     <T extends Composite> T setMenuBar(MenuBar menubar);
+
 
     /**
      * If set to true, up/down array keys will not translate to next/previous if there are no more components
@@ -188,10 +160,19 @@ public interface BasePane extends Composite {
     void setStrictFocusChange(boolean strictFocusChange);
 
     /**
+     * Sets the override {@link Theme} to use for this base pane/window, rather than the default {@link Theme}
+     * associated with the {@link TextGUI} it is attached to. If called with {@code null}, it will clear the override
+     * and use the default value instead.
+     *
+     * @param theme {@link Theme} to assign to this base pane/window, or {@code null} to reset
+     */
+    <T extends Composite> T setTheme(Theme theme);
+
+    /**
      * Returns a position in a root container's local coordinate space to global coordinates
      *
-     * @param localPosition The local position to translate
+     * @param localPoint The local position to translate
      * @return The local position translated to global coordinates
      */
-    TerminalPosition toGlobal(TerminalPosition localPosition);
+    Point toGlobal(Point localPoint);
 }

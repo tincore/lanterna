@@ -18,14 +18,14 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TestUtils;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MiscComponentTest extends TestBase {
+public class MiscComponentTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new MiscComponentTest().run(args);
     }
@@ -41,8 +41,8 @@ public class MiscComponentTest extends TestBase {
         }
 
         Panel textBoxPanel = new Panel();
-        textBoxPanel.add(Panels.horizontal(new Label("Normal:   "), new TextBox(new TerminalSize(12, 1), "Text")));
-        textBoxPanel.add(Panels.horizontal(new Label("Password: "), new TextBox(new TerminalSize(12, 1), "Text").setMask('*')));
+        textBoxPanel.add(Panels.horizontal(new Label("Normal:   "), new TextBox(new Dimension(12, 1), "Text")));
+        textBoxPanel.add(Panels.horizontal(new Label("Password: "), new TextBox(new Dimension(12, 1), "Text").setMask('*')));
 
         Panel buttonPanel = new Panel();
         buttonPanel.add(new Button("Enable spacing", s -> {
@@ -56,7 +56,7 @@ public class MiscComponentTest extends TestBase {
 
         Panel rightPanel = new Panel();
         textBoxPanel = new Panel();
-        TextBox readOnlyTextArea = new TextBox(new TerminalSize(16, 8));
+        TextBox readOnlyTextArea = new TextBox(new Dimension(16, 8));
         readOnlyTextArea.setReadOnly(true);
         readOnlyTextArea.setText(TestUtils.downloadGPL());
         textBoxPanel.add(readOnlyTextArea);

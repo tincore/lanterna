@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.screen;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.BasicTextImage;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.graphics.TextImage;
@@ -39,7 +39,7 @@ public class ScreenBuffer implements TextImage {
      * @param size Size of the buffer
      * @param filler What character to set as the initial content of the buffer
      */
-    public ScreenBuffer(TerminalSize size, TextCharacter filler) {
+    public ScreenBuffer(Dimension size, TextCharacter filler) {
         this(new BasicTextImage(size, filler));
     }
     
@@ -48,7 +48,7 @@ public class ScreenBuffer implements TextImage {
     }
     
     @Override
-    public ScreenBuffer resize(TerminalSize newSize, TextCharacter filler) {
+    public ScreenBuffer resize(Dimension newSize, TextCharacter filler) {
         BasicTextImage resizedBackend = backend.resize(newSize, filler);
         return new ScreenBuffer(resizedBackend);
     }
@@ -74,13 +74,13 @@ public class ScreenBuffer implements TextImage {
     ///////////////////////////////////////////////////////////////////////////////
     //  Delegate all TextImage calls (except resize) to the backend BasicTextImage
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return backend.getSize();
     }
 
     @Override
-    public TextCharacter getCharacterAt(TerminalPosition position) {
-        return backend.getCharacterAt(position);
+    public TextCharacter getCharacterAt(Point point) {
+        return backend.getCharacterAt(point);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class ScreenBuffer implements TextImage {
     }
 
     @Override
-    public void setCharacterAt(TerminalPosition position, TextCharacter character) {
-        backend.setCharacterAt(position, character);
+    public void setCharacterAt(Point point, TextCharacter character) {
+        backend.setCharacterAt(point, character);
     }
 
     @Override

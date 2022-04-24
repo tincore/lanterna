@@ -120,7 +120,7 @@ public abstract class AbstractTextGraphics implements TextGraphics {
 
     @Override
     public TextGraphics fill(char c) {
-        fillRectangle(TerminalPosition.TOP_LEFT_CORNER, getSize(), c);
+        fillRectangle(Point.TOP_LEFT_CORNER, getSize(), c);
         return this;
     }
 
@@ -130,23 +130,23 @@ public abstract class AbstractTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics setCharacter(TerminalPosition position, TextCharacter textCharacter) {
-        setCharacter(position.getColumn(), position.getRow(), textCharacter);
+    public TextGraphics setCharacter(Point point, TextCharacter textCharacter) {
+        setCharacter(point.getColumn(), point.getRow(), textCharacter);
         return this;
     }
 
     @Override
-    public TextGraphics setCharacter(TerminalPosition position, char character) {
-        return setCharacter(position.getColumn(), position.getRow(), character);
+    public TextGraphics setCharacter(Point point, char character) {
+        return setCharacter(point.getColumn(), point.getRow(), character);
     }
 
     @Override
-    public TextGraphics drawLine(TerminalPosition fromPosition, TerminalPosition toPoint, char character) {
-        return drawLine(fromPosition, toPoint, newTextCharacter(character));
+    public TextGraphics drawLine(Point fromPoint, Point toPoint, char character) {
+        return drawLine(fromPoint, toPoint, newTextCharacter(character));
     }
 
     @Override
-    public TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, TextCharacter character) {
+    public TextGraphics drawLine(Point fromPoint, Point toPoint, TextCharacter character) {
         shapeRenderer.drawLine(fromPoint, toPoint, character);
         return this;
     }
@@ -158,64 +158,64 @@ public abstract class AbstractTextGraphics implements TextGraphics {
 
     @Override
     public TextGraphics drawLine(int fromX, int fromY, int toX, int toY, TextCharacter character) {
-        return drawLine(new TerminalPosition(fromX, fromY), new TerminalPosition(toX, toY), character);
+        return drawLine(new Point(fromX, fromY), new Point(toX, toY), character);
     }
 
     @Override
-    public TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public TextGraphics drawTriangle(Point p1, Point p2, Point p3, char character) {
         return drawTriangle(p1, p2, p3, newTextCharacter(character));
     }
 
     @Override
-    public TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public TextGraphics drawTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         shapeRenderer.drawTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public TextGraphics fillTriangle(Point p1, Point p2, Point p3, char character) {
         return fillTriangle(p1, p2, p3, newTextCharacter(character));
     }
 
     @Override
-    public TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public TextGraphics fillTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         shapeRenderer.fillTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public TextGraphics drawRectangle(Point topLeft, Dimension size, char character) {
         return drawRectangle(topLeft, size, newTextCharacter(character));
     }
 
     @Override
-    public TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public TextGraphics drawRectangle(Point topLeft, Dimension size, TextCharacter character) {
         shapeRenderer.drawRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public TextGraphics fillRectangle(Point topLeft, Dimension size, char character) {
         return fillRectangle(topLeft, size, newTextCharacter(character));
     }
 
     @Override
-    public TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public TextGraphics fillRectangle(Point topLeft, Dimension size, TextCharacter character) {
         shapeRenderer.fillRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public TextGraphics drawImage(TerminalPosition topLeft, TextImage image) {
-        return drawImage(topLeft, image, TerminalPosition.TOP_LEFT_CORNER, image.getSize());
+    public TextGraphics drawImage(Point topLeft, TextImage image) {
+        return drawImage(topLeft, image, Point.TOP_LEFT_CORNER, image.getSize());
     }
 
     @Override
     public TextGraphics drawImage(
-            TerminalPosition topLeft,
+            Point topLeft,
             TextImage image,
-            TerminalPosition sourceImageTopLeft,
-            TerminalSize sourceImageSize) {
+            Point sourceImageTopLeft,
+            Dimension sourceImageSize) {
 
         // If the source image position is negative, offset the whole image
         if(sourceImageTopLeft.getColumn() < 0) {
@@ -271,8 +271,8 @@ public abstract class AbstractTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putString(TerminalPosition position, String string) {
-        putString(position.getColumn(), position.getRow(), string);
+    public TextGraphics putString(Point point, String string) {
+        putString(point.getColumn(), point.getRow(), string);
         return this;
     }
 
@@ -293,8 +293,8 @@ public abstract class AbstractTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putString(TerminalPosition position, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
-        putString(position.getColumn(), position.getRow(), string, extraModifier, optionalExtraModifiers);
+    public TextGraphics putString(Point point, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
+        putString(point.getColumn(), point.getRow(), string, extraModifier, optionalExtraModifiers);
         return this;
     }
 
@@ -323,18 +323,18 @@ public abstract class AbstractTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putCSIStyledString(TerminalPosition position, String string) {
-        return putCSIStyledString(position.getColumn(), position.getRow(), string);
+    public TextGraphics putCSIStyledString(Point point, String string) {
+        return putCSIStyledString(point.getColumn(), point.getRow(), string);
     }
 
     @Override
-    public TextCharacter getCharacter(TerminalPosition position) {
-        return getCharacter(position.getColumn(), position.getRow());
+    public TextCharacter getCharacter(Point point) {
+        return getCharacter(point.getColumn(), point.getRow());
     }
 
     @Override
-    public TextGraphics newTextGraphics(TerminalPosition topLeftCorner, TerminalSize size) throws IllegalArgumentException {
-        TerminalSize writableArea = getSize();
+    public TextGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException {
+        Dimension writableArea = getSize();
         if(topLeftCorner.getColumn() + size.getColumns() <= 0 ||
                 topLeftCorner.getColumn() >= writableArea.getColumns() ||
                 topLeftCorner.getRow() + size.getRows() <= 0 ||

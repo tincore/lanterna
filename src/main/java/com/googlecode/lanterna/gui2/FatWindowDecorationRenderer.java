@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
@@ -48,7 +48,7 @@ public class FatWindowDecorationRenderer implements WindowDecorationRenderer {
         char topRightCorner = themeDefinition.getCharacter("TOP_RIGHT_CORNER", Symbols.SINGLE_LINE_TOP_RIGHT_CORNER);
         char leftJunction = themeDefinition.getCharacter("LEFT_JUNCTION", Symbols.SINGLE_LINE_T_RIGHT);
         char rightJunction = themeDefinition.getCharacter("RIGHT_JUNCTION", Symbols.SINGLE_LINE_T_LEFT);
-        TerminalSize drawableArea = graphics.getSize();
+        Dimension drawableArea = graphics.getSize();
 
         if(hasTitle) {
             graphics.applyThemeStyle(themeDefinition.getPreLight());
@@ -104,26 +104,26 @@ public class FatWindowDecorationRenderer implements WindowDecorationRenderer {
     }
 
     @Override
-    public TerminalSize getDecoratedSize(Window window, TerminalSize contentAreaSize) {
+    public Dimension getDecoratedSize(Window window, Dimension contentAreaSize) {
         if(hasTitle(window)) {
             return contentAreaSize
                     .withRelativeColumns(2)
                     .withRelativeRows(4)
-                    .max(new TerminalSize(TerminalTextUtils.getColumnWidth(window.getTitle()) + 4, 1));  //Make sure the title fits!
+                    .max(new Dimension(TerminalTextUtils.getColumnWidth(window.getTitle()) + 4, 1));  //Make sure the title fits!
         }
         else {
             return contentAreaSize
                     .withRelativeColumns(2)
                     .withRelativeRows(2)
-                    .max(new TerminalSize(3, 1));
+                    .max(new Dimension(3, 1));
         }
     }
 
-    private static final TerminalPosition OFFSET_WITH_TITLE = new TerminalPosition(1, 3);
-    private static final TerminalPosition OFFSET_WITHOUT_TITLE = new TerminalPosition(1, 1);
+    private static final Point OFFSET_WITH_TITLE = new Point(1, 3);
+    private static final Point OFFSET_WITHOUT_TITLE = new Point(1, 1);
 
     @Override
-    public TerminalPosition getOffset(Window window) {
+    public Point getOffset(Window window) {
         if(hasTitle(window)) {
             return OFFSET_WITH_TITLE;
         }

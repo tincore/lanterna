@@ -1,6 +1,6 @@
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.DialogWindow;
 import com.googlecode.lanterna.gui2.table.DefaultTableRenderer;
@@ -14,6 +14,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.googlecode.lanterna.gui2.Panels.horizontal;
+import static com.googlecode.lanterna.gui2.Panels.vertical;
+import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
+
 public class Issue384 {
     private static final Set<Integer> EXPANDABLE_COLUMNS = new TreeSet<>(Collections.singletonList(1));
 
@@ -23,7 +27,7 @@ public class Issue384 {
         final MultiWindowTextGUI textGUI = new MultiWindowTextGUI(screen);
         final Window window = new BasicWindow("Table container test");
         window.setHints(Collections.singletonList(Window.Hint.FIXED_SIZE));
-        window.setFixedSize(new TerminalSize(60, 14));
+        window.setFixedSize(new Dimension(60, 14));
 
         final Table<String> table = new Table<>("Column", "Expanded Column", "Column");
         table.setCellSelection(true);
@@ -38,14 +42,11 @@ public class Issue384 {
             model.addRow(cellLabel, cellLabel, cellLabel);
         }
 
-        Panel buttonPanel = new Panel();
-        buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
-        buttonPanel.add(new Button("Change Expandable Columns", s -> showExpandableColumnsEditor(textGUI, tableRenderer)));
-        buttonPanel.add(new Button("Close", s -> window.close()));
-
-        window.setComponent(Panels.vertical(
+        window.setComponent(vertical(
             table.withBorder(Borders.singleLineBevel("Table")),
-            buttonPanel));
+            horizontal(
+                new Button("Change Expandable Columns", s -> showExpandableColumnsEditor(textGUI, tableRenderer)),
+                createButtonCloseContainer())));
         table.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
         textGUI.addWindow(window);
         textGUI.waitForWindowToClose(window);

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class ListSelectDialogBuilder<T> extends AbstractDialogBuilder<ListSelectDialogBuilder<T>, ListSelectDialog<T>> {
     private final List<T> content;
-    private TerminalSize listBoxSize;
+    private Dimension listBoxSize;
     private boolean canCancel;
 
     /**
@@ -65,7 +65,7 @@ public class ListSelectDialogBuilder<T> extends AbstractDialogBuilder<ListSelect
      * @param listBoxSize Size of the list box in the dialog
      * @return Itself
      */
-    public ListSelectDialogBuilder<T> setListBoxSize(TerminalSize listBoxSize) {
+    public ListSelectDialogBuilder<T> setListBoxSize(Dimension listBoxSize) {
         this.listBoxSize = listBoxSize;
         return this;
     }
@@ -74,7 +74,7 @@ public class ListSelectDialogBuilder<T> extends AbstractDialogBuilder<ListSelect
      * Size of the list box in the dialog or {@code null} if the dialog will ask for enough space to draw all items
      * @return Size of the list box in the dialog or {@code null} if the dialog will ask for enough space to draw all items
      */
-    public TerminalSize getListBoxSize() {
+    public Dimension getListBoxSize() {
         return listBoxSize;
     }
 

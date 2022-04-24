@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.BasicTextImage;
 import com.googlecode.lanterna.graphics.TextImage;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -27,7 +27,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 /**
  * @author ginkoblongata
  */
-public class ImageComponent extends AbstractInteractableComponent {
+public class ImageComponent extends AbstractInteractableComponent<ImageComponent> {
 
     private TextImage textImage;
 
@@ -45,34 +45,38 @@ public class ImageComponent extends AbstractInteractableComponent {
         return new InteractableRenderer<>() {
             @Override
             public void drawComponent(TextGUIGraphics graphics, ImageComponent panel) {
-                graphics.drawImage(TerminalPosition.TOP_LEFT_CORNER, textImage);
+                graphics.drawImage(Point.TOP_LEFT_CORNER, textImage);
             }
 
             @Override
-            public TerminalPosition getCursorLocation(ImageComponent component) {
+            public Point getCursorLocation(ImageComponent component) {
                 // when null, lanterna hidden cursor for this component
                 return null;
             }
 
             @Override
-            public TerminalSize getPreferredSize(ImageComponent component) {
+            public Dimension getPreferredSize(ImageComponent component) {
                 return textImage.getSize();
             }
         };
     }
 
-    @Override
-    public Result onKeyStroke(KeyStroke keyStroke) {
-        Result superResult = super.onKeyStroke(keyStroke);
-
-        // just arrows and focus move stuff
-        return superResult;
+    public TextImage getTextImage() {
+        return textImage;
     }
 
     public ImageComponent setTextImage(TextImage textImage) {
         this.textImage = textImage;
         invalidate();
         return this;
+    }
+
+    @Override
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
+        KeyStrokeResult superKeyStrokeResult = super.onKeyStroke(keyStroke);
+
+        // just arrows and focus move stuff
+        return superKeyStrokeResult;
     }
 
 }

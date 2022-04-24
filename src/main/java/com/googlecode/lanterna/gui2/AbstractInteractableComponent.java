@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.input.MouseAction;
@@ -34,134 +34,23 @@ import com.googlecode.lanterna.input.MouseActionType;
  */
 public abstract class AbstractInteractableComponent<T extends AbstractInteractableComponent<T>> extends AbstractComponent<T> implements Interactable {
 
-
     private InputFilter inputFilter;
     private boolean focused;
-    private boolean enabled;
+    private boolean enabled = true;
 
+    private KeyStrokeListener keyStrokeListener = KeyStrokeListener.DUMMY;
     private FocusGainListener focusGainListener = FocusGainListener.DUMMY;
     private FocusLostListener focusLostListener = FocusLostListener.DUMMY;
 
-    /**
-     * Default constructor
-     */
-    protected AbstractInteractableComponent(Attributes attributes) {
+    public AbstractInteractableComponent(Attributes attributes) {
         super(attributes);
-        inputFilter = null;
-        focused = false;
-        enabled = true;
-    }
-
-    @Override
-    public T takeFocus() {
-        if (!isEnabled()) {
-            return self();
-        }
-        BasePane basePane = getBasePane();
-        if (basePane != null) {
-            basePane.setFocusedInteractable(this);
-        }
-        return self();
-    }
-
-    @Override
-    public void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus) {
-        focused = true;
-        focusGainListener.onFocusGain(direction, previouslyInFocus, this);
-    }
-
-    @Override
-    public void onFocusLost(FocusChangeDirection direction, Interactable nextInFocus) {
-        focused = false;
-        focusLostListener.onFocusLost(direction, nextInFocus, this);
     }
 
     @Override
     protected abstract InteractableRenderer<T> createDefaultRenderer();
 
     @Override
-    public InteractableRenderer<T> getRenderer() {
-        return (InteractableRenderer<T>) super.getRenderer();
-    }
-
-    @Override
-    public boolean isFocused() {
-        return focused;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public synchronized T setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        if (!enabled && isFocused()) {
-            BasePane basePane = getBasePane();
-            if (basePane != null) {
-                basePane.setFocusedInteractable(null);
-            }
-        }
-        return self();
-    }
-
-    @Override
-    public boolean isFocusable() {
-        return true;
-    }
-
-    @Override
-    public final synchronized Result handleInput(KeyStroke keyStroke) {
-        if (inputFilter == null || inputFilter.onInput(this, keyStroke)) {
-            return onKeyStroke(keyStroke);
-        } else {
-            return Result.UNHANDLED;
-        }
-    }
-
-
-    /**
-     * This method can be overridden to handle various user input (mostly from the keyboard) when this component is in
-     * focus. The input method from the interface, {@code handleInput(..)} is final in
-     * {@code AbstractInteractableComponent} to ensure the input filter is properly handled. If the filter decides that
-     * this event should be processed, it will call this method.
-     *
-     * @param keyStroke What input was entered by the user
-     * @return Result of processing the key-stroke
-     */
-    protected Result onKeyStroke(KeyStroke keyStroke) {
-        // Skip the keystroke if ctrl, alt or shift was down
-        if (!keyStroke.isAltDown() && !keyStroke.isCtrlDown() && !keyStroke.isShiftDown()) {
-            switch (keyStroke.getKeyType()) {
-                case ArrowDown:
-                    return Result.MOVE_FOCUS_DOWN;
-                case ArrowLeft:
-                    return Result.MOVE_FOCUS_LEFT;
-                case ArrowRight:
-                    return Result.MOVE_FOCUS_RIGHT;
-                case ArrowUp:
-                    return Result.MOVE_FOCUS_UP;
-                case Tab:
-                    return Result.MOVE_FOCUS_NEXT;
-                case ReverseTab:
-                    return Result.MOVE_FOCUS_PREVIOUS;
-                case MouseEvent:
-                    if (isMouseMove(keyStroke)) {
-                        // do nothing
-                        return Result.UNHANDLED;
-                    }
-                    getBasePane().setFocusedInteractable(this);
-                    return Result.HANDLED;
-                default:
-            }
-        }
-        return Result.UNHANDLED;
-    }
-
-
-    @Override
-    public TerminalPosition getCursorLocation() {
+    public Point getCursorLocation() {
         return getRenderer().getCursorLocation(self());
     }
 
@@ -176,12 +65,55 @@ public abstract class AbstractInteractableComponent<T extends AbstractInteractab
         return self();
     }
 
-    public void setFocusGainListener(FocusGainListener focusGainListener) {
-        this.focusGainListener = focusGainListener;
+    @Override
+    public InteractableRenderer<T> getRenderer() {
+        return (InteractableRenderer<T>) super.getRenderer();
     }
 
-    public void setFocusLostListener(FocusLostListener focusLostListener) {
-        this.focusLostListener = focusLostListener;
+    @Override
+    public T grabFocus() {
+        if (!isEnabled()) {
+            return self();
+        }
+        RootPane rootPane = getRootPane();
+        if (rootPane != null) {
+            rootPane.setFocusedInteractable(this);
+        }
+        return self();
+    }
+
+    public boolean isActivationStroke(KeyStroke keyStroke) {
+        boolean isKeyboardActivationStroke = isKeyboardActivationStroke(keyStroke);
+        boolean isMouseActivationStroke = isMouseActivationStroke(keyStroke);
+
+        return isKeyboardActivationStroke || isMouseActivationStroke;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public synchronized T setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if (!enabled && isFocused()) {
+            RootPane rootPane = getRootPane();
+            if (rootPane != null) {
+                rootPane.setFocusedInteractable(null);
+            }
+        }
+        return self();
+    }
+
+    @Override
+    public boolean isFocusable() {
+        return true;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused;
     }
 
     public boolean isKeyboardActivationStroke(KeyStroke keyStroke) {
@@ -200,27 +132,93 @@ public abstract class AbstractInteractableComponent<T extends AbstractInteractab
         return isMouseActivation;
     }
 
-    public boolean isActivationStroke(KeyStroke keyStroke) {
-        boolean isKeyboardActivationStroke = isKeyboardActivationStroke(keyStroke);
-        boolean isMouseActivationStroke = isMouseActivationStroke(keyStroke);
-
-        return isKeyboardActivationStroke || isMouseActivationStroke;
-    }
-
     public boolean isMouseDown(KeyStroke keyStroke) {
-        return keyStroke.getKeyType() == KeyType.MouseEvent && ((MouseAction) keyStroke).isMouseDown();
+        return keyStroke.isKeyType(KeyType.MouseEvent) && ((MouseAction) keyStroke).isMouseDown();
     }
 
     public boolean isMouseDrag(KeyStroke keyStroke) {
-        return keyStroke.getKeyType() == KeyType.MouseEvent && ((MouseAction) keyStroke).isMouseDrag();
+        return keyStroke.isKeyType(KeyType.MouseEvent) && ((MouseAction) keyStroke).isMouseDrag();
     }
 
     public boolean isMouseMove(KeyStroke keyStroke) {
-        return keyStroke.getKeyType() == KeyType.MouseEvent && ((MouseAction) keyStroke).isMouseMove();
+        return keyStroke.isKeyType(KeyType.MouseEvent) && ((MouseAction) keyStroke).isMouseMove();
     }
 
     public boolean isMouseUp(KeyStroke keyStroke) {
-        return keyStroke.getKeyType() == KeyType.MouseEvent && ((MouseAction) keyStroke).isMouseUp();
+        return keyStroke.isKeyType(KeyType.MouseEvent) && ((MouseAction) keyStroke).isMouseUp();
+    }
+
+    @Override
+    public void onFocusGain(FocusChangeDirection direction, Interactable previouslyInFocus) {
+        focused = true;
+        focusGainListener.onFocusGain(direction, previouslyInFocus, this);
+    }
+
+    @Override
+    public void onFocusLost(FocusChangeDirection direction, Interactable nextInFocus) {
+        focused = false;
+        focusLostListener.onFocusLost(direction, nextInFocus, this);
+    }
+
+    @Override
+    public synchronized KeyStrokeResult onInput(KeyStroke keyStroke) {
+        KeyStrokeResult keyStrokeResult = inputFilter == null || inputFilter.onInput(this, keyStroke) ? onKeyStroke(keyStroke) : KeyStrokeResult.UNHANDLED;
+        keyStrokeListener.onKeyStroke(keyStroke, keyStrokeResult, this);
+        return keyStrokeResult;
+    }
+
+    /**
+     * This method can be overridden to handle various user input (mostly from the keyboard) when this component is in
+     * focus. The input method from the interface, {@code handleInput(..)} is final in
+     * {@code AbstractInteractableComponent} to ensure the input filter is properly handled. If the filter decides that
+     * this event should be processed, it will call this method.
+     *
+     * @param keyStroke What input was entered by the user
+     * @return Result of processing the key-stroke
+     */
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
+        // Skip the keystroke if ctrl, alt or shift was down
+        if (!keyStroke.isAltDown() && !keyStroke.isCtrlDown() && !keyStroke.isShiftDown()) {
+            switch (keyStroke.getKeyType()) {
+                case ArrowDown:
+                    return KeyStrokeResult.MOVE_FOCUS_DOWN;
+                case ArrowLeft:
+                    return KeyStrokeResult.MOVE_FOCUS_LEFT;
+                case ArrowRight:
+                    return KeyStrokeResult.MOVE_FOCUS_RIGHT;
+                case ArrowUp:
+                    return KeyStrokeResult.MOVE_FOCUS_UP;
+                case Tab:
+                    return KeyStrokeResult.MOVE_FOCUS_NEXT;
+                case ReverseTab:
+                    return KeyStrokeResult.MOVE_FOCUS_PREVIOUS;
+                case MouseEvent:
+                    if (isMouseMove(keyStroke)) {
+                        // do nothing
+                        return KeyStrokeResult.UNHANDLED;
+                    }
+
+                    getRootPane().setFocusedInteractable(this);
+                    return KeyStrokeResult.HANDLED;
+                default:
+            }
+        }
+        return KeyStrokeResult.UNHANDLED;
+    }
+
+    public T setFocusGainListener(FocusGainListener focusGainListener) {
+        this.focusGainListener = focusGainListener;
+        return self();
+    }
+
+    public T setFocusLostListener(FocusLostListener focusLostListener) {
+        this.focusLostListener = focusLostListener;
+        return self();
+    }
+
+    public T setKeyStrokeListener(KeyStrokeListener keyStrokeListener) {
+        this.keyStrokeListener = keyStrokeListener;
+        return self();
     }
 
 

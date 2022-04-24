@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -36,13 +36,13 @@ import java.util.Set;
  *
  * @author Martin
  */
-public abstract class AbstractWindow extends AbstractBasePane<Window> implements Window {
+public abstract class AbstractWindow extends AbstractRootPane<Window> implements Window {
     private String title;
     private boolean visible = true;
-    private TerminalSize lastKnownSize;
-    private TerminalSize lastKnownDecoratedSize;
-    private TerminalPosition lastKnownPosition;
-    private TerminalPosition contentOffset = TerminalPosition.TOP_LEFT_CORNER;
+    private Dimension lastKnownSize;
+    private Dimension lastKnownDecoratedSize;
+    private Point lastKnownPoint;
+    private Point contentOffset = Point.TOP_LEFT_CORNER;
     private Set<Hint> hints = new HashSet<>();
     private boolean onKeyEscapeClose;
 
@@ -78,7 +78,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
 
     @Override
     public void addWindowListener(WindowListener windowListener) {
-        addBasePaneListener(windowListener);
+        addRootPaneListener(windowListener);
     }
 
     @Override
@@ -99,45 +99,45 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     /**
-     * @see Window#fromGlobalToContentRelative(TerminalPosition)
+     * @see Window#fromGlobalToContentRelative(Point)
      */
     @Override
     @Deprecated
-    public TerminalPosition fromGlobal(TerminalPosition globalPosition) {
-        return fromGlobalToContentRelative(globalPosition);
+    public Point fromGlobal(Point globalPoint) {
+        return fromGlobalToContentRelative(globalPoint);
     }
 
     @Override
-    public TerminalPosition fromGlobalToContentRelative(TerminalPosition globalPosition) {
-        if (globalPosition == null || lastKnownPosition == null) {
+    public Point fromGlobalToContentRelative(Point globalPoint) {
+        if (globalPoint == null || lastKnownPoint == null) {
             return null;
         }
-        return globalPosition.withRelative(
-            -lastKnownPosition.getColumn() - contentOffset.getColumn(),
-            -lastKnownPosition.getRow() - contentOffset.getRow());
+        return globalPoint.withRelative(
+            -lastKnownPoint.getColumn() - contentOffset.getColumn(),
+            -lastKnownPoint.getRow() - contentOffset.getRow());
     }
 
     @Override
-    public TerminalPosition fromGlobalToDecoratedRelative(TerminalPosition globalPosition) {
-        if (globalPosition == null || lastKnownPosition == null) {
+    public Point fromGlobalToDecoratedRelative(Point globalPoint) {
+        if (globalPoint == null || lastKnownPoint == null) {
             return null;
         }
-        return globalPosition.withRelative(-lastKnownPosition.getColumn(), -lastKnownPosition.getRow());
+        return globalPoint.withRelative(-lastKnownPoint.getColumn(), -lastKnownPoint.getRow());
     }
 
     @Override
-    public final TerminalSize getDecoratedSize() {
+    public final Dimension getDecoratedSize() {
         return lastKnownDecoratedSize;
     }
 
     @Override
-    public final void setDecoratedSize(TerminalSize decoratedSize) {
+    public final void setDecoratedSize(Dimension decoratedSize) {
         this.lastKnownDecoratedSize = decoratedSize;
     }
 
     @Override
-    public final TerminalPosition getPosition() {
-        return lastKnownPosition;
+    public final Point getPosition() {
+        return lastKnownPoint;
     }
 
     @Override
@@ -146,11 +146,11 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public TerminalSize getPreferredSize() {
-        TerminalSize preferredSize = contentHolder.getPreferredSize();
+    public Dimension getPreferredSize() {
+        Dimension preferredSize = contentHolder.getPreferredSize();
         MenuBar menuBar = getMenuBar();
         if (menuBar.getMenuCount() > 0) {
-            TerminalSize menuPreferredSize = menuBar.getPreferredSize();
+            Dimension menuPreferredSize = menuBar.getPreferredSize();
             preferredSize = preferredSize.withRelativeRows(menuPreferredSize.getRows())
                 .withColumns(Math.max(menuPreferredSize.getColumns(), preferredSize.getColumns()));
         }
@@ -158,7 +158,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public final TerminalSize getSize() {
+    public final Dimension getSize() {
         return lastKnownSize;
     }
 
@@ -195,9 +195,9 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public boolean handleInput(KeyStroke key) {
-        boolean handled = super.handleInput(key);
-        if (!handled && onKeyEscapeClose && key.getKeyType() == KeyType.Escape) {
+    public boolean handleInput(KeyStroke keyStroke) {
+        boolean handled = super.handleInput(keyStroke);
+        if (!handled && onKeyEscapeClose && keyStroke.getKeyType() == KeyType.Escape) {
             close();
             return true;
         }
@@ -224,7 +224,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public Window setContentOffset(TerminalPosition offset) {
+    public Window setContentOffset(Point offset) {
         this.contentOffset = offset;
         return this;
     }
@@ -243,7 +243,7 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public Window setFixedSize(TerminalSize size) {
+    public Window setFixedSize(Dimension size) {
         hints.add(Hint.FIXED_SIZE);
         return setSize(size);
     }
@@ -274,33 +274,33 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     @Override
-    public final Window setPosition(TerminalPosition topLeft) {
-        TerminalPosition oldPosition = this.lastKnownPosition;
-        this.lastKnownPosition = topLeft;
+    public final Window setPosition(Point topLeft) {
+        Point oldPoint = this.lastKnownPoint;
+        this.lastKnownPoint = topLeft;
 
         getBasePaneListeners().stream()
             .filter(l -> l instanceof WindowListener)
-            .forEach(l -> ((WindowListener) l).onMoved(this, oldPosition, topLeft));
+            .forEach(l -> ((WindowListener) l).onMoved(this, oldPoint, topLeft));
 
         return this;
     }
 
     @Override
     @Deprecated
-    public Window setSize(TerminalSize size) {
+    public Window setSize(Dimension size) {
         setSize(size, true);
         return this;
     }
 
-    private void setSize(TerminalSize size, boolean invalidate) {
-        TerminalSize oldSize = this.lastKnownSize;
+    private void setSize(Dimension size, boolean invalidate) {
+        Dimension oldSize = this.lastKnownSize;
         this.lastKnownSize = size;
         if (invalidate) {
             invalidate();
         }
 
         // Fire listeners
-        for (BasePaneListener<?> listener : getBasePaneListeners()) {
+        for (RootPaneListener<?> listener : getBasePaneListeners()) {
             if (listener instanceof WindowListener) {
                 ((WindowListener) listener).onResized(this, oldSize, size);
             }
@@ -325,29 +325,29 @@ public abstract class AbstractWindow extends AbstractBasePane<Window> implements
     }
 
     /**
-     * @see Window#toGlobalFromContentRelative(TerminalPosition)
+     * @see Window#toGlobalFromContentRelative(Point)
      */
     @Override
     @Deprecated
-    public TerminalPosition toGlobal(TerminalPosition localPosition) {
-        return toGlobalFromContentRelative(localPosition);
+    public Point toGlobal(Point localPoint) {
+        return toGlobalFromContentRelative(localPoint);
     }
 
     @Override
-    public TerminalPosition toGlobalFromContentRelative(TerminalPosition contentLocalPosition) {
-        if (contentLocalPosition == null) {
+    public Point toGlobalFromContentRelative(Point contentLocalPoint) {
+        if (contentLocalPoint == null) {
             return null;
         }
-        return lastKnownPosition.withRelative(contentOffset.withRelative(contentLocalPosition));
+        return lastKnownPoint.withRelative(contentOffset.withRelative(contentLocalPoint));
     }
 
     @Override
     @Deprecated
-    public TerminalPosition toGlobalFromDecoratedRelative(TerminalPosition localPosition) {
-        if (localPosition == null) {
+    public Point toGlobalFromDecoratedRelative(Point localPoint) {
+        if (localPoint == null) {
             return null;
         }
-        return lastKnownPosition.withRelative(localPosition);
+        return lastKnownPoint.withRelative(localPoint);
     }
 
     @Override

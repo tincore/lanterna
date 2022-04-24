@@ -18,13 +18,13 @@
  */
 package com.googlecode.lanterna.terminal.swing;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.IOSafeTerminal;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.TerminalResizeListener;
 
@@ -86,20 +86,20 @@ public class SwingTerminalFrame extends JFrame implements IOSafeTerminal {
     /**
      * Creates a new SwingTerminalFrame using a specified title and a series of swing terminal configuration objects
      * @param title What title to use for the window
-     * @param terminalSize Initial size of the terminal, in rows and columns. If null, it will default to 80x25.
+     * @param dimension Initial size of the terminal, in rows and columns. If null, it will default to 80x25.
      * @param deviceConfiguration Device configuration for the embedded SwingTerminal
      * @param fontConfiguration Font configuration for the embedded SwingTerminal
      * @param colorConfiguration Color configuration for the embedded SwingTerminal
      * @param autoCloseTriggers What to trigger automatic disposal of the JFrame
      */
     public SwingTerminalFrame(String title,
-                              TerminalSize terminalSize,
+                              Dimension dimension,
                               TerminalEmulatorDeviceConfiguration deviceConfiguration,
                               SwingTerminalFontConfiguration fontConfiguration,
                               TerminalEmulatorColorConfiguration colorConfiguration,
                               TerminalEmulatorAutoCloseTrigger... autoCloseTriggers) {
         this(title,
-                new SwingTerminal(terminalSize, deviceConfiguration, fontConfiguration, colorConfiguration),
+                new SwingTerminal(dimension, deviceConfiguration, fontConfiguration, colorConfiguration),
                 autoCloseTriggers);
     }
     
@@ -256,12 +256,12 @@ public class SwingTerminalFrame extends JFrame implements IOSafeTerminal {
     }
 
     @Override
-    public void setCursorPosition(TerminalPosition position) {
-        swingTerminal.setCursorPosition(position);
+    public void setCursorPosition(Point point) {
+        swingTerminal.setCursorPosition(point);
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public Point getCursorPosition() {
         return swingTerminal.getCursorPosition();
     }
 
@@ -311,7 +311,7 @@ public class SwingTerminalFrame extends JFrame implements IOSafeTerminal {
     }
 
     @Override
-    public TerminalSize getTerminalSize() {
+    public Dimension getTerminalSize() {
         return swingTerminal.getTerminalSize();
     }
 

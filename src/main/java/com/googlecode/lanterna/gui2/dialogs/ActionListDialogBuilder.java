@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.ActionListBox;
 import com.googlecode.lanterna.gui2.Interactable;
 
@@ -35,7 +35,7 @@ import java.util.List;
 public class ActionListDialogBuilder extends AbstractDialogBuilder<ActionListDialogBuilder, ActionListDialog> {
 
     private final List<ActionListBox.Item> items = new ArrayList<>();
-    private TerminalSize listBoxSize;
+    private Dimension listBoxSize;
     private boolean cancellable;
     private boolean onSelectionClose;
 
@@ -112,7 +112,7 @@ public class ActionListDialogBuilder extends AbstractDialogBuilder<ActionListDia
      * @param listBoxSize Size of the {@code ActionListBox}
      * @return Itself
      */
-    public ActionListDialogBuilder listSize(TerminalSize listBoxSize) {
+    public ActionListDialogBuilder listSize(Dimension listBoxSize) {
         this.listBoxSize = listBoxSize;
         return this;
     }

@@ -26,7 +26,7 @@ import com.googlecode.lanterna.graphics.*;
  * 
  * @author ginkoblongata
  */
-public class SplitPanelTest extends TestBase {
+public class SplitPanelTest extends AbstractGuiTest {
     public static void main(String[] args) throws Exception {
         new SplitPanelTest().run(args);
     }
@@ -116,20 +116,20 @@ public class SplitPanelTest extends TestBase {
     @Override
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("SplitPanelTest");
-        window.setTheme(LanternaThemes.getRegisteredTheme("businessmachine"));
+        window.setTheme(LanternaThemes.getTheme("businessmachine"));
 
         ImageComponent left = makeImageComponent(IMAGE_X);
         ImageComponent right = makeImageComponent(IMAGE_Y);
         //SplitPanel splitH = SplitPanel.ofHorizontal(left.withBorder(Borders.singleLine("left")), right.withBorder(Borders.singleLine("right")));
         SplitPanel splitH = SplitPanel.ofHorizontal(left, right);
-        splitH.setPreferredSize(new TerminalSize(40, 40));
+        splitH.setPreferredSize(new Dimension(40, 40));
         splitH.setRatio(45, 35);
         
         ImageComponent top = makeImageComponent(IMAGE_Y);
         ImageComponent bottom = makeImageComponent(IMAGE_Z);
         //SplitPanel splitV = SplitPanel.ofVertical(top.withBorder(Borders.singleLine("top")), bottom.withBorder(Borders.singleLine("bottom")));
         SplitPanel splitV = SplitPanel.ofVertical(top, bottom);
-        splitV.setPreferredSize(new TerminalSize(40, 40));
+        splitV.setPreferredSize(new Dimension(40, 40));
         splitV.setRatio(20, 80);
         
         Panel mainPanel = new Panel();
@@ -143,7 +143,7 @@ public class SplitPanelTest extends TestBase {
     
     ImageComponent makeImageComponent(String[] image) {
         ImageComponent imageComponent = new ImageComponent();
-        TerminalSize imageSize = new TerminalSize(image[0].length(), image.length);
+        Dimension imageSize = new Dimension(image[0].length(), image.length);
         TextImage textImage = new BasicTextImage(imageSize);
         
         for (int row = 0; row < image.length; row++) {

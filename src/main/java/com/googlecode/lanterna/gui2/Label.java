@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
@@ -36,7 +36,7 @@ public class Label extends AbstractComponent<Label> {
     private final EnumSet<SGR> additionalStyles;
     private String[] lines;
     private Integer labelWidth;
-    private TerminalSize labelSize;
+    private Dimension labelSize;
     private TextColor foregroundColor;
     private TextColor backgroundColor;
 
@@ -52,7 +52,7 @@ public class Label extends AbstractComponent<Label> {
     public Label(String text, Attributes attributes) {
         super(attributes);
         this.lines = null;
-        this.labelSize = TerminalSize.ZERO;
+        this.labelSize = Dimension.ZERO;
         this.labelWidth = 0;
         this.foregroundColor = null;
         this.backgroundColor = null;
@@ -108,7 +108,7 @@ public class Label extends AbstractComponent<Label> {
             }
 
             @Override
-            public TerminalSize getPreferredSize(Label Label) {
+            public Dimension getPreferredSize(Label Label) {
                 return labelSize;
             }
         };
@@ -147,9 +147,9 @@ public class Label extends AbstractComponent<Label> {
      *                      reference of this size will avoid creating new {@code TerminalSize} objects every time
      * @return Size that is required to draw the lines
      */
-    protected TerminalSize getBounds(String[] lines, TerminalSize currentBounds) {
+    protected Dimension getBounds(String[] lines, Dimension currentBounds) {
         if (currentBounds == null) {
-            currentBounds = TerminalSize.ZERO;
+            currentBounds = Dimension.ZERO;
         }
         currentBounds = currentBounds.withRows(lines.length);
         if (labelWidth == null || labelWidth == 0) {

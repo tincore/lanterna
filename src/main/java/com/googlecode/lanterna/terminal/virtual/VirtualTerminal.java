@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.terminal.virtual;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.IOSafeTerminal;
@@ -38,7 +38,7 @@ public interface VirtualTerminal extends IOSafeTerminal {
      * that is different from the current size of the virtual terminal, the resize event will be fired on all listeners.
      * @param newSize New size of the virtual terminal
      */
-    void setTerminalSize(TerminalSize newSize);
+    void setTerminalSize(Dimension newSize);
 
     /**
      * Adds a listener to receive notifications when certain events happens on the virtual terminal. Notice that this is
@@ -83,17 +83,17 @@ public interface VirtualTerminal extends IOSafeTerminal {
      * {@link #getCursorPosition()} instead.
      * @return Cursor position as an offset from the top-left position of the text buffer including any backlog
      */
-    TerminalPosition getCursorBufferPosition();
+    Point getCursorBufferPosition();
 
     /**
      * Returns a character from this virtual terminal, relative to the top-left position of the text buffer including
      * any backlog. If you want to get a character from the bottom viewport, please use
-     * {@link #getCharacter(TerminalPosition)} instead.
+     * {@link #getCharacter(Point)} instead.
      *
-     * @param position Position to get the character from
+     * @param point Position to get the character from
      * @return Text character at the specific position in the text buffer
      */
-    TextCharacter getBufferCharacter(TerminalPosition position);
+    TextCharacter getBufferCharacter(Point point);
 
 
     /**
@@ -109,12 +109,12 @@ public interface VirtualTerminal extends IOSafeTerminal {
 
     /**
      * Returns a character from the viewport at the specified coordinates. This method cannot access the backlog, if you
-     * want to fetch a character potentially from the backlog, please use {@link #getBufferCharacter(TerminalPosition)}
+     * want to fetch a character potentially from the backlog, please use {@link #getBufferCharacter(Point)}
      * instead.
-     * @param position Position of the character to return
+     * @param point Position of the character to return
      * @return Text character at the specific position in the viewport
      */
-    TextCharacter getCharacter(TerminalPosition position);
+    TextCharacter getCharacter(Point point);
 
     /**
      * Returns a character from the viewport at the specified coordinates. This method cannot access the backlog, if you

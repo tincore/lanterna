@@ -19,6 +19,8 @@
 package com.googlecode.lanterna.terminal.swing;
 
 import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.DefaultKeyDecodingProfile;
 import com.googlecode.lanterna.input.InputDecoder;
@@ -29,6 +31,7 @@ import com.googlecode.lanterna.terminal.TerminalResizeListener;
 import com.googlecode.lanterna.terminal.virtual.DefaultVirtualTerminal;
 
 import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.*;
@@ -67,7 +70,7 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
     private boolean bellOn;
     private boolean needFullRedraw;
 
-    private TerminalPosition lastDrawnCursorPosition;
+    private Point lastDrawnCursorPoint;
     private int lastBufferUpdateScrollPosition;
     private int lastComponentWidth;
     private int lastComponentHeight;
@@ -87,7 +90,7 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
      * Creates a new GraphicalTerminalImplementation component using custom settings and a custom scroll controller. The
      * scrolling controller will be notified when the terminal's history size grows and will be called when this class
      * needs to figure out the current scrolling position.
-     * @param initialTerminalSize Initial size of the terminal, which will be used when calculating the preferred size
+     * @param initialDimension Initial size of the terminal, which will be used when calculating the preferred size
      *                            of the component. If null, it will default to 80x25. If the AWT layout manager forces
      *                            the component to a different size, the value of this parameter won't have any meaning
      * @param deviceConfiguration Device configuration to use for this SwingTerminal
@@ -96,17 +99,17 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
      *                         scrollable area has changed
      */
     GraphicalTerminalImplementation(
-            TerminalSize initialTerminalSize,
+            Dimension initialDimension,
             TerminalEmulatorDeviceConfiguration deviceConfiguration,
             TerminalEmulatorColorConfiguration colorConfiguration,
             TerminalScrollController scrollController) {
 
         //This is kind of meaningless since we don't know how large the
         //component is at this point, but we should set it to something
-        if(initialTerminalSize == null) {
-            initialTerminalSize = new TerminalSize(80, 24);
+        if(initialDimension == null) {
+            initialDimension = new Dimension(80, 24);
         }
-        this.virtualTerminal = new DefaultVirtualTerminal(initialTerminalSize);
+        this.virtualTerminal = new DefaultVirtualTerminal(initialDimension);
         this.keyQueue = new LinkedBlockingQueue<>();
         this.deviceConfiguration = deviceConfiguration;
         this.colorConfiguration = colorConfiguration;
@@ -116,7 +119,7 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
         this.cursorIsVisible = true;        //Always start with an activate and visible cursor
         this.enableInput = false;           //Start with input disabled and activate it once the window is visible
         this.enquiryString = "TerminalEmulator";
-        this.lastDrawnCursorPosition = null;
+        this.lastDrawnCursorPoint = null;
         this.lastBufferUpdateScrollPosition = 0;
         this.lastComponentHeight = 0;
         this.lastComponentWidth = 0;
@@ -242,8 +245,8 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
      * Calculates the preferred size of this terminal
      * @return Preferred size of this terminal
      */
-    synchronized Dimension getPreferredSize() {
-        return new Dimension(getFontWidth() * virtualTerminal.getTerminalSize().getColumns(),
+    synchronized java.awt.Dimension getPreferredSize() {
+        return new java.awt.Dimension(getFontWidth() * virtualTerminal.getTerminalSize().getColumns(),
                 getFontHeight() * virtualTerminal.getTerminalSize().getRows());
     }
 
@@ -271,8 +274,8 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
         if(width != lastComponentWidth || height != lastComponentHeight) {
             int columns = width / getFontWidth();
             int rows = height / getFontHeight();
-            TerminalSize terminalSize = virtualTerminal.getTerminalSize().withColumns(columns).withRows(rows);
-            virtualTerminal.setTerminalSize(terminalSize);
+            Dimension dimension = virtualTerminal.getTerminalSize().withColumns(columns).withRows(rows);
+            virtualTerminal.setTerminalSize(dimension);
 
             // Back buffer needs to be updated since the component size has changed
             needToUpdateBackBuffer = true;
@@ -322,8 +325,8 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
         final int fontHeight = getFontHeight();
 
         //Retrieve the position of the cursor, relative to the scrolling state
-        final TerminalPosition cursorPosition = virtualTerminal.getCursorBufferPosition();
-        final TerminalSize viewportSize = virtualTerminal.getTerminalSize();
+        final Point cursorPoint = virtualTerminal.getCursorBufferPosition();
+        final Dimension viewportSize = virtualTerminal.getTerminalSize();
 
         final int firstVisibleRowIndex = scrollOffsetFromTopInPixels / fontHeight;
         final int lastVisibleRowIndex = (scrollOffsetFromTopInPixels + getHeight()) / fontHeight;
@@ -406,12 +409,12 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
         virtualTerminal.forEachLine(firstVisibleRowIndex, lastVisibleRowIndex, (rowNumber, bufferLine) -> {
             for(int column = 0; column < viewportSize.getColumns(); column++) {
                 TextCharacter textCharacter = bufferLine.getCharacterAt(column);
-                boolean atCursorLocation = cursorPosition.equals(column, rowNumber);
+                boolean atCursorLocation = cursorPoint.equals(column, rowNumber);
                 //If next position is the cursor location and this is a double-width character (i.e. cursor is on the padding),
                 //consider this location the cursor position since otherwise the cursor will be skipped
                 if(!atCursorLocation &&
-                        cursorPosition.getColumn() == column + 1 &&
-                        cursorPosition.getRow() == rowNumber &&
+                        cursorPoint.getColumn() == column + 1 &&
+                        cursorPoint.getRow() == rowNumber &&
                         textCharacter.isDoubleWidth()) {
                     atCursorLocation = true;
                 }
@@ -455,7 +458,7 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
 
         // Update the blink status according to if there were any blinking characters or not
         this.hasBlinkingText = foundBlinkingCharacters.get();
-        this.lastDrawnCursorPosition = cursorPosition;
+        this.lastDrawnCursorPoint = cursorPoint;
         this.lastBufferUpdateScrollPosition = scrollOffsetFromTopInPixels;
         this.needFullRedraw = false;
 
@@ -468,24 +471,24 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
             return;
         }
 
-        TerminalSize viewportSize = virtualTerminal.getTerminalSize();
-        TerminalPosition cursorPosition = virtualTerminal.getCursorBufferPosition();
+        Dimension viewportSize = virtualTerminal.getTerminalSize();
+        Point cursorPoint = virtualTerminal.getCursorBufferPosition();
 
         dirtyCellsLookupTable.resetAndInitialize(firstRowOffset, lastRowOffset, viewportSize.getColumns());
-        dirtyCellsLookupTable.setDirty(cursorPosition);
-        if(lastDrawnCursorPosition != null && !lastDrawnCursorPosition.equals(cursorPosition)) {
-            if(virtualTerminal.getCharacter(lastDrawnCursorPosition).isDoubleWidth()) {
-                dirtyCellsLookupTable.setDirty(lastDrawnCursorPosition.withRelativeColumn(1));
+        dirtyCellsLookupTable.setDirty(cursorPoint);
+        if(lastDrawnCursorPoint != null && !lastDrawnCursorPoint.equals(cursorPoint)) {
+            if(virtualTerminal.getCharacter(lastDrawnCursorPoint).isDoubleWidth()) {
+                dirtyCellsLookupTable.setDirty(lastDrawnCursorPoint.withRelativeColumn(1));
             }
-            if(lastDrawnCursorPosition.getColumn() > 0 && virtualTerminal.getCharacter(lastDrawnCursorPosition.withRelativeColumn(-1)).isDoubleWidth()) {
-                dirtyCellsLookupTable.setDirty(lastDrawnCursorPosition.withRelativeColumn(-1));
+            if(lastDrawnCursorPoint.getColumn() > 0 && virtualTerminal.getCharacter(lastDrawnCursorPoint.withRelativeColumn(-1)).isDoubleWidth()) {
+                dirtyCellsLookupTable.setDirty(lastDrawnCursorPoint.withRelativeColumn(-1));
             }
-            dirtyCellsLookupTable.setDirty(lastDrawnCursorPosition);
+            dirtyCellsLookupTable.setDirty(lastDrawnCursorPoint);
         }
 
-        TreeSet<TerminalPosition> dirtyCells = virtualTerminal.getAndResetDirtyCells();
-        for(TerminalPosition position: dirtyCells) {
-            dirtyCellsLookupTable.setDirty(position);
+        TreeSet<Point> dirtyCells = virtualTerminal.getAndResetDirtyCells();
+        for(Point point : dirtyCells) {
+            dirtyCellsLookupTable.setDirty(point);
         }
     }
 
@@ -690,22 +693,22 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
 
     @Override
     public synchronized void setCursorPosition(int x, int y) {
-        setCursorPosition(new TerminalPosition(x, y));
+        setCursorPosition(new Point(x, y));
     }
 
     @Override
-    public synchronized void setCursorPosition(TerminalPosition position) {
-        if(position.getColumn() < 0) {
-            position = position.withColumn(0);
+    public synchronized void setCursorPosition(Point point) {
+        if(point.getColumn() < 0) {
+            point = point.withColumn(0);
         }
-        if(position.getRow() < 0) {
-            position = position.withRow(0);
+        if(point.getRow() < 0) {
+            point = point.withRow(0);
         }
-        virtualTerminal.setCursorPosition(position);
+        virtualTerminal.setCursorPosition(point);
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public Point getCursorPosition() {
         return virtualTerminal.getCursorPosition();
     }
 
@@ -755,7 +758,7 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
     }
 
     @Override
-    public synchronized TerminalSize getTerminalSize() {
+    public synchronized Dimension getTerminalSize() {
         return virtualTerminal.getTerminalSize();
     }
 
@@ -1046,14 +1049,14 @@ abstract class GraphicalTerminalImplementation implements IOSafeTerminal {
             return allDirty;
         }
 
-        void setDirty(TerminalPosition position) {
-            if(position.getRow() < firstRowIndex ||
-                    position.getRow() >= firstRowIndex + table.size()) {
+        void setDirty(Point point) {
+            if(point.getRow() < firstRowIndex ||
+                    point.getRow() >= firstRowIndex + table.size()) {
                 return;
             }
-            BitSet tableRow = table.get(position.getRow() - firstRowIndex);
-            if(position.getColumn() < tableRow.size()) {
-                tableRow.set(position.getColumn());
+            BitSet tableRow = table.get(point.getRow() - firstRowIndex);
+            if(point.getColumn() < tableRow.size()) {
+                tableRow.set(point.getColumn());
             }
         }
 

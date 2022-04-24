@@ -1,7 +1,5 @@
 package com.googlecode.lanterna.terminal.swing;
 
-import com.googlecode.lanterna.TerminalPosition;
-
 import java.awt.*;
 import java.awt.font.TextHitInfo;
 import java.awt.im.InputMethodRequests;
@@ -19,11 +17,11 @@ class TerminalInputMethodRequests implements InputMethodRequests {
     
     @Override
     public Rectangle getTextLocation(TextHitInfo offset) {
-        Point location = owner.getLocationOnScreen();
-        TerminalPosition cursorPosition = terminalImplementation.getCursorPosition();
+        java.awt.Point location = owner.getLocationOnScreen();
+        com.googlecode.lanterna.Point cursorPoint = terminalImplementation.getCursorPosition();
 
-        int offsetX = cursorPosition.getColumn() * terminalImplementation.getFontWidth();
-        int offsetY = cursorPosition.getRow() * terminalImplementation.getFontHeight() + terminalImplementation.getFontHeight();
+        int offsetX = cursorPoint.getColumn() * terminalImplementation.getFontWidth();
+        int offsetY = cursorPoint.getRow() * terminalImplementation.getFontHeight() + terminalImplementation.getFontHeight();
 
         return new Rectangle(location.x + offsetX, location.y + offsetY, 0, 0);
     }

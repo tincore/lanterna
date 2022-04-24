@@ -1,6 +1,6 @@
 package com.googlecode.lanterna.tutorial;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
+
+import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
 
 /**
  * The forth tutorial, introducing the GUIScreen interface
@@ -121,7 +123,7 @@ public class Tutorial04 {
             List<String> timezonesAsStrings = new ArrayList<>(Arrays.asList(TimeZone.getAvailableIDs()));
             ComboBox<String> readOnlyComboBox = new ComboBox<>(timezonesAsStrings);
             readOnlyComboBox.setReadOnly(true);
-            readOnlyComboBox.setPreferredSize(new TerminalSize(20, 1));
+            readOnlyComboBox.setPreferredSize(new Dimension(20, 1));
             contentPanel.add(readOnlyComboBox);
 
             contentPanel.add(new Label("Editable Combo Box (filled)"));
@@ -149,7 +151,7 @@ public class Tutorial04 {
                     .setLayoutData(
                         GridLayout.createHorizontallyFilledLayoutData(2)));
             contentPanel.add(
-                new Button("Close", s -> window.close()).setLayoutData(
+                createButtonCloseContainer().setLayoutData(
                     GridLayout.createHorizontallyEndAlignedLayoutData(2)));
 
             /*

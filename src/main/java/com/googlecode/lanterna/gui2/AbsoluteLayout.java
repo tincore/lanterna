@@ -18,7 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+
 import java.util.List;
 
 /**
@@ -31,11 +32,11 @@ import java.util.List;
  */
 public class AbsoluteLayout implements LayoutManager {
     @Override
-    public TerminalSize getPreferredSize(List<Component> components) {
-        TerminalSize size = TerminalSize.ZERO;
+    public Dimension getPreferredSize(List<Component> components) {
+        Dimension size = Dimension.ZERO;
         for(Component component: components) {
             size = size.max(
-                    new TerminalSize(
+                    new Dimension(
                             component.getPosition().getColumn() + component.getSize().getColumns(),
                             component.getPosition().getRow() + component.getSize().getRows()));
                     
@@ -44,7 +45,7 @@ public class AbsoluteLayout implements LayoutManager {
     }
 
     @Override
-    public void doLayout(TerminalSize area, List<Component> components) {
+    public void doLayout(Dimension area, List<Component> components) {
         //Do nothing
     }
 

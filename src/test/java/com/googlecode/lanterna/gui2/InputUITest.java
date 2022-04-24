@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -27,7 +27,7 @@ import com.googlecode.lanterna.input.KeyType;
 import java.io.IOException;
 
 @SuppressWarnings("rawtypes")
-public class InputUITest extends TestBase {
+public class InputUITest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new InputUITest().run(args);
     }
@@ -54,20 +54,20 @@ public class InputUITest extends TestBase {
                     }
 
                     @Override
-                    public TerminalPosition getCursorLocation(Component component) {
-                        TerminalSize adjustedSize = component.getSize().withRelative(-1, -1);
-                        return new TerminalPosition(adjustedSize.getColumns(), adjustedSize.getRows());
+                    public Point getCursorLocation(Component component) {
+                        Dimension adjustedSize = component.getSize().withRelative(-1, -1);
+                        return new Point(adjustedSize.getColumns(), adjustedSize.getRows());
                     }
 
                     @Override
-                    public TerminalSize getPreferredSize(Component component) {
-                        return new TerminalSize(70, 5);
+                    public Dimension getPreferredSize(Component component) {
+                        return new Dimension(70, 5);
                     }
                 };
             }
 
             @Override
-            protected Result onKeyStroke(KeyStroke keyStroke) {
+            public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
                 if (keyStroke.getKeyType() == KeyType.Tab) {
                     return super.onKeyStroke(keyStroke);
                 }
@@ -85,7 +85,7 @@ public class InputUITest extends TestBase {
                 if (keyStroke.isShiftDown()) {
                     lastKey += " + SHIFT";
                 }
-                return Result.HANDLED;
+                return KeyStrokeResult.HANDLED;
             }
         };
 
@@ -93,7 +93,7 @@ public class InputUITest extends TestBase {
             Panels.vertical(
                 interactable.withBorder(Borders.doubleLineBevel("Press any key to test capturing the KeyStroke")),
                 new Label("Use the TAB key to shift focus"),
-                new Button("Close", s -> window.close())));
+                createButtonCloseContainer()));
         textGUI.addWindow(window);
     }
 }

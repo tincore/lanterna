@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import java.util.List;
 public class DefaultWindowManager implements WindowManager {
 
     private final WindowDecorationRenderer windowDecorationRendererOverride;
-    private TerminalSize lastKnownScreenSize;
+    private Dimension lastKnownScreenSize;
 
     /**
      * Default constructor, will create a window manager that uses {@code DefaultWindowDecorationRenderer} for drawing
@@ -53,7 +53,7 @@ public class DefaultWindowManager implements WindowManager {
      * @param initialScreenSize Size to assume the terminal has until the text GUI is started and can be notified of the
      *                          correct size
      */
-    public DefaultWindowManager(TerminalSize initialScreenSize) {
+    public DefaultWindowManager(Dimension initialScreenSize) {
         this(null, initialScreenSize);
     }
 
@@ -66,13 +66,13 @@ public class DefaultWindowManager implements WindowManager {
      * @param initialScreenSize Size to assume the terminal has until the text GUI is started and can be notified of the
      *                          correct size
      */
-    public DefaultWindowManager(WindowDecorationRenderer windowDecorationRenderer, TerminalSize initialScreenSize) {
+    public DefaultWindowManager(WindowDecorationRenderer windowDecorationRenderer, Dimension initialScreenSize) {
         this.windowDecorationRendererOverride = windowDecorationRenderer;
         if(initialScreenSize != null) {
             this.lastKnownScreenSize = initialScreenSize;
         }
         else {
-            this.lastKnownScreenSize = new TerminalSize(80, 24);
+            this.lastKnownScreenSize = new Dimension(80, 24);
         }
     }
 
@@ -100,7 +100,7 @@ public class DefaultWindowManager implements WindowManager {
     @Override
     public void onAdded(WindowBasedTextGUI textGUI, Window window, List<Window> allWindows) {
         WindowDecorationRenderer decorationRenderer = getWindowDecorationRenderer(window);
-        TerminalSize expectedDecoratedSize = decorationRenderer.getDecoratedSize(window, window.getPreferredSize());
+        Dimension expectedDecoratedSize = decorationRenderer.getDecoratedSize(window, window.getPreferredSize());
         window.setDecoratedSize(expectedDecoratedSize);
 
         //noinspection StatementWithEmptyBody
@@ -108,20 +108,20 @@ public class DefaultWindowManager implements WindowManager {
             //Don't place the window, assume the position is already set
         }
         else if(allWindows.isEmpty()) {
-            window.setPosition(TerminalPosition.OFFSET_1x1);
+            window.setPosition(Point.OFFSET_1x1);
         }
         else if(window.isHint(Window.Hint.CENTERED)) {
             int left = (lastKnownScreenSize.getColumns() - expectedDecoratedSize.getColumns()) / 2;
             int top = (lastKnownScreenSize.getRows() - expectedDecoratedSize.getRows()) / 2;
-            window.setPosition(new TerminalPosition(left, top));
+            window.setPosition(new Point(left, top));
         }
         else {
-            TerminalPosition nextPosition = allWindows.get(allWindows.size() - 1).getPosition().withRelative(2, 1);
-            if(nextPosition.getColumn() + expectedDecoratedSize.getColumns() > lastKnownScreenSize.getColumns() ||
-                    nextPosition.getRow() + expectedDecoratedSize.getRows() > lastKnownScreenSize.getRows()) {
-                nextPosition = TerminalPosition.OFFSET_1x1;
+            Point nextPoint = allWindows.get(allWindows.size() - 1).getPosition().withRelative(2, 1);
+            if(nextPoint.getColumn() + expectedDecoratedSize.getColumns() > lastKnownScreenSize.getColumns() ||
+                    nextPoint.getRow() + expectedDecoratedSize.getRows() > lastKnownScreenSize.getRows()) {
+                nextPoint = Point.OFFSET_1x1;
             }
-            window.setPosition(nextPosition);
+            window.setPosition(nextPoint);
         }
 
         // Finally, run through the usual calculations so the window manager's usual prepare method can have it's say
@@ -134,7 +134,7 @@ public class DefaultWindowManager implements WindowManager {
     }
 
     @Override
-    public void prepareWindows(WindowBasedTextGUI textGUI, List<Window> allWindows, TerminalSize screenSize) {
+    public void prepareWindows(WindowBasedTextGUI textGUI, List<Window> allWindows, Dimension screenSize) {
         this.lastKnownScreenSize = screenSize;
         for(Window window: allWindows) {
             prepareWindow(screenSize, window);
@@ -152,23 +152,23 @@ public class DefaultWindowManager implements WindowManager {
      * @param screenSize Size of the terminal that is available to draw on
      * @param window Window to prepare decorated size and position for
      */
-    protected void prepareWindow(TerminalSize screenSize, Window window) {
-        TerminalSize contentAreaSize;
+    protected void prepareWindow(Dimension screenSize, Window window) {
+        Dimension contentAreaSize;
         if(window.isHint(Window.Hint.FIXED_SIZE)) {
             contentAreaSize = window.getSize();
         }
         else {
             contentAreaSize = window.getPreferredSize();
         }
-        TerminalSize size = getWindowDecorationRenderer(window).getDecoratedSize(window, contentAreaSize);
-        TerminalPosition position = window.getPosition();
+        Dimension size = getWindowDecorationRenderer(window).getDecoratedSize(window, contentAreaSize);
+        Point point = window.getPosition();
 
         if(window.isHint(Window.Hint.FULL_SCREEN)) {
-            position = TerminalPosition.TOP_LEFT_CORNER;
+            point = Point.TOP_LEFT_CORNER;
             size = screenSize;
         }
         else if(window.isHint(Window.Hint.EXPANDED)) {
-            position = TerminalPosition.OFFSET_1x1;
+            point = Point.OFFSET_1x1;
             size = screenSize.withRelative(
                     -Math.min(4, screenSize.getColumns()),
                     -Math.min(3, screenSize.getRows()));
@@ -180,26 +180,26 @@ public class DefaultWindowManager implements WindowManager {
             window.isHint(Window.Hint.CENTERED)) {
             //If the window is too big for the terminal, move it up towards 0x0 and if that's not enough then shrink
             //it instead
-            while(position.getRow() > 0 && position.getRow() + size.getRows() > screenSize.getRows()) {
-                position = position.withRelativeRow(-1);
+            while(point.getRow() > 0 && point.getRow() + size.getRows() > screenSize.getRows()) {
+                point = point.withRelativeRow(-1);
             }
-            while(position.getColumn() > 0 && position.getColumn() + size.getColumns() > screenSize.getColumns()) {
-                position = position.withRelativeColumn(-1);
+            while(point.getColumn() > 0 && point.getColumn() + size.getColumns() > screenSize.getColumns()) {
+                point = point.withRelativeColumn(-1);
             }
-            if(position.getRow() + size.getRows() > screenSize.getRows()) {
-                size = size.withRows(screenSize.getRows() - position.getRow());
+            if(point.getRow() + size.getRows() > screenSize.getRows()) {
+                size = size.withRows(screenSize.getRows() - point.getRow());
             }
-            if(position.getColumn() + size.getColumns() > screenSize.getColumns()) {
-                size = size.withColumns(screenSize.getColumns() - position.getColumn());
+            if(point.getColumn() + size.getColumns() > screenSize.getColumns()) {
+                size = size.withColumns(screenSize.getColumns() - point.getColumn());
             }
             if(window.isHint(Window.Hint.CENTERED)) {
                 int left = (lastKnownScreenSize.getColumns() - size.getColumns()) / 2;
                 int top = (lastKnownScreenSize.getRows() - size.getRows()) / 2;
-                position = new TerminalPosition(left, top);
+                point = new Point(left, top);
             }
         }
 
-        window.setPosition(position);
+        window.setPosition(point);
         window.setDecoratedSize(size);
     }
 

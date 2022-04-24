@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.gui2.*;
 
@@ -56,7 +56,7 @@ public class FileDialog extends DialogWindow {
         String title,
         String description,
         String actionLabel,
-        TerminalSize dialogSize,
+        Dimension dialogSize,
         boolean showHiddenFilesAndDirs,
         File selectedObject) {
         super(title);
@@ -85,12 +85,12 @@ public class FileDialog extends DialogWindow {
                 true, false, 2, 1))
             .addTo(contentPane);
 
-        fileListBox = new ActionListBox(new TerminalSize(unitWidth * 2, unitHeight));
+        fileListBox = new ActionListBox(new Dimension(unitWidth * 2, unitHeight));
         fileListBox.withBorder(Borders.singleLine())
             .setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER,
                 false, false))
             .addTo(contentPane);
-        directoryListBox = new ActionListBox(new TerminalSize(unitWidth, unitHeight));
+        directoryListBox = new ActionListBox(new Dimension(unitWidth, unitHeight));
         directoryListBox.withBorder(Borders.singleLine())
             .addTo(contentPane);
 
@@ -205,12 +205,12 @@ public class FileDialog extends DialogWindow {
     private class FileSystemLocationLabel extends Label {
         public FileSystemLocationLabel() {
             super("");
-            setPreferredSize(TerminalSize.ONE);
+            setPreferredSize(Dimension.ONE);
         }
 
         @Override
         public void onBeforeDrawing() {
-            TerminalSize area = getSize();
+            Dimension area = getSize();
             String absolutePath = directory.getAbsolutePath();
             int absolutePathLengthInColumns = TerminalTextUtils.getColumnWidth(absolutePath);
             if (area.getColumns() < absolutePathLengthInColumns) {

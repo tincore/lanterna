@@ -21,7 +21,7 @@ package com.googlecode.lanterna.gui2;
 import java.io.IOException;
 import java.util.Collections;
 
-public class LinearLayoutTest extends TestBase {
+public class LinearLayoutTest extends AbstractGuiTest {
     public static void main(String[] args) throws InterruptedException, IOException {
         new LinearLayoutTest().run(args);
     }
@@ -50,7 +50,7 @@ public class LinearLayoutTest extends TestBase {
             new Button("Toggle Hide Odd #", s -> toggleVisibleOnOddNumberLabels(labelPanel)),
             new Button("Expand", s -> window.setHints(Collections.singletonList(Window.Hint.EXPANDED))),
             new Button("Collapse", s -> window.setHints(Collections.emptySet())),
-            new Button("Close", s -> window.close())
+            createButtonCloseContainer()
         ));
 
         window.setComponent(mainPanel);

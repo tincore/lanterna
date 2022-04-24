@@ -20,8 +20,8 @@
  */
 package com.googlecode.lanterna.gui2.menu;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.input.KeyStroke;
 
@@ -161,9 +161,9 @@ public class MenuBar extends AbstractComponent<MenuBar> implements Container {
     }
 
     @Override
-    public TerminalPosition toBasePane(TerminalPosition position) {
+    public Point toBasePane(Point point) {
         // Assume the menu is always at the top of the content panel
-        return position;
+        return point;
     }
 
     @Override
@@ -184,11 +184,11 @@ public class MenuBar extends AbstractComponent<MenuBar> implements Container {
             graphics.fill(' ');
 
             int leftPosition = EXTRA_PADDING;
-            TerminalSize size = graphics.getSize();
+            Dimension size = graphics.getSize();
             int remainingSpace = size.getColumns() - EXTRA_PADDING;
             for (int i = 0; i < menuBar.getMenuCount() && remainingSpace > 0; i++) {
                 Menu menu = menuBar.getMenu(i);
-                TerminalSize preferredSize = menu.getPreferredSize();
+                Dimension preferredSize = menu.getPreferredSize();
                 menu.setPosition(menu.getPosition()
                     .withColumn(leftPosition)
                     .withRow(0));
@@ -204,17 +204,17 @@ public class MenuBar extends AbstractComponent<MenuBar> implements Container {
         }
 
         @Override
-        public TerminalSize getPreferredSize(MenuBar menuBar) {
+        public Dimension getPreferredSize(MenuBar menuBar) {
             int maxHeight = 1;
             int totalWidth = EXTRA_PADDING;
             for (int i = 0; i < menuBar.getMenuCount(); i++) {
                 Menu menu = menuBar.getMenu(i);
-                TerminalSize preferredSize = menu.getPreferredSize();
+                Dimension preferredSize = menu.getPreferredSize();
                 maxHeight = Math.max(maxHeight, preferredSize.getRows());
                 totalWidth += preferredSize.getColumns();
             }
             totalWidth += EXTRA_PADDING;
-            return new TerminalSize(totalWidth, maxHeight);
+            return new Dimension(totalWidth, maxHeight);
         }
     }
 }

@@ -40,7 +40,7 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
             title = "";
         }
 
-        TerminalSize drawableArea = graphics.getSize();
+        Dimension drawableArea = graphics.getSize();
         ThemeDefinition themeDefinition = window.getTheme().getDefinition(DefaultWindowDecorationRenderer.class);
         char horizontalLine = themeDefinition.getCharacter("HORIZONTAL_LINE", Symbols.SINGLE_LINE_HORIZONTAL);
         char verticalLine = themeDefinition.getCharacter("VERTICAL_LINE", Symbols.SINGLE_LINE_VERTICAL);
@@ -69,8 +69,8 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
         else {
             graphics.applyThemeStyle(themeDefinition.getPreLight());
         }
-        graphics.drawLine(new TerminalPosition(0, drawableArea.getRows() - 2), new TerminalPosition(0, 1), verticalLine);
-        graphics.drawLine(new TerminalPosition(1, 0), new TerminalPosition(drawableArea.getColumns() - 2, 0), horizontalLine);
+        graphics.drawLine(new Point(0, drawableArea.getRows() - 2), new Point(0, 1), verticalLine);
+        graphics.drawLine(new Point(1, 0), new Point(drawableArea.getColumns() - 2, 0), horizontalLine);
         graphics.setCharacter(0, 0, topLeftCorner);
         graphics.setCharacter(0, drawableArea.getRows() - 1, bottomLeftCorner);
 
@@ -87,12 +87,12 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
 
         graphics.applyThemeStyle(themeDefinition.getNormal());
         graphics.drawLine(
-                new TerminalPosition(drawableArea.getColumns() - 1, 1),
-                new TerminalPosition(drawableArea.getColumns() - 1, drawableArea.getRows() - 2),
+                new Point(drawableArea.getColumns() - 1, 1),
+                new Point(drawableArea.getColumns() - 1, drawableArea.getRows() - 2),
                 verticalLine);
         graphics.drawLine(
-                new TerminalPosition(1, drawableArea.getRows() - 1),
-                new TerminalPosition(drawableArea.getColumns() - 2, drawableArea.getRows() - 1),
+                new Point(1, drawableArea.getRows() - 1),
+                new Point(drawableArea.getColumns() - 2, drawableArea.getRows() - 1),
                 horizontalLine);
 
         graphics.setCharacter(drawableArea.getColumns() - 1, 0, topRightCorner);
@@ -109,7 +109,7 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
         }
 
         return graphics.newTextGraphics(
-                new TerminalPosition(1, 1),
+                new Point(1, 1),
                 drawableArea
                         // Make sure we don't make the new graphic's area smaller than 0
                         .withRelativeColumns(-(Math.min(2, drawableArea.getColumns())))
@@ -117,7 +117,7 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
     }
 
     @Override
-    public TerminalSize getDecoratedSize(Window window, TerminalSize contentAreaSize) {
+    public Dimension getDecoratedSize(Window window, Dimension contentAreaSize) {
         ThemeDefinition themeDefinition = window.getTheme().getDefinition(DefaultWindowDecorationRenderer.class);
         boolean useTitlePadding = themeDefinition.getBooleanProperty("TITLE_PADDING", false);
 
@@ -130,13 +130,13 @@ public class DefaultWindowDecorationRenderer implements WindowDecorationRenderer
         return contentAreaSize
                 .withRelativeColumns(2)
                 .withRelativeRows(2)
-                .max(new TerminalSize(titleWidth + minPadding, 1));  //Make sure the title fits!
+                .max(new Dimension(titleWidth + minPadding, 1));  //Make sure the title fits!
     }
 
-    private static final TerminalPosition OFFSET = new TerminalPosition(1, 1);
+    private static final Point OFFSET = new Point(1, 1);
 
     @Override
-    public TerminalPosition getOffset(Window window) {
+    public Point getOffset(Window window) {
         return OFFSET;
     }
 }

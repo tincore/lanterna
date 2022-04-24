@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
 /**
@@ -162,8 +162,8 @@ public class ScrollBar extends AbstractComponent<ScrollBar> {
      */
     public static abstract class ScrollBarRenderer implements ComponentRenderer<ScrollBar> {
         @Override
-        public TerminalSize getPreferredSize(ScrollBar component) {
-            return TerminalSize.ONE;
+        public Dimension getPreferredSize(ScrollBar component) {
+            return Dimension.ONE;
         }
     }
 
@@ -196,7 +196,7 @@ public class ScrollBar extends AbstractComponent<ScrollBar> {
 
         @Override
         public void drawComponent(TextGUIGraphics graphics, ScrollBar component) {
-            TerminalSize size = graphics.getSize();
+            Dimension size = graphics.getSize();
             Direction direction = component.getDirection();
             int position = component.getScrollPosition();
             int maximum = component.getScrollMaximum();

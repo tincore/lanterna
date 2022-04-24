@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.gui2.menu.MenuItem;
 
 /**
@@ -38,8 +38,8 @@ public class MenuPopupWindow extends AbstractWindow {
         super(Attributes.EMPTY);
         setHints(Hint.MODAL, Hint.MENU_POPUP, Hint.FIXED_POSITION);
         if (parent != null) {
-            TerminalPosition menuPositionGlobal = parent.toGlobal(TerminalPosition.TOP_LEFT_CORNER);
-            setPosition(menuPositionGlobal.withRelative(0, 1));
+            Point menuPointGlobal = parent.toGlobal(Point.TOP_LEFT_CORNER);
+            setPosition(menuPointGlobal.withRelative(0, 1));
         }
         menuItemPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         setComponent(menuItemPanel);

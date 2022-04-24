@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
@@ -52,7 +52,7 @@ public class Issue216 {
         tableModel.addRow("hi");
         panel.add(table);
 
-        panel.add(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+        panel.add(new EmptySpace(new Dimension(0,0))); // Empty space underneath labels
         panel.add(new Button("Submit", s -> {
             tableModel.addRow("haiiii");
             //table.invalidate();

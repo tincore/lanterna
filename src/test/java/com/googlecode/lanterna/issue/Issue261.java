@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
@@ -47,7 +47,7 @@ public class Issue261 {
         panel.add(new Label("Surname"));
         panel.add(new TextBox());
 
-        panel.add(new EmptySpace(new TerminalSize(0,0))); // Empty space underneath labels
+        panel.add(new EmptySpace(new Dimension(0,0))); // Empty space underneath labels
         panel.add(new Button("Submit"));
 
         // Create gui and start gui
@@ -55,7 +55,7 @@ public class Issue261 {
 
         // Create window to hold the panel
         BasicWindow window = new BasicWindow();
-        window.setFixedSize(new TerminalSize(500, 700));
+        window.setFixedSize(new Dimension(500, 700));
         window.setComponent(panel);
 
         gui.addWindowAndWait(window);

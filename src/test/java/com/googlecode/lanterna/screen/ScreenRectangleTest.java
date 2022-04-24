@@ -18,12 +18,12 @@
  */
 package com.googlecode.lanterna.screen;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import java.io.IOException;
 import java.util.Random;
@@ -62,7 +62,7 @@ public class ScreenRectangleTest {
                 break;
             }
             screen.doResizeIfNecessary();
-            TerminalSize size = textGraphics.getSize();
+            Dimension size = textGraphics.getSize();
             TextColor color;
             if(useAnsiColors) {
                 color = TextColor.ANSI.values()[random.nextInt(TextColor.ANSI.values().length)];
@@ -72,8 +72,8 @@ public class ScreenRectangleTest {
                 color = new TextColor.Indexed(random.nextInt(256));
             }
 
-            TerminalPosition topLeft = new TerminalPosition(random.nextInt(size.getColumns()), random.nextInt(size.getRows()));
-            TerminalSize rectangleSize = new TerminalSize(random.nextInt(size.getColumns() - topLeft.getColumn()), random.nextInt(size.getRows() - topLeft.getRow()));
+            Point topLeft = new Point(random.nextInt(size.getColumns()), random.nextInt(size.getRows()));
+            Dimension rectangleSize = new Dimension(random.nextInt(size.getColumns() - topLeft.getColumn()), random.nextInt(size.getRows() - topLeft.getRow()));
 
             textGraphics.setBackgroundColor(color);
             if(useFilled) {

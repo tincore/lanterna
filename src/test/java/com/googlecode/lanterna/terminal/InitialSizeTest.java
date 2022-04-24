@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.terminal;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TestTerminalFactory;
 import java.io.IOException;
 
@@ -37,7 +37,7 @@ public class InitialSizeTest {
         printString(rawTerminal, "Waiting for initial size...");
         rawTerminal.flush();
 
-        TerminalSize initialSize = rawTerminal.getTerminalSize();
+        Dimension initialSize = rawTerminal.getTerminalSize();
         rawTerminal.clearScreen();
         rawTerminal.setCursorPosition(5, 5);
         printString(rawTerminal, "Initial size: ");

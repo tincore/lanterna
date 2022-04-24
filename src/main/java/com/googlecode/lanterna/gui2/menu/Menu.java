@@ -79,7 +79,7 @@ public class Menu extends MenuItem {
                         if (thisMenuIndex > 0) {
                             popupMenu.close();
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex - 1);
-                            nextSelectedMenu.takeFocus();
+                            nextSelectedMenu.grabFocus();
                             nextSelectedMenu.onClicked();
                         }
                     } else if (keyStroke.getKeyType() == KeyType.ArrowRight) {
@@ -87,7 +87,7 @@ public class Menu extends MenuItem {
                         if (thisMenuIndex >= 0 && thisMenuIndex < menuBar.getMenuCount() - 1) {
                             popupMenu.close();
                             Menu nextSelectedMenu = menuBar.getMenu(thisMenuIndex + 1);
-                            nextSelectedMenu.takeFocus();
+                            nextSelectedMenu.grabFocus();
                             nextSelectedMenu.onClicked();
                         }
                     }

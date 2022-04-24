@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.terminal;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -149,9 +149,9 @@ public class IOSafeTerminalAdapter implements IOSafeTerminal {
     }
 
     @Override
-    public void setCursorPosition(TerminalPosition position) {
+    public void setCursorPosition(Point point) {
         try {
-            backend.setCursorPosition(position);
+            backend.setCursorPosition(point);
         }
         catch(IOException e) {
             exceptionHandler.onException(e);
@@ -159,7 +159,7 @@ public class IOSafeTerminalAdapter implements IOSafeTerminal {
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public Point getCursorPosition() {
         try {
             return backend.getCursorPosition();
         }
@@ -271,7 +271,7 @@ public class IOSafeTerminalAdapter implements IOSafeTerminal {
     }
 
     @Override
-    public TerminalSize getTerminalSize() {
+    public Dimension getTerminalSize() {
         try {
             return backend.getTerminalSize();
         }

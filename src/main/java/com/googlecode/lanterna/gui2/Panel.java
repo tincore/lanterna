@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 
@@ -42,7 +42,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
     private final List<Component> components = new CopyOnWriteArrayList<>();
 
     private LayoutManager layoutManager;
-    private TerminalSize cachedPreferredSize;
+    private Dimension cachedPreferredSize;
     private TextColor fillColorOverride;
 
     /**
@@ -133,7 +133,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
     }
 
     @Override
-    public TerminalSize calculatePreferredSize() {
+    public Dimension calculatePreferredSize() {
         if (cachedPreferredSize != null && !isInvalid()) {
             return cachedPreferredSize;
         }
@@ -236,7 +236,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
         return components.stream().anyMatch(c -> c.isVisible() && c.isInvalid()) || super.isInvalid() || layoutManager.hasChanged();
     }
 
-    private void layout(TerminalSize size) {
+    private void layout(Dimension size) {
         layoutManager.doLayout(size, components);
     }
 
@@ -333,8 +333,8 @@ public class Panel extends AbstractComponent<Panel> implements Container {
             if (index == -1) {
                 return false;
             }
-            if (getBasePane() != null && getBasePane().getFocusedInteractable() == component) {
-                getBasePane().setFocusedInteractable(null);
+            if (getRootPane() != null && getRootPane().getFocusedInteractable() == component) {
+                getRootPane().setFocusedInteractable(null);
             }
             components.remove(index);
         }
@@ -403,7 +403,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
         }
 
         @Override
-        public TerminalSize getPreferredSize(Panel component) {
+        public Dimension getPreferredSize(Panel component) {
             synchronized (components) {
                 cachedPreferredSize = layoutManager.getPreferredSize(components);
             }

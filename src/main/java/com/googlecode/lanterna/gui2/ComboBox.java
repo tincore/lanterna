@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
@@ -320,108 +320,6 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
         return textInputPosition;
     }
 
-    private Result handleEditableCBKeyStroke(KeyStroke keyStroke) {
-        //First check if we are in drop-down focused mode, treat keystrokes a bit differently then
-        if (isDropDownFocused()) {
-            switch (keyStroke.getKeyType()) {
-                case ReverseTab:
-                case ArrowLeft:
-                    dropDownFocused = false;
-                    textInputPosition = text.length();
-                    return Result.HANDLED;
-
-                //The rest we can process in the same way as with read-only combo boxes when we are in drop-down focused mode
-                default:
-                    return handleReadOnlyCBKeyStroke(keyStroke);
-            }
-        }
-
-        switch (keyStroke.getKeyType()) {
-            case Character:
-                text = text.substring(0, textInputPosition) + keyStroke.getCharacter() + text.substring(textInputPosition);
-                textInputPosition++;
-                return Result.HANDLED;
-
-            case Tab:
-                dropDownFocused = true;
-                return Result.HANDLED;
-
-            case Backspace:
-                if (textInputPosition > 0) {
-                    text = text.substring(0, textInputPosition - 1) + text.substring(textInputPosition);
-                    textInputPosition--;
-                }
-                return Result.HANDLED;
-
-            case Delete:
-                if (textInputPosition < text.length()) {
-                    text = text.substring(0, textInputPosition) + text.substring(textInputPosition + 1);
-                }
-                return Result.HANDLED;
-
-            case ArrowLeft:
-                if (textInputPosition > 0) {
-                    textInputPosition--;
-                } else {
-                    return Result.MOVE_FOCUS_LEFT;
-                }
-                return Result.HANDLED;
-
-            case ArrowRight:
-                if (textInputPosition < text.length()) {
-                    textInputPosition++;
-                } else {
-                    dropDownFocused = true;
-                    return Result.HANDLED;
-                }
-                return Result.HANDLED;
-
-            case ArrowDown:
-                if (selectedIndex < items.size() - 1) {
-                    setSelectedIndex(selectedIndex + 1, true);
-                }
-                return Result.HANDLED;
-
-            case ArrowUp:
-                if (selectedIndex > 0) {
-                    setSelectedIndex(selectedIndex - 1, true);
-                }
-                return Result.HANDLED;
-
-            default:
-        }
-        return super.onKeyStroke(keyStroke);
-    }
-
-    @Override
-    public synchronized Result onKeyStroke(KeyStroke keyStroke) {
-        if (isReadOnly()) {
-            return handleReadOnlyCBKeyStroke(keyStroke);
-        } else {
-            return handleEditableCBKeyStroke(keyStroke);
-        }
-    }
-
-    private Result handleReadOnlyCBKeyStroke(KeyStroke keyStroke) {
-        switch (keyStroke.getKeyType()) {
-            case Character:
-            case Enter:
-                if (isKeyboardActivationStroke(keyStroke)) {
-                    showPopup(keyStroke);
-                }
-                return super.onKeyStroke(keyStroke);
-
-            case MouseEvent:
-                if (isMouseActivationStroke(keyStroke)) {
-                    showPopup(keyStroke);
-                }
-                break;
-
-            default:
-        }
-        return super.onKeyStroke(keyStroke);
-    }
-
     /**
      * Returns {@code true} if the users input focus is currently on the drop-down button of the combo box, so that
      * pressing enter would trigger the popup window. This is generally used by renderers only and is always true for
@@ -474,6 +372,104 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
             popupWindow.close();
         }
         super.onFocusLost(direction, nextInFocus);
+    }
+
+    @Override
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
+        if (isReadOnly()) {
+            return onReadOnlyComboBoxKeyStroke(keyStroke);
+        } else {
+            //First check if we are in drop-down focused mode, treat keystrokes a bit differently then
+            if (isDropDownFocused()) {
+                switch (keyStroke.getKeyType()) {
+                    case ReverseTab:
+                    case ArrowLeft:
+                        dropDownFocused = false;
+                        textInputPosition = text.length();
+                        return KeyStrokeResult.HANDLED;
+
+                    //The rest we can process in the same way as with read-only combo boxes when we are in drop-down focused mode
+                    default:
+                        return onReadOnlyComboBoxKeyStroke(keyStroke);
+                }
+            }
+
+            switch (keyStroke.getKeyType()) {
+                case Character:
+                    text = text.substring(0, textInputPosition) + keyStroke.getCharacter() + text.substring(textInputPosition);
+                    textInputPosition++;
+                    return KeyStrokeResult.HANDLED;
+
+                case Tab:
+                    dropDownFocused = true;
+                    return KeyStrokeResult.HANDLED;
+
+                case Backspace:
+                    if (textInputPosition > 0) {
+                        text = text.substring(0, textInputPosition - 1) + text.substring(textInputPosition);
+                        textInputPosition--;
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                case Delete:
+                    if (textInputPosition < text.length()) {
+                        text = text.substring(0, textInputPosition) + text.substring(textInputPosition + 1);
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                case ArrowLeft:
+                    if (textInputPosition > 0) {
+                        textInputPosition--;
+                    } else {
+                        return KeyStrokeResult.MOVE_FOCUS_LEFT;
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                case ArrowRight:
+                    if (textInputPosition < text.length()) {
+                        textInputPosition++;
+                    } else {
+                        dropDownFocused = true;
+                        return KeyStrokeResult.HANDLED;
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                case ArrowDown:
+                    if (selectedIndex < items.size() - 1) {
+                        setSelectedIndex(selectedIndex + 1, true);
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                case ArrowUp:
+                    if (selectedIndex > 0) {
+                        setSelectedIndex(selectedIndex - 1, true);
+                    }
+                    return KeyStrokeResult.HANDLED;
+
+                default:
+            }
+            return super.onKeyStroke(keyStroke);
+        }
+    }
+
+    private KeyStrokeResult onReadOnlyComboBoxKeyStroke(KeyStroke keyStroke) {
+        switch (keyStroke.getKeyType()) {
+            case Character:
+            case Enter:
+                if (isKeyboardActivationStroke(keyStroke)) {
+                    showPopup(keyStroke);
+                }
+                return super.onKeyStroke(keyStroke);
+
+            case MouseEvent:
+                if (isMouseActivationStroke(keyStroke)) {
+                    showPopup(keyStroke);
+                }
+                break;
+
+            default:
+        }
+        return super.onKeyStroke(keyStroke);
     }
 
     /**
@@ -558,7 +554,7 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
 
     protected void showPopup(KeyStroke keyStroke) {
         popupWindow = new PopupWindow();
-        popupWindow.setPosition(toGlobal(new TerminalPosition(0, 1)));
+        popupWindow.setPosition(toGlobal(new Point(0, 1)));
         ((WindowBasedTextGUI) getTextGUI()).addWindow(popupWindow);
         ((WindowBasedTextGUI) getTextGUI()).setActiveWindow(popupWindow);
     }
@@ -648,29 +644,29 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
         }
 
         @Override
-        public TerminalPosition getCursorLocation(ComboBox<V> comboBox) {
+        public Point getCursorLocation(ComboBox<V> comboBox) {
             if (comboBox.isDropDownFocused()) {
                 if (comboBox.getThemeDefinition().isCursorVisible()) {
-                    return new TerminalPosition(comboBox.getSize().getColumns() - 1, 0);
+                    return new Point(comboBox.getSize().getColumns() - 1, 0);
                 } else {
                     return null;
                 }
             } else {
                 int textInputPosition = comboBox.getTextInputPosition();
                 int textInputColumn = TerminalTextUtils.getColumnWidth(comboBox.getText().substring(0, textInputPosition));
-                return new TerminalPosition(textInputColumn - textVisibleLeftPosition, 0);
+                return new Point(textInputColumn - textVisibleLeftPosition, 0);
             }
         }
 
         @Override
-        public TerminalSize getPreferredSize(final ComboBox<V> comboBox) {
-            TerminalSize size = TerminalSize.ONE.withColumns(
+        public Dimension getPreferredSize(final ComboBox<V> comboBox) {
+            Dimension size = Dimension.ONE.withColumns(
                 (comboBox.getItemCount() == 0 ? TerminalTextUtils.getColumnWidth(comboBox.getText()) : 0) + 2);
             //noinspection SynchronizationOnLocalVariableOrMethodParameter
             synchronized (comboBox) {
                 for (int i = 0; i < comboBox.getItemCount(); i++) {
                     V item = comboBox.getItem(i);
-                    size = size.max(new TerminalSize(TerminalTextUtils.getColumnWidth(item.toString()) + 2 + 1, 1));   // +1 to add a single column of space
+                    size = size.max(new Dimension(TerminalTextUtils.getColumnWidth(item.toString()) + 2 + 1, 1));   // +1 to add a single column of space
                 }
             }
             return size;
@@ -692,7 +688,7 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
                 });
             }
             actionListBox.setSelectedIndex(getSelectedIndex());
-            TerminalSize preferredSize = actionListBox.getPreferredSize();
+            Dimension preferredSize = actionListBox.getPreferredSize();
             if (dropDownNumberOfRows > 0) {
                 actionListBox.setPreferredSize(preferredSize.withRows(Math.min(dropDownNumberOfRows, preferredSize.getRows())));
             }

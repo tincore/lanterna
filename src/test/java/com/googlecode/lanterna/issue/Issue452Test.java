@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.SimpleTheme;
 import com.googlecode.lanterna.gui2.*;
@@ -81,7 +81,7 @@ public class Issue452Test {
         content = new Panel(new GridLayout(GRID_WIDTH));
         GridLayout gridLayout = (GridLayout) content.getLayoutManager();
         gridLayout.setVerticalSpacing(1);
-        window.setPosition(TerminalPosition.TOP_LEFT_CORNER);
+        window.setPosition(Point.TOP_LEFT_CORNER);
         window.setComponent(content);
     }
 
@@ -89,14 +89,14 @@ public class Issue452Test {
      * Clicks at position
      */
     private MouseAction clickAt(int column, int row) {
-        return new MouseAction(MouseActionType.CLICK_DOWN, 1, new TerminalPosition(column, row));
+        return new MouseAction(MouseActionType.CLICK_DOWN, 1, new Point(column, row));
     }
 
     /**
      * Clicks at position of the {@link Interactable}
      */
     private void clickOn(Interactable component) {
-        component.handleInput(clickAt(component.getPosition().getColumn(), component.getPosition().getRow()));
+        component.onInput(clickAt(component.getPosition().getColumn(), component.getPosition().getRow()));
     }
 
     /**
@@ -104,7 +104,7 @@ public class Issue452Test {
      */
     private void clickOnWithRelative(Interactable component, int column, int row) {
         MouseAction mouseAction = clickAt(component.getGlobalPosition().getColumn() + column, component.getGlobalPosition().getRow() + row);
-        component.handleInput(mouseAction);
+        component.onInput(mouseAction);
     }
 
     private ActionListBox.Item createActionListItem(String name) {
@@ -120,7 +120,7 @@ public class Issue452Test {
     void displayForRenderering(Component component) throws Exception {
         // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         // making use of the drawing routines in the renderer to know the size this thing is
-        Terminal terminal = new DefaultVirtualTerminal(new TerminalSize(100, 100));
+        Terminal terminal = new DefaultVirtualTerminal(new Dimension(100, 100));
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
@@ -145,7 +145,7 @@ public class Issue452Test {
         assertEquals(0, listBox.getSelectedIndex());
 
         try {
-            listBox.handleInput(clickAt(0, 1));
+            listBox.onInput(clickAt(0, 1));
             fail();
         } catch (RunnableExecuted e) {
             assertEquals("item_2", e.getName());
@@ -153,7 +153,7 @@ public class Issue452Test {
         }
 
         try {
-            listBox.handleInput(clickAt(0, 2));
+            listBox.onInput(clickAt(0, 2));
             fail();
         } catch (RunnableExecuted e) {
             assertEquals("item_3", e.getName());
@@ -161,7 +161,7 @@ public class Issue452Test {
         }
 
         try {
-            listBox.handleInput(clickAt(0, 3));
+            listBox.onInput(clickAt(0, 3));
             fail();
         } catch (RunnableExecuted e) {
             assertEquals("item_4", e.getName());
@@ -215,12 +215,12 @@ public class Issue452Test {
         assertTrue(multiLine.isFocused());
         // Click at 3rd position 1st row
         clickOnWithRelative(multiLine, 3, 0);
-        multiLine.handleInput(new KeyStroke(KeyType.Backspace));
+        multiLine.onInput(new KeyStroke(KeyType.Backspace));
         // 3rd position (3) should be deleted
         assertEquals("12456789\nabcdefgh", multiLine.getText());
         // Click at 5th position 2nd row
         clickOnWithRelative(multiLine, 5, 1);
-        multiLine.handleInput(new KeyStroke(KeyType.Backspace));
+        multiLine.onInput(new KeyStroke(KeyType.Backspace));
         // 5th position (e) should be deleted
         assertEquals("12456789\nabcdfgh", multiLine.getText());
     }
@@ -236,12 +236,12 @@ public class Issue452Test {
         assertEquals("RadioGaga", list.getSelectedItem());
         assertEquals(null, list.getCheckedItem());
 
-        list.handleInput(clickAt(0, 1));
+        list.onInput(clickAt(0, 1));
         // second radio should be selected and item should be checked
         assertEquals("RadioGogo", list.getSelectedItem());
         assertEquals("RadioGogo", list.getCheckedItem());
 
-        list.handleInput(clickAt(0, 2));
+        list.onInput(clickAt(0, 2));
         // third radio should be selected and item should be checked
         assertEquals("RadioBlaBla", list.getSelectedItem());
         assertEquals("RadioBlaBla", list.getCheckedItem());
@@ -258,7 +258,7 @@ public class Issue452Test {
         assertTrue(singleLine.isFocused());
         // Click at 3rd position
         clickOnWithRelative(singleLine, 3, 0);
-        singleLine.handleInput(new KeyStroke(KeyType.Backspace));
+        singleLine.onInput(new KeyStroke(KeyType.Backspace));
         // 3rd position (3) should be deleted
         assertEquals("12456789", singleLine.getText());
     }

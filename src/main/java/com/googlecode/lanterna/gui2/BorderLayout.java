@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 import java.util.*;
 
@@ -77,7 +77,7 @@ public class BorderLayout implements LayoutManager {
             Location.RIGHT));
 
     @Override
-    public TerminalSize getPreferredSize(List<Component> components) {
+    public Dimension getPreferredSize(List<Component> components) {
         EnumMap<Location, Component> layout = makeLookupMap(components);
         int preferredHeight = 
                 (layout.containsKey(Location.TOP) ? layout.get(Location.TOP).getPreferredSize().getRows() : 0)
@@ -98,11 +98,11 @@ public class BorderLayout implements LayoutManager {
                     Math.max(
                         layout.containsKey(Location.TOP) ? layout.get(Location.TOP).getPreferredSize().getColumns() : 0,
                         layout.containsKey(Location.BOTTOM) ? layout.get(Location.BOTTOM).getPreferredSize().getColumns() : 0));
-        return new TerminalSize(preferredWidth, preferredHeight);
+        return new Dimension(preferredWidth, preferredHeight);
     }
 
     @Override
-    public void doLayout(TerminalSize area, List<Component> components) {
+    public void doLayout(Dimension area, List<Component> components) {
         EnumMap<Location, Component> layout = makeLookupMap(components);
         int availableHorizontalSpace = area.getColumns();
         int availableVerticalSpace = area.getRows();
@@ -115,8 +115,8 @@ public class BorderLayout implements LayoutManager {
         if(layout.containsKey(Location.TOP)) {
             Component topComponent = layout.get(Location.TOP);
             topComponentHeight = Math.min(topComponent.getPreferredSize().getRows(), availableVerticalSpace);
-            topComponent.setPosition(TerminalPosition.TOP_LEFT_CORNER);
-            topComponent.setSize(new TerminalSize(availableHorizontalSpace, topComponentHeight));
+            topComponent.setPosition(Point.TOP_LEFT_CORNER);
+            topComponent.setSize(new Dimension(availableHorizontalSpace, topComponentHeight));
             availableVerticalSpace -= topComponentHeight;
         }
 
@@ -124,8 +124,8 @@ public class BorderLayout implements LayoutManager {
         if(layout.containsKey(Location.BOTTOM)) {
             Component bottomComponent = layout.get(Location.BOTTOM);
             int bottomComponentHeight = Math.min(bottomComponent.getPreferredSize().getRows(), availableVerticalSpace);
-            bottomComponent.setPosition(new TerminalPosition(0, area.getRows() - bottomComponentHeight));
-            bottomComponent.setSize(new TerminalSize(availableHorizontalSpace, bottomComponentHeight));
+            bottomComponent.setPosition(new Point(0, area.getRows() - bottomComponentHeight));
+            bottomComponent.setSize(new Dimension(availableHorizontalSpace, bottomComponentHeight));
             availableVerticalSpace -= bottomComponentHeight;
         }
 
@@ -133,28 +133,28 @@ public class BorderLayout implements LayoutManager {
         if(layout.containsKey(Location.LEFT)) {
             Component leftComponent = layout.get(Location.LEFT);
             leftComponentWidth = Math.min(leftComponent.getPreferredSize().getColumns(), availableHorizontalSpace);
-            leftComponent.setPosition(new TerminalPosition(0, topComponentHeight));
-            leftComponent.setSize(new TerminalSize(leftComponentWidth, availableVerticalSpace));
+            leftComponent.setPosition(new Point(0, topComponentHeight));
+            leftComponent.setSize(new Dimension(leftComponentWidth, availableVerticalSpace));
             availableHorizontalSpace -= leftComponentWidth;
         }
         if(layout.containsKey(Location.RIGHT)) {
             Component rightComponent = layout.get(Location.RIGHT);
             int rightComponentWidth = Math.min(rightComponent.getPreferredSize().getColumns(), availableHorizontalSpace);
-            rightComponent.setPosition(new TerminalPosition(area.getColumns() - rightComponentWidth, topComponentHeight));
-            rightComponent.setSize(new TerminalSize(rightComponentWidth, availableVerticalSpace));
+            rightComponent.setPosition(new Point(area.getColumns() - rightComponentWidth, topComponentHeight));
+            rightComponent.setSize(new Dimension(rightComponentWidth, availableVerticalSpace));
             availableHorizontalSpace -= rightComponentWidth;
         }
         if(layout.containsKey(Location.CENTER)) {
             Component centerComponent = layout.get(Location.CENTER);
-            centerComponent.setPosition(new TerminalPosition(leftComponentWidth, topComponentHeight));
-            centerComponent.setSize(new TerminalSize(availableHorizontalSpace, availableVerticalSpace));
+            centerComponent.setPosition(new Point(leftComponentWidth, topComponentHeight));
+            centerComponent.setSize(new Dimension(availableHorizontalSpace, availableVerticalSpace));
         }
         
         //Set the remaining components to 0x0
         for(Component component: components) {
             if(component.isVisible() && !layout.containsValue(component)) {
-                component.setPosition(TerminalPosition.TOP_LEFT_CORNER);
-                component.setSize(TerminalSize.ZERO);
+                component.setPosition(Point.TOP_LEFT_CORNER);
+                component.setSize(Dimension.ZERO);
             }
         }
     }

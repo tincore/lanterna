@@ -54,11 +54,23 @@ public class Borders {
      * @return New solid color double line {@code Border} with a title
      */
     public static Border doubleLine(String title) {
-        return new DoubleLine(title, BorderStyle.Solid, Attributes.EMPTY);
+        return doubleLine(title, Attributes.EMPTY);
     }
 
     public static Border doubleLine(String title, Attributes attributes) {
         return new DoubleLine(title, BorderStyle.Solid, attributes);
+    }
+
+    public static Border doubleLine(Component component) {
+        return doubleLine("", Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLine(String title, Component component) {
+        return doubleLine(title, Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLine(String title, Attributes attributes, Component component) {
+        return doubleLine(title, attributes).setComponent(component);
     }
 
     /**
@@ -78,11 +90,23 @@ public class Borders {
      * @return New bevel color double line {@code Border} with a title
      */
     public static Border doubleLineBevel(String title) {
-        return new DoubleLine(title, BorderStyle.Bevel, Attributes.EMPTY);
+        return doubleLineBevel(title, Attributes.EMPTY);
     }
 
     public static Border doubleLineBevel(String title, Attributes attributes) {
         return new DoubleLine(title, BorderStyle.Bevel, attributes);
+    }
+
+    public static Border doubleLineBevel(Component component) {
+        return doubleLineBevel("", Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLineBevel(String title, Component component) {
+        return doubleLineBevel(title, Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLineBevel(String title, Attributes attributes, Component component) {
+        return doubleLineBevel(title, attributes).setComponent(component);
     }
 
     /**
@@ -102,12 +126,25 @@ public class Borders {
      * @return New reverse bevel color double line {@code Border} with a title
      */
     public static Border doubleLineReverseBevel(String title) {
-        return new DoubleLine(title, BorderStyle.ReverseBevel, Attributes.EMPTY);
+        return doubleLineReverseBevel(title, Attributes.EMPTY);
     }
 
     public static Border doubleLineReverseBevel(String title, Attributes attributes) {
         return new DoubleLine(title, BorderStyle.ReverseBevel, attributes);
     }
+
+    public static Border doubleLineReverseBevel(Component component) {
+        return doubleLineReverseBevel("", Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLineReverseBevel(String title, Component component) {
+        return doubleLineReverseBevel(title, Attributes.EMPTY, component);
+    }
+
+    public static Border doubleLineReverseBevel(String title, Attributes attributes, Component component) {
+        return doubleLineReverseBevel(title, attributes).setComponent(component);
+    }
+
 
     /**
      * This method will attempt to join line drawing characters with the outermost bottom and top rows and left and
@@ -118,7 +155,7 @@ public class Borders {
      * @param graphics Graphics to use when inspecting and joining characters
      */
     public static void joinLinesWithFrame(TextGraphics graphics) {
-        TerminalSize drawableArea = graphics.getSize();
+        Dimension drawableArea = graphics.getSize();
         if (drawableArea.getRows() <= 2 || drawableArea.getColumns() <= 2) {
             //Too small
             return;
@@ -350,11 +387,23 @@ public class Borders {
      * @return New solid color single line {@code Border} with a title
      */
     public static Border singleLine(String title) {
-        return new SingleLine(title, BorderStyle.Solid, Attributes.EMPTY);
+        return singleLine(title, Attributes.EMPTY);
     }
 
     public static Border singleLine(String title, Attributes attributes) {
         return new SingleLine(title, BorderStyle.Solid, attributes);
+    }
+
+    public static Border singleLine(Component component) {
+        return singleLine("", Attributes.EMPTY, component);
+    }
+
+    public static Border singleLine(String title, Component component) {
+        return singleLine(title, Attributes.EMPTY, component);
+    }
+
+    public static Border singleLine(String title, Attributes attributes, Component component) {
+        return singleLine(title, attributes).setComponent(component);
     }
 
     /**
@@ -374,11 +423,23 @@ public class Borders {
      * @return New bevel color single line {@code Border} with a title
      */
     public static Border singleLineBevel(String title) {
-        return new SingleLine(title, BorderStyle.Bevel, Attributes.EMPTY);
+        return singleLineBevel(title, Attributes.EMPTY);
     }
 
     public static Border singleLineBevel(String title, Attributes attributes) {
         return new SingleLine(title, BorderStyle.Bevel, attributes);
+    }
+
+    public static Border singleLineBevel(Component component) {
+        return singleLineBevel("", Attributes.EMPTY, component);
+    }
+
+    public static Border singleLineBevel(String title, Component component) {
+        return singleLineBevel(title, Attributes.EMPTY, component);
+    }
+
+    public static Border singleLineBevel(String title, Attributes attributes, Component component) {
+        return singleLineBevel(title, attributes).setComponent(component);
     }
 
     /**
@@ -398,11 +459,23 @@ public class Borders {
      * @return New reverse bevel color single line {@code Border} with a title
      */
     public static Border singleLineReverseBevel(String title) {
-        return new SingleLine(title, BorderStyle.ReverseBevel, Attributes.EMPTY);
+        return singleLineReverseBevel(title, Attributes.EMPTY);
     }
 
     public static Border singleLineReverseBevel(String title, Attributes attributes) {
         return new SingleLine(title, BorderStyle.ReverseBevel, attributes);
+    }
+
+    public static Border singleLineReverseBevel(Component component) {
+        return singleLineReverseBevel("", Attributes.EMPTY, component);
+    }
+
+    public static Border singleLineReverseBevel(String title, Component component) {
+        return singleLineReverseBevel(title, Attributes.EMPTY, component);
+    }
+
+    public static Border singleLineReverseBevel(String title, Attributes attributes, Component component) {
+        return singleLineReverseBevel(title, attributes).setComponent(component);
     }
 
     //Different ways to draw the border
@@ -449,7 +522,7 @@ public class Borders {
             if (wrappedComponent == null) {
                 return;
             }
-            TerminalSize drawableArea = graphics.getSize();
+            Dimension drawableArea = graphics.getSize();
 
             char horizontalLine = getHorizontalLine(component.getTheme());
             char verticalLine = getVerticalLine(component.getTheme());
@@ -468,11 +541,11 @@ public class Borders {
             }
             graphics.setCharacter(0, drawableArea.getRows() - 1, bottomLeftCorner);
             if (drawableArea.getRows() > 2) {
-                graphics.drawLine(new TerminalPosition(0, drawableArea.getRows() - 2), new TerminalPosition(0, 1), verticalLine);
+                graphics.drawLine(new Point(0, drawableArea.getRows() - 2), new Point(0, 1), verticalLine);
             }
             graphics.setCharacter(0, 0, topLeftCorner);
             if (drawableArea.getColumns() > 2) {
-                graphics.drawLine(new TerminalPosition(1, 0), new TerminalPosition(drawableArea.getColumns() - 2, 0), horizontalLine);
+                graphics.drawLine(new Point(1, 0), new Point(drawableArea.getColumns() - 2, 0), horizontalLine);
             }
 
             if (borderStyle == BorderStyle.ReverseBevel) {
@@ -482,14 +555,14 @@ public class Borders {
             }
             graphics.setCharacter(drawableArea.getColumns() - 1, 0, topRightCorner);
             if (drawableArea.getRows() > 2) {
-                graphics.drawLine(new TerminalPosition(drawableArea.getColumns() - 1, 1),
-                    new TerminalPosition(drawableArea.getColumns() - 1, drawableArea.getRows() - 2),
+                graphics.drawLine(new Point(drawableArea.getColumns() - 1, 1),
+                    new Point(drawableArea.getColumns() - 1, drawableArea.getRows() - 2),
                     verticalLine);
             }
             graphics.setCharacter(drawableArea.getColumns() - 1, drawableArea.getRows() - 1, bottomRightCorner);
             if (drawableArea.getColumns() > 2) {
-                graphics.drawLine(new TerminalPosition(1, drawableArea.getRows() - 1),
-                    new TerminalPosition(drawableArea.getColumns() - 2, drawableArea.getRows() - 1),
+                graphics.drawLine(new Point(1, drawableArea.getRows() - 1),
+                    new Point(drawableArea.getColumns() - 2, drawableArea.getRows() - 1),
                     horizontalLine);
             }
 
@@ -519,18 +592,18 @@ public class Borders {
         protected abstract char getHorizontalLine(Theme theme);
 
         @Override
-        public TerminalSize getPreferredSize(Border component) {
+        public Dimension getPreferredSize(Border component) {
             StandardBorder border = (StandardBorder) component;
             Component wrappedComponent = border.getComponent();
-            TerminalSize preferredSize;
+            Dimension preferredSize;
             if (wrappedComponent == null) {
-                preferredSize = TerminalSize.ZERO;
+                preferredSize = Dimension.ZERO;
             } else {
                 preferredSize = wrappedComponent.getPreferredSize();
             }
             preferredSize = preferredSize.withRelativeColumns(2).withRelativeRows(2);
             String borderTitle = border.getTitle();
-            return preferredSize.max(new TerminalSize((borderTitle.isEmpty() ? 2 : TerminalTextUtils.getColumnWidth(borderTitle) + 4), 2));
+            return preferredSize.max(new Dimension((borderTitle.isEmpty() ? 2 : TerminalTextUtils.getColumnWidth(borderTitle) + 4), 2));
         }
 
         protected abstract char getTitleLeft(Theme theme);
@@ -544,15 +617,15 @@ public class Borders {
         protected abstract char getVerticalLine(Theme theme);
 
         @Override
-        public TerminalSize getWrappedComponentSize(TerminalSize borderSize) {
+        public Dimension getWrappedComponentSize(Dimension borderSize) {
             return borderSize
                 .withRelativeColumns(-Math.min(2, borderSize.getColumns()))
                 .withRelativeRows(-Math.min(2, borderSize.getRows()));
         }
 
         @Override
-        public TerminalPosition getWrappedComponentTopLeftOffset() {
-            return TerminalPosition.OFFSET_1x1;
+        public Point getWrappedComponentTopLeftOffset() {
+            return Point.OFFSET_1x1;
         }
     }
 

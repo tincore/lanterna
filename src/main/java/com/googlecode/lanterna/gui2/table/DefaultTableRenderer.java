@@ -51,7 +51,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
     private int visibleRowsOnLastDraw;
 
     //So that we don't have to recalculate the size every time. This still isn't optimal but shouganai.
-    private TerminalSize cachedSize;
+    private Dimension cachedSize;
     private final List<Integer> preferredColumnSizes;
     private final List<Integer> preferredRowSizes;
     private final Set<Integer> expandableColumns;
@@ -190,7 +190,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
     }
 
     @Override
-    public synchronized TerminalSize getPreferredSize(Table<V> table) {
+    public synchronized Dimension getPreferredSize(Table<V> table) {
         //Quick bypass if the table hasn't changed
         if(!table.isInvalid() && cachedSize != null) {
             return cachedSize;
@@ -221,7 +221,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         preferredRowSizes.clear();
 
         if(tableModel.getColumnCount() == 0) {
-            return TerminalSize.ZERO;
+            return Dimension.ZERO;
         }
 
         // Adjust view port if necessary (although this is only for the preferred size calculation, we don't actually
@@ -358,19 +358,19 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
             }
         }
 
-        cachedSize = new TerminalSize(preferredColumnSize, preferredRowSize);
+        cachedSize = new Dimension(preferredColumnSize, preferredRowSize);
         return cachedSize;
     }
 
     @Override
-    public TerminalPosition getCursorLocation(Table<V> component) {
+    public Point getCursorLocation(Table<V> component) {
         return null;
     }
 
     @Override
     public synchronized void drawComponent(TextGUIGraphics graphics, Table<V> table) {
         //Get the size
-        TerminalSize area = graphics.getSize();
+        Dimension area = graphics.getSize();
 
         //Don't even bother
         if(area.getRows() == 0 || area.getColumns() == 0) {
@@ -397,7 +397,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
             viewTopRow = Math.max(0, table.getTableModel().getRowCount() - 1);
         }
 
-        TerminalSize areaWithoutScrollBars = area.withRelativeRows(-headerSizeIncludingBorder);
+        Dimension areaWithoutScrollBars = area.withRelativeRows(-headerSizeIncludingBorder);
         int preferredVisibleRows = table.getVisibleRows();
         if(preferredVisibleRows == 0) {
             preferredVisibleRows = table.getTableModel().getRowCount();
@@ -449,7 +449,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         List<Integer> columnSizes = fitColumnsInAvailableSpace(table, areaWithoutScrollBars, visibleColumns);
         drawHeader(graphics, table, columnSizes);
         drawRows(graphics.newTextGraphics(
-                        new TerminalPosition(0, headerSizeIncludingBorder),
+                        new Point(0, headerSizeIncludingBorder),
                         // Can't use areaWithoutScrollBars here because we need to draw the scrollbar too!
                         area.withRelativeRows(-headerSizeIncludingBorder)),
                 table,
@@ -463,7 +463,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         visibleRowsOnLastDraw = visibleRows;
     }
 
-    private int calculateVisibleRows(TerminalSize area, int viewTopRow, int preferredVisibleRows) {
+    private int calculateVisibleRows(Dimension area, int viewTopRow, int preferredVisibleRows) {
         int remainingVerticalSpace = area.getRows();
         int visibleRows = 0;
         int borderAdjustment = cellVerticalBorderStyle.getSize();
@@ -481,7 +481,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         return visibleRows;
     }
 
-    private int calculateVisibleColumns(TerminalSize area, int viewLeftColumn, int preferredVisibleColumns) {
+    private int calculateVisibleColumns(Dimension area, int viewLeftColumn, int preferredVisibleColumns) {
         int remainingHorizontalSpace = area.getColumns();
         int visibleColumns = 0;
         int borderAdjustment = cellHorizontalBorderStyle.getSize();
@@ -499,7 +499,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         return visibleColumns;
     }
 
-    private List<Integer> fitColumnsInAvailableSpace(Table<V> table, TerminalSize area, int visibleColumns) {
+    private List<Integer> fitColumnsInAvailableSpace(Table<V> table, Dimension area, int visibleColumns) {
         List<Integer> columnSizes = new ArrayList<>(preferredColumnSizes);
         int horizontalSpaceRequirement = 0;
         int viewLeftColumn = table.getRenderer().getViewLeftColumn();
@@ -541,8 +541,8 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         int endColumnIndex = Math.min(headers.size(), viewLeftColumn + visibleColumns);
         for(int index = viewLeftColumn; index < endColumnIndex; index++) {
             String label = headers.get(index);
-            TerminalSize size = new TerminalSize(columnSizes.get(index), headerSizeInRows);
-            tableHeaderRenderer.drawHeader(table, label, index, graphics.newTextGraphics(new TerminalPosition(leftPosition, 0), size));
+            Dimension size = new Dimension(columnSizes.get(index), headerSizeInRows);
+            tableHeaderRenderer.drawHeader(table, label, index, graphics.newTextGraphics(new Point(leftPosition, 0), size));
             leftPosition += size.getColumns();
             if(headerHorizontalBorderStyle != TableCellBorderStyle.None && index < (endColumnIndex - 1)) {
                 graphics.applyThemeStyle(theme.getDefinition(Table.class).getNormal());
@@ -588,7 +588,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
             boolean needHorizontalScrollBar) {
         Theme theme = table.getTheme();
         ThemeDefinition themeDefinition = theme.getDefinition(Table.class);
-        TerminalSize area = graphics.getSize();
+        Dimension area = graphics.getSize();
         TableCellRenderer<V> tableCellRenderer = table.getTableCellRenderer();
         TableModel<V> tableModel = table.getTableModel();
         List<List<V>> rows = tableModel.getRows();
@@ -597,12 +597,12 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
 
         //Draw scrollbars (if needed)
         if(needVerticalScrollBar) {
-            TerminalSize verticalScrollBarPreferredSize = verticalScrollBar.getPreferredSize();
+            Dimension verticalScrollBarPreferredSize = verticalScrollBar.getPreferredSize();
             int scrollBarHeight = graphics.getSize().getRows();
             if(needHorizontalScrollBar) {
                 scrollBarHeight--;
             }
-            verticalScrollBar.setPosition(new TerminalPosition(graphics.getSize().getColumns() - verticalScrollBarPreferredSize.getColumns(), 0));
+            verticalScrollBar.setPosition(new Point(graphics.getSize().getColumns() - verticalScrollBarPreferredSize.getColumns(), 0));
             verticalScrollBar.setSize(verticalScrollBarPreferredSize.withRows(scrollBarHeight));
             verticalScrollBar.setScrollMaximum(rows.size());
             verticalScrollBar.setViewSize(visibleRows);
@@ -622,12 +622,12 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
             verticalScrollBar.draw(graphics.newTextGraphics(verticalScrollBar.getPosition(), verticalScrollBar.getSize()));
 
             // Adjust graphics object to the remaining area when the vertical scrollbar is subtracted
-            graphics = graphics.newTextGraphics(TerminalPosition.TOP_LEFT_CORNER, graphics.getSize().withRelativeColumns(-verticalScrollBarPreferredSize.getColumns()));
+            graphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER, graphics.getSize().withRelativeColumns(-verticalScrollBarPreferredSize.getColumns()));
         }
         if(needHorizontalScrollBar) {
-            TerminalSize horizontalScrollBarPreferredSize = horizontalScrollBar.getPreferredSize();
+            Dimension horizontalScrollBarPreferredSize = horizontalScrollBar.getPreferredSize();
             int scrollBarWidth = graphics.getSize().getColumns();
-            horizontalScrollBar.setPosition(new TerminalPosition(0, graphics.getSize().getRows() - horizontalScrollBarPreferredSize.getRows()));
+            horizontalScrollBar.setPosition(new Point(0, graphics.getSize().getRows() - horizontalScrollBarPreferredSize.getRows()));
             horizontalScrollBar.setSize(horizontalScrollBarPreferredSize.withColumns(scrollBarWidth));
             horizontalScrollBar.setScrollMaximum(tableModel.getColumnCount());
             horizontalScrollBar.setViewSize(visibleColumns);
@@ -647,7 +647,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
             horizontalScrollBar.draw(graphics.newTextGraphics(horizontalScrollBar.getPosition(), horizontalScrollBar.getSize()));
 
             // Adjust graphics object to the remaining area when the horizontal scrollbar is subtracted
-            graphics = graphics.newTextGraphics(TerminalPosition.TOP_LEFT_CORNER, graphics.getSize().withRelativeRows(-horizontalScrollBarPreferredSize.getRows()));
+            graphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER, graphics.getSize().withRelativeRows(-horizontalScrollBarPreferredSize.getRows()));
         }
 
         int topPosition = 0;
@@ -671,9 +671,9 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
                     leftPosition++;
                 }
                 V cell = row.get(columnIndex);
-                TerminalPosition cellPosition = new TerminalPosition(leftPosition, topPosition);
-                TerminalSize cellArea = new TerminalSize(columnSizes.get(columnIndex), preferredRowSizes.get(rowIndex));
-                tableCellRenderer.drawCell(table, cell, columnIndex, rowIndex, graphics.newTextGraphics(cellPosition, cellArea));
+                Point cellPoint = new Point(leftPosition, topPosition);
+                Dimension cellArea = new Dimension(columnSizes.get(columnIndex), preferredRowSizes.get(rowIndex));
+                tableCellRenderer.drawCell(table, cell, columnIndex, rowIndex, graphics.newTextGraphics(cellPoint, cellArea));
                 leftPosition += cellArea.getColumns();
 
                 if(columnIndex < row.size() - 1) {

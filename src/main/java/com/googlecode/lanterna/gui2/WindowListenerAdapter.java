@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,15 +30,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class WindowListenerAdapter implements WindowListener {
     @Override
-    public void onResized(Window window, TerminalSize oldSize, TerminalSize newSize) {
-    }
-
-    @Override
-    public void onMoved(Window window, TerminalPosition oldPosition, TerminalPosition newPosition) {
-    }
-
-    @Override
     public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
+    }
+
+    @Override
+    public void onMoved(Window window, Point oldPoint, Point newPoint) {
+    }
+
+    @Override
+    public void onResized(Window window, Dimension oldSize, Dimension newSize) {
     }
 
     @Override

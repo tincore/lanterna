@@ -110,7 +110,7 @@ Please note that Lanterna 3 is **not** API compatible with Lanterna 2.X and earl
 * Fixed a bug that occurred when `SwingTerminal` is reduced to 0 rows
 * Fixed a bug that prevented the cursor from becoming visible again after leaving private mode
 * `ActionListDialog` now increases in size as you add items
-* `TextBox` can now tell you the current edit cursor position
+* `TextBox` can now tell you the current edit cursor point
 
 ## 2.1.1
 ### Added

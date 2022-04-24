@@ -19,7 +19,7 @@
 
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
 
@@ -37,7 +37,7 @@ public class Terminal8bitIndexedColorTest {
         Terminal terminal = new TestTerminalFactory(args).createTerminal();
         terminal.enterPrivateMode();
         terminal.clearScreen();
-        TerminalSize size = terminal.getTerminalSize();
+        Dimension size = terminal.getTerminalSize();
 
         while(true) {
             if(terminal.pollInput() != null) {

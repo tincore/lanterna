@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -47,7 +47,7 @@ public class TelnetTerminalTest {
     private static void spawnColorTest(final TelnetTerminal terminal) {
         new Thread() {
             
-            private volatile TerminalSize size;
+            private volatile Dimension size;
             
             @Override
             public void run() {

@@ -63,15 +63,15 @@ public class SplitPanel extends Panel {
     }
     ImageComponent makeThumb() {
         ImageComponent imageComponent = new ImageComponent() {
-            TerminalSize aSize;
-            TerminalSize bSize;
-            TerminalSize tSize;
-            TerminalPosition down = null;
-            TerminalPosition drag = null;
+            Dimension aSize;
+            Dimension bSize;
+            Dimension tSize;
+            Point down = null;
+            Point drag = null;
             @Override
-            public Result onKeyStroke(KeyStroke keyStroke) {
+            public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
                 if (!(keyStroke instanceof MouseAction)) {
-                    return Result.UNHANDLED;
+                    return KeyStrokeResult.UNHANDLED;
                 }
                 MouseAction mouse = (MouseAction)keyStroke;
                 if (mouse.isMouseDown()) {
@@ -108,7 +108,7 @@ public class SplitPanel extends Panel {
                     down = null;
                     drag = null;
                 }
-                return Result.HANDLED;
+                return KeyStrokeResult.HANDLED;
             }
         };
         
@@ -122,11 +122,11 @@ public class SplitPanel extends Panel {
         }
         
         @Override
-        public TerminalSize getPreferredSize(List<Component> components) {
-            TerminalSize sizeA = compA.getPreferredSize();
+        public Dimension getPreferredSize(List<Component> components) {
+            Dimension sizeA = compA.getPreferredSize();
             int aWidth = sizeA.getColumns();
             int aHeight = sizeA.getRows();
-            TerminalSize sizeB = compB.getPreferredSize();
+            Dimension sizeB = compB.getPreferredSize();
             int bWidth = sizeB.getColumns();
             int bHeight = sizeB.getRows();
             
@@ -134,22 +134,22 @@ public class SplitPanel extends Panel {
             int tHeight = thumb.getPreferredSize().getRows();
             
             if (isHorizontal) {
-                TerminalSize result = new TerminalSize(aWidth + tWidth + bWidth, Math.max(aHeight, Math.max(tHeight, bHeight)));
+                Dimension result = new Dimension(aWidth + tWidth + bWidth, Math.max(aHeight, Math.max(tHeight, bHeight)));
                 return result;
             } else {
-                TerminalSize result = new TerminalSize(Math.max(aWidth, Math.max(tWidth, bWidth)), aHeight + tHeight + bHeight);
+                Dimension result = new Dimension(Math.max(aWidth, Math.max(tWidth, bWidth)), aHeight + tHeight + bHeight);
                 return result;
             }
         }
         
         @Override
-        public void doLayout(TerminalSize area, List<Component> components) {
-            TerminalSize size = getSize();
+        public void doLayout(Dimension area, List<Component> components) {
+            Dimension size = getSize();
             
             // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
             // TODO: themed
             int length = isHorizontal ? size.getRows() : size.getColumns();
-            TerminalSize tsize = new TerminalSize(isHorizontal ? 1 : length, !isHorizontal ? 1 : length);
+            Dimension tsize = new Dimension(isHorizontal ? 1 : length, !isHorizontal ? 1 : length);
             TextImage textImage = new BasicTextImage(tsize);
             Theme theme = getTheme();
             ThemeDefinition themeDefinition = theme.getDefaultDefinition();
@@ -177,13 +177,13 @@ public class SplitPanel extends Panel {
                 int rightWidth = Math.max(0, w - leftWidth);
                 int rightHeight = Math.max(0, Math.min(compB.getPreferredSize().getRows(), h));
                 
-                compA.setSize(new TerminalSize(leftWidth, leftHeight));
+                compA.setSize(new Dimension(leftWidth, leftHeight));
                 thumb.setSize(thumb.getPreferredSize());
-                compB.setSize(new TerminalSize(rightWidth, rightHeight));
+                compB.setSize(new Dimension(rightWidth, rightHeight));
                 
-                compA.setPosition(new TerminalPosition(0,0));
-                thumb.setPosition(new TerminalPosition(leftWidth, h/2 - tHeight/2));
-                compB.setPosition(new TerminalPosition(leftWidth + tWidth, 0));
+                compA.setPosition(new Point(0,0));
+                thumb.setPosition(new Point(leftWidth, h/2 - tHeight/2));
+                compB.setPosition(new Point(leftWidth + tWidth, 0));
             } else {
                 int leftWidth = Math.max(0, Math.min(compA.getPreferredSize().getColumns(), w));
                 int leftHeight = Math.max(0, (int)(h * ratio));
@@ -191,13 +191,13 @@ public class SplitPanel extends Panel {
                 int rightWidth = Math.max(0, Math.min(compB.getPreferredSize().getColumns(), w));
                 int rightHeight = Math.max(0, h - leftHeight);
                 
-                compA.setSize(new TerminalSize(leftWidth, leftHeight));
+                compA.setSize(new Dimension(leftWidth, leftHeight));
                 thumb.setSize(thumb.getPreferredSize());
-                compB.setSize(new TerminalSize(rightWidth, rightHeight));
+                compB.setSize(new Dimension(rightWidth, rightHeight));
                 
-                compA.setPosition(new TerminalPosition(0,0));
-                thumb.setPosition(new TerminalPosition(w/2 - tWidth/2, leftHeight));
-                compB.setPosition(new TerminalPosition(0, leftHeight + tHeight));
+                compA.setPosition(new Point(0,0));
+                thumb.setPosition(new Point(w/2 - tWidth/2, leftHeight));
+                compB.setPosition(new Point(0, leftHeight + tHeight));
             }
         }
         

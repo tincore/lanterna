@@ -18,12 +18,12 @@
  */
 package com.googlecode.lanterna.terminal.swing;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.terminal.IOSafeTerminal;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.TerminalResizeListener;
 
@@ -204,12 +204,12 @@ public class ScrollingSwingTerminal extends JComponent implements IOSafeTerminal
     }
 
     @Override
-    public void setCursorPosition(TerminalPosition position) {
-        swingTerminal.setCursorPosition(position);
+    public void setCursorPosition(Point point) {
+        swingTerminal.setCursorPosition(point);
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public Point getCursorPosition() {
         return swingTerminal.getCursorPosition();
     }
 
@@ -259,7 +259,7 @@ public class ScrollingSwingTerminal extends JComponent implements IOSafeTerminal
     }
 
     @Override
-    public TerminalSize getTerminalSize() {
+    public Dimension getTerminalSize() {
         return swingTerminal.getTerminalSize();
     }
 

@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.terminal;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.InputProvider;
@@ -92,10 +92,10 @@ public interface Terminal extends InputProvider, Closeable {
     /**
      * Same as calling {@code setCursorPosition(position.getColumn(), position.getRow())}
      *
-     * @param position Position to place the cursor at
+     * @param point Position to place the cursor at
      * @throws java.io.IOException If there was an underlying I/O error
      */
-    void setCursorPosition(TerminalPosition position) throws IOException;
+    void setCursorPosition(Point point) throws IOException;
 
     /**
      * Returns the position of the cursor, as reported by the terminal. The top-left corner has coordinates 0 x 0 and
@@ -103,7 +103,7 @@ public interface Terminal extends InputProvider, Closeable {
      * @return Position of the cursor
      * @throws IOException In there was an underlying I/O error
      */
-    TerminalPosition getCursorPosition() throws IOException;
+    Point getCursorPosition() throws IOException;
 
     /**
      * Hides or shows the text cursor, but not all terminal (-emulators) supports this. The text cursor is normally a
@@ -267,7 +267,7 @@ public interface Terminal extends InputProvider, Closeable {
      * @return Size of the terminal
      * @throws java.io.IOException if there was an I/O error trying to retrieve the size of the terminal
      */
-    TerminalSize getTerminalSize() throws IOException;
+    Dimension getTerminalSize() throws IOException;
 
     /**
      * Retrieves optional information from the terminal by printing the ENQ ({@literal \}u005) character. Terminals and terminal

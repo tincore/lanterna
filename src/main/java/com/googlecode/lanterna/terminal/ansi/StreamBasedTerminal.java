@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.input.InputDecoder;
@@ -31,7 +32,6 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.ScreenInfoAction;
 import com.googlecode.lanterna.input.ScreenInfoCharacterPattern;
 import com.googlecode.lanterna.terminal.AbstractTerminal;
-import com.googlecode.lanterna.TerminalPosition;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -61,7 +61,7 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
     private final Queue<KeyStroke> keyQueue;
     private final Lock readLock;
 
-    private volatile TerminalPosition lastReportedCursorPosition;
+    private volatile Point lastReportedCursorPoint;
     
     @SuppressWarnings("WeakerAccess")
     public StreamBasedTerminal(InputStream terminalInput, OutputStream terminalOutput, Charset terminalCharset) {
@@ -76,7 +76,7 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
         this.inputDecoder = new InputDecoder(new InputStreamReader(this.terminalInput, this.terminalCharset));
         this.keyQueue = new LinkedList<>();
         this.readLock = new ReentrantLock();
-        this.lastReportedCursorPosition = null;
+        this.lastReportedCursorPoint = null;
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
      * next reported position
      */
     void resetMemorizedCursorPosition() {
-        lastReportedCursorPosition = null;
+        lastReportedCursorPoint = null;
     }
 
     /**
@@ -176,10 +176,10 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
      * @return Current position of the cursor, or null if the terminal didn't report it in time.
      * @throws IOException If there was an I/O error
      */
-    synchronized TerminalPosition waitForCursorPositionReport() throws IOException {
+    synchronized Point waitForCursorPositionReport() throws IOException {
         long startTime = System.currentTimeMillis();
-        TerminalPosition cursorPosition = lastReportedCursorPosition;
-        while(cursorPosition == null) {
+        Point cursorPoint = lastReportedCursorPoint;
+        while(cursorPoint == null) {
             if(System.currentTimeMillis() - startTime > 5000) {
                 //throw new IllegalStateException("Terminal didn't send any position report for 5 seconds, please file a bug with a reproduce!");
                 return null;
@@ -191,9 +191,9 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
             else {
                 try { Thread.sleep(1); } catch(InterruptedException ignored) {}
             }
-            cursorPosition = lastReportedCursorPosition;
+            cursorPoint = lastReportedCursorPoint;
         }
-        return cursorPosition;
+        return cursorPoint;
     }
 
     @Override
@@ -226,8 +226,8 @@ public abstract class StreamBasedTerminal extends AbstractTerminal {
             try {
                 KeyStroke key = inputDecoder.getNextCharacter(blocking);
                 ScreenInfoAction report = ScreenInfoCharacterPattern.tryToAdopt(key);
-                if (lastReportedCursorPosition == null && report != null) {
-                    lastReportedCursorPosition = report.getPosition();
+                if (lastReportedCursorPoint == null && report != null) {
+                    lastReportedCursorPoint = report.getPosition();
                 }
                 else {
                     return key;

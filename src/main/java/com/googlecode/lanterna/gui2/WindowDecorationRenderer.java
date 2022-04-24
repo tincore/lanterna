@@ -43,7 +43,7 @@ public interface WindowDecorationRenderer {
      * @param contentAreaSize Size of the content area in the window
      * @return Full size of the window, including decorations
      */
-    TerminalSize getDecoratedSize(Window window, TerminalSize contentAreaSize);
+    Dimension getDecoratedSize(Window window, Dimension contentAreaSize);
 
     /**
      * Returns how much to step right and down from the top left position of the window decorations to the top left
@@ -51,10 +51,10 @@ public interface WindowDecorationRenderer {
      * @param window Window to get the offset for
      * @return Position of the top left corner of the window, relative to the top left corner of the window decoration
      */
-    TerminalPosition getOffset(Window window);
+    Point getOffset(Window window);
     
     
-    default TerminalRectangle getTitleBarRectangle(Window window) {
-        return new TerminalRectangle(0, 0, window.getDecoratedSize().getColumns(), getOffset(window).getRow());
+    default Rectangle getTitleBarRectangle(Window window) {
+        return new Rectangle(0, 0, window.getDecoratedSize().getColumns(), getOffset(window).getRow());
     }
 }

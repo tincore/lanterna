@@ -20,7 +20,7 @@
 
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.BorderLayout.Location;
 
@@ -52,7 +52,7 @@ public class DirectoryDialog extends DialogWindow {
      * @param showHiddenDirs If {@code true}, hidden directories will be visible
      * @param selectedObject Initially selected directory node
      */
-    public DirectoryDialog(String title, String description, String actionLabel, TerminalSize dialogSize,
+    public DirectoryDialog(String title, String description, String actionLabel, Dimension dialogSize,
                            boolean showHiddenDirs, File selectedObject) {
         super(title);
 
@@ -73,10 +73,10 @@ public class DirectoryDialog extends DialogWindow {
 
         int unitHeight = dialogSize.getRows();
 
-        dirListBox = new ActionListBox(new TerminalSize(dialogSize.getColumns(), unitHeight));
+        dirListBox = new ActionListBox(new Dimension(dialogSize.getColumns(), unitHeight));
         dirsPane.add(dirListBox.withBorder(Borders.singleLine()), Location.CENTER);
 
-        dirBox = new TextBox(new TerminalSize(dialogSize.getColumns(), 1));
+        dirBox = new TextBox(new Dimension(dialogSize.getColumns(), 1));
         dirsPane.add(dirBox.withBorder(Borders.singleLine()), Location.BOTTOM);
 
         Panel panelButtons = new Panel(new GridLayout(2));

@@ -32,7 +32,7 @@ In the same way you can also stop the screen when the application is done (or at
     screen.stopScreen();
 
 ## Drawing text ##
-The `Screen` object exposes a `setCharacter(..)` method that will put a certain character at a certain position with 
+The `Screen` object exposes a `setCharacter(..)` method that will put a certain character at a certain point with 
 certain attributes (color and style). It's very straight-forward:
 
     screen.setCharacter(10, 5, new TextCharacter('!', TextColor.ANSI.RED, TextColor.ANSI.GREEN));
@@ -71,15 +71,15 @@ waste anything when the changes are flushed to standard out (or whatever your te
 ## Handling terminal resize
 Screens will automatically listen and record size changes, but you have to let the Screen know when is
 a good time to update its internal buffers. Usually you should do this at the start of your "drawing"
-loop, if you have one. This ensures that the dimensions of the buffers stays constant and doesn't change
+loop, if you have one. This ensures that the dimension of the buffers stays constant and doesn't change
 while you are drawing content. The method doReizeIfNecessary() will check if the terminal has been
 resized since last time it was called (or since the screen was created if this is the first time
-calling) and update the buffer dimensions accordingly. It returns null if the terminal has not changed
+calling) and update the buffer dimension accordingly. It returns null if the terminal has not changed
 size since last time.
 
     TerminalSize newSize = screen.doResizeIfNecessary();
     if(newSize != null) {
-        terminalSize = newSize;
+        dimension = newSize;
     }
 
 ## Manipulating the underlying terminal

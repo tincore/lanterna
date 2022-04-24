@@ -38,7 +38,7 @@ public class ScreenTabTest {
     public ScreenTabTest(String[] args) throws InterruptedException, IOException {
         screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        screen.setCursorPosition(new TerminalPosition(0, 0));
+        screen.setCursorPosition(new Point(0, 0));
         putStrings("Trying out some tabs!");
 
         long now = System.currentTimeMillis();
@@ -80,16 +80,16 @@ public class ScreenTabTest {
         screen.refresh();
 
         //Verify
-        if(!screen.getBackCharacter(new TerminalPosition(20, 11)).is(' ')) {
+        if(!screen.getBackCharacter(new Point(20, 11)).is(' ')) {
             throw new IllegalStateException("Expected tab to be replaced with space");
         }
-        if(!screen.getBackCharacter(new TerminalPosition(21, 11)).is('X')) {
+        if(!screen.getBackCharacter(new Point(21, 11)).is('X')) {
             throw new IllegalStateException("Expected X in back buffer");
         }
-        if(!screen.getFrontCharacter(new TerminalPosition(20, 11)).is(' ')) {
+        if(!screen.getFrontCharacter(new Point(20, 11)).is(' ')) {
             throw new IllegalStateException("Expected tab to be replaced with space");
         }
-        if(!screen.getFrontCharacter(new TerminalPosition(21, 11)).is('X')) {
+        if(!screen.getFrontCharacter(new Point(21, 11)).is('X')) {
             throw new IllegalStateException("Expected X in front buffer");
         }
     }

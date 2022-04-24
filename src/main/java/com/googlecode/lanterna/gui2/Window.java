@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalRectangle;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
+import com.googlecode.lanterna.Rectangle;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
 
@@ -33,7 +33,7 @@ import java.util.Collection;
  *
  * @author Martin
  */
-public interface Window extends BasePane {
+public interface Window extends RootPane {
 
     Window addHints(Hint... hints);
 
@@ -61,43 +61,43 @@ public interface Window extends BasePane {
     void draw(TextGUIGraphics graphics);
 
     /**
-     * @see Window#fromGlobalToContentRelative(TerminalPosition)
-     * @see Window#fromGlobalToDecoratedRelative(TerminalPosition)
+     * @see Window#fromGlobalToContentRelative(Point)
+     * @see Window#fromGlobalToDecoratedRelative(Point)
      * @deprecated This is deprecated in favor of calling either of: {@code fromGlobalToContentRelative()} or {@code fromGlobalToDecoratedRelative()}
      */
     @Override
     @Deprecated
-    TerminalPosition fromGlobal(TerminalPosition position);
+    Point fromGlobal(Point point);
 
     /**
      * Returns a position expressed in global coordinates, i.e. row and column offset from the top-left corner of the
      * terminal into a position relative to the top-left corner of the window's content. Calling
      * {@code fromGlobalToContentRelative(toGlobalFromContentRelative(..))} should return the exact same position.
      *
-     * @param position Position expressed in global coordinates to translate to local coordinates of this Window's content.
+     * @param point Position expressed in global coordinates to translate to local coordinates of this Window's content.
      * @return The global coordinates expressed as local coordinates
      */
-    TerminalPosition fromGlobalToContentRelative(TerminalPosition position);
+    Point fromGlobalToContentRelative(Point point);
 
     /**
      * Returns a position expressed in global coordinates, i.e. row and column offset from the top-left corner of the
      * terminal into a position relative to the top-left corner of the window including it's decoration. Calling
      * {@code fromGlobalToDecoratedRelative(toGlobalFromDecoratedRelative(..))} should return the exact same position.
      *
-     * @param position Position expressed in global coordinates to translate to local coordinates of this window including it's decoration.
+     * @param point Position expressed in global coordinates to translate to local coordinates of this window including it's decoration.
      * @return The global coordinates expressed as local coordinates
      */
-    TerminalPosition fromGlobalToDecoratedRelative(TerminalPosition position);
+    Point fromGlobalToDecoratedRelative(Point point);
 
     /**
      * Return the last known size of the window including window decoration and the window position as a TerminalRectangle.
      *
      * @return the decorated size and position of the window
      */
-    default TerminalRectangle getBounds() {
-        TerminalPosition position = getPosition();
-        TerminalSize size = getDecoratedSize();
-        return new TerminalRectangle(position.getColumn(), position.getRow(), size.getColumns(), size.getRows());
+    default Rectangle getBounds() {
+        Point point = getPosition();
+        Dimension size = getDecoratedSize();
+        return new Rectangle(point.getColumn(), point.getRow(), size.getColumns(), size.getRows());
     }
 
     /**
@@ -127,7 +127,7 @@ public interface Window extends BasePane {
      * @return Local position of where to place the cursor, or {@code null} if the cursor shouldn't be visible
      */
     @Override
-    TerminalPosition getCursorPosition();
+    Point getCursorPosition();
 
     /**
      * Returns the last known size of the window including window decorations put on by the window manager. The value
@@ -135,7 +135,7 @@ public interface Window extends BasePane {
      *
      * @return Size of the window, including window decorations
      */
-    TerminalSize getDecoratedSize();
+    Dimension getDecoratedSize();
 
     /**
      * This method is called by the GUI system to update the window on how large it is, counting window decorations too.
@@ -147,7 +147,7 @@ public interface Window extends BasePane {
      *
      * @param decoratedSize Size of the window, including window decorations
      */
-    void setDecoratedSize(TerminalSize decoratedSize);
+    void setDecoratedSize(Dimension decoratedSize);
 
     /**
      * Returns the component in the window that currently has input focus. There can only be one component at a time
@@ -190,7 +190,7 @@ public interface Window extends BasePane {
      *
      * @return Position, relative to the top-left corner of the terminal, of the top-left corner of the window
      */
-    TerminalPosition getPosition();
+    Point getPosition();
 
     /**
      * This method is called by the GUI system to update the window on where the window manager placed it. Calling this
@@ -201,7 +201,7 @@ public interface Window extends BasePane {
      *
      * @param topLeft Global coordinates of the top-left corner of the window
      */
-    Window setPosition(TerminalPosition topLeft);
+    Window setPosition(Point topLeft);
 
     /**
      * Returns a post-renderer the GUI system should invoke after the window has been drawn. This can be used to
@@ -219,7 +219,7 @@ public interface Window extends BasePane {
      *
      * @return Desired size of this window
      */
-    TerminalSize getPreferredSize();
+    Dimension getPreferredSize();
 
     /**
      * Returns the last known size of the window. This is in general derived from the last drawing operation, how large
@@ -227,7 +227,7 @@ public interface Window extends BasePane {
      *
      * @return Size of the window
      */
-    TerminalSize getSize();
+    Dimension getSize();
 
     /**
      * This method is called by the GUI system to update the window on how large it is, excluding window decorations.
@@ -244,7 +244,7 @@ public interface Window extends BasePane {
      * {@code setFixedSize} or {@code setDecoratedSize} instead, depending on what you are trying to do.
      */
     @Deprecated
-    Window setSize(TerminalSize size);
+    Window setSize(Dimension size);
 
     @Override
     WindowBasedTextGUI getTextGUI();
@@ -335,7 +335,7 @@ public interface Window extends BasePane {
      * @param offset Offset from the top-left corner of the window (including decorations) to the top-left corner of
      *               the content area.
      */
-    Window setContentOffset(TerminalPosition offset);
+    Window setContentOffset(Point offset);
 
     /**
      * Makes window draggable
@@ -351,7 +351,7 @@ public interface Window extends BasePane {
      *
      * @param size New size of your fixed-size window
      */
-    Window setFixedSize(TerminalSize size);
+    Window setFixedSize(Dimension size);
 
     /**
      * Updates the set of active hints for this window. Please note that it's up to the window manager if these hints
@@ -364,29 +364,29 @@ public interface Window extends BasePane {
     Window setHints(Hint... hints);
 
     /**
-     * @see Window#toGlobalFromContentRelative(TerminalPosition)
-     * @see Window#toGlobalFromDecoratedRelative(TerminalPosition)
+     * @see Window#toGlobalFromContentRelative(Point)
+     * @see Window#toGlobalFromDecoratedRelative(Point)
      * @deprecated This is deprecated in favor of calling either of: {@code toGlobalFromContentRelative()} or {@code toGlobalFromDecoratedRelative()}.
      */
     @Override
     @Deprecated
-    TerminalPosition toGlobal(TerminalPosition localPosition);
+    Point toGlobal(Point localPoint);
 
     /**
      * Returns a position in the window content's local coordinate space to global coordinates
      *
-     * @param localPosition The local position to translate
+     * @param localPoint The local position to translate
      * @return The local position translated to global coordinates
      */
-    TerminalPosition toGlobalFromContentRelative(TerminalPosition localPosition);
+    Point toGlobalFromContentRelative(Point localPoint);
 
     /**
      * Returns a position in the decorated window local coordinate space to global coordinates
      *
-     * @param decoratedPosition The position inside the window (taking decorations into account too)
+     * @param decoratedPoint The position inside the window (taking decorations into account too)
      * @return The local position translated to global coordinates
      */
-    TerminalPosition toGlobalFromDecoratedRelative(TerminalPosition decoratedPosition);
+    Point toGlobalFromDecoratedRelative(Point decoratedPoint);
 
     /**
      * Waits for the window to close. Please note that this can cause deadlocks if care is not taken. Also, this method

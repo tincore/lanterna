@@ -29,7 +29,7 @@ import java.util.EnumSet;
  * @author martin
  */
 class NullTextGraphics implements TextGraphics {
-    private final TerminalSize size;
+    private final Dimension size;
     private TextColor foregroundColor;
     private TextColor backgroundColor;
     private TabBehaviour tabBehaviour;
@@ -40,7 +40,7 @@ class NullTextGraphics implements TextGraphics {
      * than that ignore all other calls.
      * @param size The size to report
      */
-    public NullTextGraphics(TerminalSize size) {
+    public NullTextGraphics(Dimension size) {
         this.size = size;
         this.foregroundColor = TextColor.ANSI.DEFAULT;
         this.backgroundColor = TextColor.ANSI.DEFAULT;
@@ -49,12 +49,12 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return size;
     }
 
     @Override
-    public TextGraphics newTextGraphics(TerminalPosition topLeftCorner, TerminalSize size) throws IllegalArgumentException {
+    public TextGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException {
         return this;
     }
 
@@ -137,22 +137,22 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics setCharacter(TerminalPosition position, char character) {
+    public TextGraphics setCharacter(Point point, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics setCharacter(TerminalPosition position, TextCharacter character) {
+    public TextGraphics setCharacter(Point point, TextCharacter character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, char character) {
+    public TextGraphics drawLine(Point fromPoint, Point toPoint, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, TextCharacter character) {
+    public TextGraphics drawLine(Point fromPoint, Point toPoint, TextCharacter character) {
         return this;
     }
 
@@ -167,52 +167,52 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public TextGraphics drawTriangle(Point p1, Point p2, Point p3, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public TextGraphics drawTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         return this;
     }
 
     @Override
-    public TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public TextGraphics fillTriangle(Point p1, Point p2, Point p3, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public TextGraphics fillTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public TextGraphics drawRectangle(Point topLeft, Dimension size, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public TextGraphics drawRectangle(Point topLeft, Dimension size, TextCharacter character) {
         return this;
     }
 
     @Override
-    public TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public TextGraphics fillRectangle(Point topLeft, Dimension size, char character) {
         return this;
     }
 
     @Override
-    public TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public TextGraphics fillRectangle(Point topLeft, Dimension size, TextCharacter character) {
         return this;
     }
 
     @Override
-    public TextGraphics drawImage(TerminalPosition topLeft, TextImage image) {
+    public TextGraphics drawImage(Point topLeft, TextImage image) {
         return this;
     }
 
     @Override
-    public TextGraphics drawImage(TerminalPosition topLeft, TextImage image, TerminalPosition sourceImageTopLeft, TerminalSize sourceImageSize) {
+    public TextGraphics drawImage(Point topLeft, TextImage image, Point sourceImageTopLeft, Dimension sourceImageSize) {
         return this;
     }
 
@@ -222,7 +222,7 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putString(TerminalPosition position, String string) {
+    public TextGraphics putString(Point point, String string) {
         return this;
     }
 
@@ -232,7 +232,7 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putString(TerminalPosition position, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
+    public TextGraphics putString(Point point, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
         return this;
     }
 
@@ -247,7 +247,7 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextGraphics putCSIStyledString(TerminalPosition position, String string) {
+    public TextGraphics putCSIStyledString(Point point, String string) {
         return this;
     }
 
@@ -257,7 +257,7 @@ class NullTextGraphics implements TextGraphics {
     }
 
     @Override
-    public TextCharacter getCharacter(TerminalPosition position) {
+    public TextCharacter getCharacter(Point point) {
         return null;
     }
 

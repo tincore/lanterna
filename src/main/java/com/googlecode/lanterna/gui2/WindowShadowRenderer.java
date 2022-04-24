@@ -34,16 +34,16 @@ public class WindowShadowRenderer implements WindowPostRenderer {
             TextGUI textGUI,
             Window window) {
 
-        TerminalPosition windowPosition = window.getPosition();
-        TerminalSize decoratedWindowSize = window.getDecoratedSize();
+        Point windowPoint = window.getPosition();
+        Dimension decoratedWindowSize = window.getDecoratedSize();
         ThemeDefinition themeDefinition = window.getTheme().getDefinition(WindowShadowRenderer.class);
         textGraphics.applyThemeStyle(themeDefinition.getNormal());
         char filler = themeDefinition.getCharacter("FILLER", ' ');
         boolean useDoubleWidth = themeDefinition.getBooleanProperty("DOUBLE_WIDTH", true);
         boolean useTransparency = themeDefinition.getBooleanProperty("TRANSPARENT", false);
 
-        TerminalPosition lowerLeft = windowPosition.withRelativeColumn(useDoubleWidth ? 2 : 1).withRelativeRow(decoratedWindowSize.getRows());
-        TerminalPosition lowerRight = lowerLeft.withRelativeColumn(decoratedWindowSize.getColumns() - (useDoubleWidth ? 3 : 2));
+        Point lowerLeft = windowPoint.withRelativeColumn(useDoubleWidth ? 2 : 1).withRelativeRow(decoratedWindowSize.getRows());
+        Point lowerRight = lowerLeft.withRelativeColumn(decoratedWindowSize.getColumns() - (useDoubleWidth ? 3 : 2));
         for(int column = lowerLeft.getColumn(); column <= lowerRight.getColumn() + 1; column++) {
             char characterToDraw = filler;
             if(useTransparency) {
@@ -59,7 +59,7 @@ public class WindowShadowRenderer implements WindowPostRenderer {
         }
 
         lowerRight = lowerRight.withRelativeColumn(1);
-        TerminalPosition upperRight = lowerRight.withRelativeRow(-decoratedWindowSize.getRows() + 1);
+        Point upperRight = lowerRight.withRelativeRow(-decoratedWindowSize.getRows() + 1);
         boolean hasDoubleWidthShadow = false;
         for(int row = upperRight.getRow(); row < lowerRight.getRow(); row++) {
             char characterToDraw = filler;

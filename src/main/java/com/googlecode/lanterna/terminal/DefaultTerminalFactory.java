@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.ansi.CygwinTerminal;
 import com.googlecode.lanterna.terminal.ansi.TelnetTerminal;
@@ -51,7 +51,7 @@ public class DefaultTerminalFactory implements TerminalFactory {
     private final InputStream inputStream;
     private final Charset charset;
 
-    private TerminalSize initialTerminalSize;
+    private Dimension initialDimension;
     private boolean forceTextTerminal;
     private boolean preferTerminalEmulator;
     private boolean forceAWTOverSwing;
@@ -165,7 +165,7 @@ public class DefaultTerminalFactory implements TerminalFactory {
     public AWTTerminalFrame createAWTTerminal() {
         return new AWTTerminalFrame(
                 title,
-                initialTerminalSize,
+            initialDimension,
                 deviceConfiguration,
                 fontConfiguration,
                 colorConfiguration,
@@ -175,7 +175,7 @@ public class DefaultTerminalFactory implements TerminalFactory {
     public SwingTerminalFrame createSwingTerminal() {
         return new SwingTerminalFrame(
                 title,
-                initialTerminalSize,
+            initialDimension,
                 deviceConfiguration,
                 fontConfiguration instanceof SwingTerminalFontConfiguration ? (SwingTerminalFontConfiguration)fontConfiguration : null,
                 colorConfiguration,
@@ -248,11 +248,11 @@ public class DefaultTerminalFactory implements TerminalFactory {
      * Sets a hint to the TerminalFactory of what size to use when creating the terminal. Most terminals are not created
      * on request but for example the SwingTerminal and SwingTerminalFrame are and this value will be passed down on
      * creation.
-     * @param initialTerminalSize Size (in rows and columns) of the newly created terminal
+     * @param initialDimension Size (in rows and columns) of the newly created terminal
      * @return Reference to itself, so multiple .set-calls can be chained
      */
-    public DefaultTerminalFactory setInitialTerminalSize(TerminalSize initialTerminalSize) {
-        this.initialTerminalSize = initialTerminalSize;
+    public DefaultTerminalFactory setInitialTerminalSize(Dimension initialDimension) {
+        this.initialDimension = initialDimension;
         return this;
     }
 

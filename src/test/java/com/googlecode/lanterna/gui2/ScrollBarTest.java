@@ -18,12 +18,12 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-public class ScrollBarTest extends TestBase {
+public class ScrollBarTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new ScrollBarTest().run(args);
     }
@@ -78,12 +78,12 @@ public class ScrollBarTest extends TestBase {
         controlPanel.add(new Label("Vertical view size:")).add(textBoxVerticalSize);
         controlPanel.add(new Label("Vertical scroll position:")).add(textBoxVerticalPosition);
         controlPanel.add(new Label("Vertical scroll max:")).add(textBoxVerticalMax);
-        controlPanel.add(new EmptySpace(TerminalSize.ONE)).add(new EmptySpace(TerminalSize.ONE));
+        controlPanel.add(new EmptySpace(Dimension.ONE)).add(new EmptySpace(Dimension.ONE));
         controlPanel.add(new Label("Horizontal tracker grows:")).add(checkHorizontalTrackerGrow);
         controlPanel.add(new Label("Horizontal view size:")).add(textBoxHorizontalSize);
         controlPanel.add(new Label("Horizontal scroll position:")).add(textBoxHorizontalPosition);
         controlPanel.add(new Label("Horizontal scroll max:")).add(textBoxHorizontalMax);
-        controlPanel.add(new EmptySpace(TerminalSize.ONE)).add(new EmptySpace(TerminalSize.ONE));
+        controlPanel.add(new EmptySpace(Dimension.ONE)).add(new EmptySpace(Dimension.ONE));
         controlPanel.add(buttonRefresh);
         contentPanel.add(closeButton);
 

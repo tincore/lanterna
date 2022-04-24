@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.input;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 
 import java.util.List;
 
@@ -112,7 +112,7 @@ public class MouseCharacterPattern implements CharacterPattern {
         // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         
         
-        TerminalPosition pos = new TerminalPosition( seq.get(4) - 33, seq.get(5) - 33 );
+        Point pos = new Point( seq.get(4) - 33, seq.get(5) - 33 );
 
         MouseAction ma = new MouseAction(actionType, button, pos );
         return new Matching( ma ); // yep

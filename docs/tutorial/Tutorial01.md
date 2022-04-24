@@ -59,16 +59,16 @@ terminal emulators bundled in lanterna, the flush call will signal a repaint to 
         Thread.sleep(2000);
         
 At this point the cursor should be on start of the next line, immediately after the Hello that was just
-printed. Let's move the cursor to a new position, relative to the current position. Notice we still need to
+printed. Let's move the cursor to a new point, relative to the current point. Notice we still need to
 call flush() to ensure the change is immediately visible (i.e. the user can see the text cursor moved to the
-new position).
-One thing to notice here is that if you are running this in a 'proper' terminal and the cursor position is
-at the bottom line, it won't actually move the text up. Attempts at setting the cursor position outside the
+new point).
+One thing to notice here is that if you are running this in a 'proper' terminal and the cursor point is
+at the bottom line, it won't actually move the text up. Attempts at setting the cursor point outside the
 terminal bounds are usually rounded to the first/last column/row. If you run into this, please clear the
 terminal content so the cursor is at the top again before running this code.
 
-        TerminalPosition startPosition = terminal.getCursorPosition();
-        terminal.setCursorPosition(startPosition.withRelativeColumn(3).withRelativeRow(2));
+        TerminalPosition startPoint = terminal.getCursorPosition();
+        terminal.setCursorPosition(startPoint.withRelativeColumn(3).withRelativeRow(2));
         terminal.flush();
         Thread.sleep(2000);
         
@@ -102,11 +102,11 @@ common one is bold mode, which on many terminal implementations (emulators and o
 using bold text at all but rather shifts the tint of the foreground color so it stands out a bit. Let's
 print the same text as above in bold mode to compare.
 
-Notice that startPosition has the same value as when we retrieved it with getTerminalSize(), the
+Notice that startPoint has the same value as when we retrieved it with getTerminalSize(), the
 TerminalPosition class is immutable and calling the with* methods will return a copy. So the following
 setCursorPosition(..) call will put us exactly one row below the previous row.
 
-        terminal.setCursorPosition(startPosition.withRelativeColumn(3).withRelativeRow(3));
+        terminal.setCursorPosition(startPoint.withRelativeColumn(3).withRelativeRow(3));
         terminal.flush();
         Thread.sleep(2000);
         terminal.enableSGR(SGR.BOLD);

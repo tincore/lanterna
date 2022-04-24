@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 /**
  * Implementation of WindowDecorationRenderer that is doesn't render any window decorations
@@ -32,12 +32,12 @@ public class EmptyWindowDecorationRenderer implements WindowDecorationRenderer {
     }
 
     @Override
-    public TerminalSize getDecoratedSize(Window window, TerminalSize contentAreaSize) {
+    public Dimension getDecoratedSize(Window window, Dimension contentAreaSize) {
         return contentAreaSize;
     }
 
     @Override
-    public TerminalPosition getOffset(Window window) {
-        return TerminalPosition.TOP_LEFT_CORNER;
+    public Point getOffset(Window window) {
+        return Point.TOP_LEFT_CORNER;
     }
 }

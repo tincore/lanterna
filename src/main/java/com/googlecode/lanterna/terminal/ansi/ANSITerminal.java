@@ -18,10 +18,10 @@
  */
 package com.googlecode.lanterna.terminal.ansi;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.input.*;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.ExtendedTerminal;
 import com.googlecode.lanterna.terminal.MouseCaptureMode;
@@ -93,23 +93,23 @@ public abstract class ANSITerminal extends StreamBasedTerminal implements Extend
 
     // Final because we handle the onResized logic here; extending classes should override #findTerminalSize instead
     @Override
-    public final synchronized TerminalSize getTerminalSize() throws IOException {
-        TerminalSize size = findTerminalSize();
+    public final synchronized Dimension getTerminalSize() throws IOException {
+        Dimension size = findTerminalSize();
         onResized(size);
         return size;
     }
 
-    protected TerminalSize findTerminalSize() throws IOException {
+    protected Dimension findTerminalSize() throws IOException {
         saveCursorPosition();
         setCursorPosition(5000, 5000);
         resetMemorizedCursorPosition();
         reportPosition();
         restoreCursorPosition();
-        TerminalPosition terminalPosition = waitForCursorPositionReport();
-        if (terminalPosition == null) {
-            terminalPosition = new TerminalPosition(80,24);
+        Point point = waitForCursorPositionReport();
+        if (point == null) {
+            point = new Point(80,24);
         }
-        return new TerminalSize(terminalPosition.getColumn(), terminalPosition.getRow());
+        return new Dimension(point.getColumn(), point.getRow());
     }
 
     @Override
@@ -258,21 +258,21 @@ public abstract class ANSITerminal extends StreamBasedTerminal implements Extend
     }
 
     @Override
-    public void setCursorPosition(TerminalPosition position) throws IOException {
-        setCursorPosition(position.getColumn(), position.getRow());
+    public void setCursorPosition(Point point) throws IOException {
+        setCursorPosition(point.getColumn(), point.getRow());
     }
 
     @Override
-    public synchronized TerminalPosition getCursorPosition() throws IOException {
+    public synchronized Point getCursorPosition() throws IOException {
         resetMemorizedCursorPosition();
         reportPosition();
 
         // ANSI terminal positions are 1-indexed so top-left corner is 1x1 instead of 0x0, that's why we need to adjust it here
-        TerminalPosition terminalPosition = waitForCursorPositionReport();
-        if (terminalPosition == null) {
-            terminalPosition = TerminalPosition.OFFSET_1x1;
+        Point point = waitForCursorPositionReport();
+        if (point == null) {
+            point = Point.OFFSET_1x1;
         }
-        return terminalPosition.withRelative(-1, -1);
+        return point.withRelative(-1, -1);
     }
 
     @Override

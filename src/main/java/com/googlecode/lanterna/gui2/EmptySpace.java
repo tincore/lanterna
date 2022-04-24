@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 
 /**
@@ -28,14 +28,14 @@ import com.googlecode.lanterna.TextColor;
  * @author Martin
  */
 public class EmptySpace extends AbstractComponent<EmptySpace> {
-    private final TerminalSize size;
+    private final Dimension size;
     private TextColor color;
 
     /**
      * Creates an EmptySpace with size 1x1 and a default color chosen from the theme
      */
     public EmptySpace() {
-        this(null, TerminalSize.ONE);
+        this(null, Dimension.ONE);
     }
 
     /**
@@ -43,14 +43,14 @@ public class EmptySpace extends AbstractComponent<EmptySpace> {
      * @param color Color to use (null will make it use the theme)
      */
     public EmptySpace(TextColor color) {
-        this(color, TerminalSize.ONE);
+        this(color, Dimension.ONE);
     }
 
     /**
      * Creates an EmptySpace with a specified preferred size (color will be chosen from the theme)
      * @param size Preferred size
      */
-    public EmptySpace(TerminalSize size) {
+    public EmptySpace(Dimension size) {
         this(null, size);
     }
 
@@ -59,7 +59,7 @@ public class EmptySpace extends AbstractComponent<EmptySpace> {
      * @param color Color to use (null will make it use the theme)
      * @param size Preferred size
      */
-    public EmptySpace(TextColor color, TerminalSize size) {
+    public EmptySpace(TextColor color, Dimension size) {
         super(Attributes.EMPTY);
         this.color = color;
         this.size = size;
@@ -88,7 +88,7 @@ public class EmptySpace extends AbstractComponent<EmptySpace> {
         return new ComponentRenderer<EmptySpace>() {
 
             @Override
-            public TerminalSize getPreferredSize(EmptySpace component) {
+            public Dimension getPreferredSize(EmptySpace component) {
                 return size;
             }
 

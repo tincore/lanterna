@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
 
@@ -109,12 +109,12 @@ public abstract class AbstractComposite<T extends Container> extends AbstractCom
         if (component != null) {
             this.component = component;
             component.onAdded(this);
-            if (getBasePane() != null) {
-                MenuBar menuBar = getBasePane().getMenuBar();
+            if (getRootPane() != null) {
+                MenuBar menuBar = getRootPane().getMenuBar();
                 if (menuBar == null || menuBar.isEmptyMenuBar()) {
-                    component.setPosition(TerminalPosition.TOP_LEFT_CORNER);
+                    component.setPosition(Point.TOP_LEFT_CORNER);
                 } else {
-                    component.setPosition(TerminalPosition.TOP_LEFT_CORNER.withRelativeRow(1));
+                    component.setPosition(Point.TOP_LEFT_CORNER.withRelativeRow(1));
                 }
             }
             invalidate();

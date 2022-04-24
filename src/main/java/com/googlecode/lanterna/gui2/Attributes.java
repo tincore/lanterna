@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.Map;
 
 public class Attributes {
+
     public static final Attributes EMPTY = new Attributes();
+
     final Map<String, Object> values;
 
     public Attributes() {

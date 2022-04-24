@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 /**
  * Main interface for different border classes, with additional methods to help lanterna figure out the size and offset
@@ -32,7 +32,7 @@ public interface Border extends Container, Composite {
          * How large is the offset from the top left corner of the border to the top left corner of the wrapped component?
          * @return Position of the wrapped components top left position, relative to the top left corner of the border
          */
-        TerminalPosition getWrappedComponentTopLeftOffset();
+        Point getWrappedComponentTopLeftOffset();
 
         /**
          * Given a total size of the border composite and it's wrapped component, how large would the actual wrapped
@@ -40,6 +40,6 @@ public interface Border extends Container, Composite {
          * @param borderSize Size to calculate for, this should be the total size of the border and the inner component
          * @return Size of the inner component if the total size of inner + border is borderSize
          */
-        TerminalSize getWrappedComponentSize(TerminalSize borderSize);
+        Dimension getWrappedComponentSize(Dimension borderSize);
     }
 }

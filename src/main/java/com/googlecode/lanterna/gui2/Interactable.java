@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 
 /**
@@ -37,7 +37,7 @@ public interface Interactable extends Component {
      *
      * @return Coordinates of where to place the cursor when this component has focus
      */
-    TerminalPosition getCursorLocation();
+    Point getCursorLocation();
 
     /**
      * Returns the input filter currently assigned to the interactable component. This will intercept any user input and
@@ -57,23 +57,13 @@ public interface Interactable extends Component {
     Interactable setInputFilter(InputFilter inputFilter);
 
     /**
-     * Accepts a KeyStroke as input and processes this as a user input. Depending on what the component does with this
-     * key-stroke, there are several results passed back to the GUI system that will decide what to do next. If the
-     * event was not handled or ignored, {@code Result.UNHANDLED} should be returned. This will tell the GUI system that
-     * the key stroke was not understood by this component and may be dealt with in another way. If event was processed
-     * properly, it should return {@code Result.HANDLED}, which will make the GUI system stop processing this particular
-     * key-stroke. Furthermore, if the component understood the key-stroke and would like to move focus to a different
-     * component, there are the {@code Result.MOVE_FOCUS_*} values. This method should be invoking the input filter, if
-     * it is set, to see if the input should be processed or not.
-     * <p>
-     * Notice that most of the built-in components in Lanterna extends from {@link AbstractInteractableComponent} which
-     * has a final implementation of this method. The method to override to handle input in that case is
-     * {@link AbstractInteractableComponent#onKeyStroke(KeyStroke)}.
+     * Moves focus in the {@code BasePane} to this component. If the component has not been added to a {@code BasePane}
+     * (i.e. a {@code Window} most of the time), does nothing. If the component has been disabled through a call to
+     * {@link Interactable#setEnabled(boolean)}, this call also does nothing.
      *
-     * @param keyStroke What input was entered by the user
-     * @return Result of processing the key-stroke
+     * @return Itself
      */
-    Result handleInput(KeyStroke keyStroke);
+    Interactable grabFocus();
 
     /**
      * Returns {@code true} if this component is able to receive input as a regular interactable component. This will
@@ -131,18 +121,28 @@ public interface Interactable extends Component {
     void onFocusLost(FocusChangeDirection direction, Interactable nextInFocus);
 
     /**
-     * Moves focus in the {@code BasePane} to this component. If the component has not been added to a {@code BasePane}
-     * (i.e. a {@code Window} most of the time), does nothing. If the component has been disabled through a call to
-     * {@link Interactable#setEnabled(boolean)}, this call also does nothing.
+     * Accepts a KeyStroke as input and processes this as a user input. Depending on what the component does with this
+     * key-stroke, there are several results passed back to the GUI system that will decide what to do next. If the
+     * event was not handled or ignored, {@code Result.UNHANDLED} should be returned. This will tell the GUI system that
+     * the key stroke was not understood by this component and may be dealt with in another way. If event was processed
+     * properly, it should return {@code Result.HANDLED}, which will make the GUI system stop processing this particular
+     * key-stroke. Furthermore, if the component understood the key-stroke and would like to move focus to a different
+     * component, there are the {@code Result.MOVE_FOCUS_*} values. This method should be invoking the input filter, if
+     * it is set, to see if the input should be processed or not.
+     * <p>
+     * Notice that most of the built-in components in Lanterna extends from {@link AbstractInteractableComponent} which
+     * has a final implementation of this method. The method to override to handle input in that case is
+     * {@link AbstractInteractableComponent#onKeyStroke(KeyStroke)}.
      *
-     * @return Itself
+     * @param keyStroke What input was entered by the user
+     * @return Result of processing the key-stroke
      */
-    Interactable takeFocus();
+    KeyStrokeResult onInput(KeyStroke keyStroke);
 
     /**
      * Enum to represent the various results coming out of the handleKeyStroke method
      */
-    enum Result {
+    enum KeyStrokeResult {
         /**
          * This component didn't handle the key-stroke, either because it was not recognized or because it chose to
          * ignore it.
@@ -249,4 +249,12 @@ public interface Interactable extends Component {
 
         void onFocusLost(FocusChangeDirection direction, Interactable previouslyInFocus, Interactable source);
     }
+
+    interface KeyStrokeListener {
+        KeyStrokeListener DUMMY = (k, r, s) -> {
+        };
+
+        void onKeyStroke(KeyStroke keyStroke, KeyStrokeResult keyStrokeResult, Interactable source);
+    }
+
 }

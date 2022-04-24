@@ -5,17 +5,14 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalTextUtils;
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.screen.TabBehaviour;
 import com.googlecode.lanterna.screen.WrapBehaviour;
 
 public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
     private final TextGraphics backend;
-    private TerminalPosition cursorPosition;
+    private Point cursorPoint;
     private TextColor foregroundColor, backgroundColor;
     private final EnumSet<SGR> style = EnumSet.noneOf(SGR.class);
     private WrapBehaviour wrapBehaviour = WrapBehaviour.WORD;
@@ -24,7 +21,7 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
     public TextGraphicsWriter(TextGraphics backend) {
         this.backend = backend;
         setStyleFrom( backend );
-        cursorPosition = new TerminalPosition(0, 0);
+        cursorPoint = new Point(0, 0);
     }
 
     public TextGraphicsWriter putString(String string) {
@@ -44,11 +41,11 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
                 flush(wordpart,wordlen); wordlen = 0;
                 if (backend.getTabBehaviour() != TabBehaviour.IGNORE) {
                     String repl = backend.getTabBehaviour()
-                            .getTabReplacement(cursorPosition.getColumn());
+                            .getTabReplacement(cursorPoint.getColumn());
                     for(int j = 0; j < repl.length(); j++) {
-                        backend.setCharacter(cursorPosition.withRelativeColumn(j), repl.charAt(j));
+                        backend.setCharacter(cursorPoint.withRelativeColumn(j), repl.charAt(j));
                     }
-                    cursorPosition = cursorPosition.withRelativeColumn(repl.length());
+                    cursorPoint = cursorPoint.withRelativeColumn(repl.length());
                 } else {
                     linefeed(2); putControlChar(ch);
                 }
@@ -71,21 +68,21 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
                     linefeed(1); putControlChar(ch);
                 } else if (Character.isWhitespace(ch)) {
                     flush(wordpart,wordlen); wordlen = 0;
-                    backend.setCharacter(cursorPosition, ch);
-                    cursorPosition = cursorPosition.withRelativeColumn(1);
+                    backend.setCharacter(cursorPoint, ch);
+                    cursorPoint = cursorPoint.withRelativeColumn(1);
                 } else if (TerminalTextUtils.isCharCJK(ch)) {
                     flush(wordpart, wordlen); wordlen = 0;
                     linefeed(2);
-                    backend.setCharacter(cursorPosition, ch);
-                    cursorPosition = cursorPosition.withRelativeColumn(2);
+                    backend.setCharacter(cursorPoint, ch);
+                    cursorPoint = cursorPoint.withRelativeColumn(2);
                 } else {
                     if (wrapBehaviour.keepWords()) {
                         // TODO: if at end of line despite starting at col 0, then split word.
                         wordpart.append(ch); wordlen++;
                     } else {
                         linefeed(1);
-                        backend.setCharacter(cursorPosition, ch);
-                        cursorPosition = cursorPosition.withRelativeColumn(1);
+                        backend.setCharacter(cursorPoint, ch);
+                        cursorPoint = cursorPoint.withRelativeColumn(1);
                     }
                 }
             }
@@ -96,13 +93,13 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
         return this;
     }
     private void linefeed(int lenToFit) {
-        int curCol = cursorPosition.getColumn();
+        int curCol = cursorPoint.getColumn();
         int spaceLeft = backend.getSize().getColumns() - curCol;
         if (wrapBehaviour.allowLineFeed()) {
             boolean wantWrap = curCol > 0 && lenToFit > spaceLeft;
             if (lenToFit < 0 || ( wantWrap && wrapBehaviour.autoWrap() ) ) {
                 // TODO: clear to end of current line?
-                cursorPosition = cursorPosition.withColumn(0).withRelativeRow(1);
+                cursorPoint = cursorPoint.withColumn(0).withRelativeRow(1);
             }
         } else {
             if (lenToFit < 0) { // encode explicit line feed
@@ -124,8 +121,8 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
                 subst = (char)(ch + '@');
             } else { // normal character - or 0x80-0x9F
                 // just write it out, anyway:
-                backend.setCharacter(cursorPosition, ch);
-                cursorPosition = cursorPosition.withRelativeColumn(1);
+                backend.setCharacter(cursorPoint, ch);
+                cursorPoint = cursorPoint.withRelativeColumn(1);
                 return;
             }
         }
@@ -137,11 +134,11 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
         }
         TextCharacter tc = new TextCharacter('^',
                 getForegroundColor(), getBackgroundColor(), style);
-        backend.setCharacter(cursorPosition, tc);
-        cursorPosition = cursorPosition.withRelativeColumn(1);
+        backend.setCharacter(cursorPoint, tc);
+        cursorPoint = cursorPoint.withRelativeColumn(1);
         tc = tc.withCharacter(subst);
-        backend.setCharacter(cursorPosition, tc);
-        cursorPosition = cursorPosition.withRelativeColumn(1);
+        backend.setCharacter(cursorPoint, tc);
+        cursorPoint = cursorPoint.withRelativeColumn(1);
     }
     // A word (a sequence of characters that is kept together when word-wrapping)
     // may consist of differently styled parts. This class describes one such
@@ -171,8 +168,8 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
         if (chunk_queue.isEmpty()) {
             return;
         }
-        int row = cursorPosition.getRow();
-        int col = cursorPosition.getColumn();
+        int row = cursorPoint.getRow();
+        int col = cursorPoint.getColumn();
         int offset = 0;
         for (WordPart chunk : chunk_queue) {
             backend.setStyleFrom(chunk);
@@ -181,22 +178,22 @@ public class TextGraphicsWriter implements StyleSet<TextGraphicsWriter> {
         }
         chunk_queue.clear(); // they're done.
         // set cursor right behind the word:
-        cursorPosition = cursorPosition.withColumn(col+offset);
+        cursorPoint = cursorPoint.withColumn(col+offset);
         backend.setStyleFrom(this);
     }
 
     /**
      * @return the cursor position
      */
-    public TerminalPosition getCursorPosition() {
-        return cursorPosition;
+    public Point getCursorPosition() {
+        return cursorPoint;
     }
 
     /**
-     * @param cursorPosition the cursor position to set
+     * @param cursorPoint the cursor position to set
      */
-    public void setCursorPosition(TerminalPosition cursorPosition) {
-        this.cursorPosition = cursorPosition;
+    public void setCursorPosition(Point cursorPoint) {
+        this.cursorPoint = cursorPoint;
     }
 
     /**

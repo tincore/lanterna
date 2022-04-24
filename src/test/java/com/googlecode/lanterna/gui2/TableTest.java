@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * Test for the Table component
  */
 public class
-TableTest extends TestBase {
+TableTest extends AbstractGuiTest {
     private int columnCounter = 4;
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -145,7 +145,7 @@ TableTest extends TestBase {
                         })
                         .build()
                         .show(textGUI)))
-                .add(new Button("Close", s -> window.close()))));
+                .add(createButtonCloseContainer())));
         textGUI.addWindow(window);
     }
 

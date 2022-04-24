@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
@@ -34,31 +34,31 @@ public interface Component extends TextGUIElement, Attributed {
      * Returns the top-left corner of this component, measured from its parent.
      * @return Position of this component
      */
-    TerminalPosition getPosition();
+    Point getPosition();
     
     /**
      * Returns the top-left corner of this component in global coordinates space
-     * using {@link TerminalPosition#TOP_LEFT_CORNER} with
-     * {@link #toGlobal(TerminalPosition)}
+     * using {@link Point#TOP_LEFT_CORNER} with
+     * {@link #toGlobal(Point)}
      * 
      * @return global position of this component
      */
-    TerminalPosition getGlobalPosition();
+    Point getGlobalPosition();
 
     /**
      * This method will be called by the layout manager when it has decided where the component is to be located. If you
      * call this method yourself, prepare for unexpected results.
-     * @param position Top-left position of the component, relative to its parent
+     * @param point Top-left position of the component, relative to its parent
      * @return Itself
      */
-    Component setPosition(TerminalPosition position);
+    Component setPosition(Point point);
 
     /**
      * Returns how large this component is. If the layout manager has not yet laid this component out, it will return
      * an empty size (0x0)
      * @return How large this component is
      */
-    TerminalSize getSize();
+    Dimension getSize();
 
     /**
      * This method will be called by the layout manager when it has decided how large the component will be. If you call
@@ -66,14 +66,14 @@ public interface Component extends TextGUIElement, Attributed {
      * @param size Current size of the component
      * @return Itself
      */
-    Component setSize(TerminalSize size);
+    Component setSize(Dimension size);
 
     /**
      * Returns the ideal size this component would like to have, in order to draw itself properly. There are no
      * guarantees the GUI system will decide to give it this size though.
      * @return Size we would like to be
      */
-    TerminalSize getPreferredSize();
+    Dimension getPreferredSize();
 
 
     /**
@@ -84,7 +84,7 @@ public interface Component extends TextGUIElement, Attributed {
      * @param explicitPreferredSize Preferred size we want to use for this component
      * @return Itself
      */
-    Component setPreferredSize(TerminalSize explicitPreferredSize);
+    Component setPreferredSize(Dimension explicitPreferredSize);
 
     /**
      * Sets optional layout data associated with this component. This meaning of this data is up to the layout manager
@@ -209,25 +209,25 @@ public interface Component extends TextGUIElement, Attributed {
      * Translates a position local to the container to the base pane's coordinate space. For a window-based GUI, this 
      * be a coordinate in the window's coordinate space. If the component belongs to no base pane, it will return
      * {@code null}.
-     * @param position Position to translate (relative to the container's top-left corner)
+     * @param point Position to translate (relative to the container's top-left corner)
      * @return Position in base pane space, or {@code null} if the component is an orphan
      */
-    TerminalPosition toBasePane(TerminalPosition position);
+    Point toBasePane(Point point);
 
     /**
      * Translates a position local to the container to global coordinate space. This should be the absolute coordinate
      * in the terminal screen, taking no windows or containers into account. If the component belongs to no base pane,
      * it will return {@code null}.
-     * @param position Position to translate (relative to the container's top-left corner)
+     * @param point Position to translate (relative to the container's top-left corner)
      * @return Position in global (or absolute) coordinates, or {@code null} if the component is an orphan
      */
-    TerminalPosition toGlobal(TerminalPosition position);
+    Point toGlobal(Point point);
 
     /**
      * Returns the BasePane that this container belongs to. In a window-based GUI system, this will be a Window.
      * @return The base pane this component is placed on, or {@code null} if none
      */
-    BasePane getBasePane();
+    RootPane getRootPane();
 
     /**
      * Same as calling {@code panel.addComponent(thisComponent)}

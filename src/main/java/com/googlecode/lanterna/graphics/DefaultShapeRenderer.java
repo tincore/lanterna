@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.graphics;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
 
 import java.util.Arrays;
@@ -42,12 +42,12 @@ class DefaultShapeRenderer implements ShapeRenderer {
     }
 
     @Override
-    public void drawLine(TerminalPosition p1, TerminalPosition p2, TextCharacter character) {
+    public void drawLine(Point p1, Point p2, TextCharacter character) {
         //http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
         //Implementation from Graphics Programming Black Book by Michael Abrash
         //Available at http://www.gamedev.net/page/resources/_/technical/graphics-programming-and-theory/graphics-programming-black-book-r1698
         if(p1.getRow() > p2.getRow()) {
-            TerminalPosition temp = p1;
+            Point temp = p1;
             p1 = p2;
             p2 = temp;
         }
@@ -72,7 +72,7 @@ class DefaultShapeRenderer implements ShapeRenderer {
         }
     }
 
-    private void drawLine0(TerminalPosition start, int deltaX, int deltaY, boolean leftToRight, TextCharacter character) {
+    private void drawLine0(Point start, int deltaX, int deltaY, boolean leftToRight, TextCharacter character) {
         int x = start.getColumn();
         int y = start.getRow();
         int deltaYx2 = deltaY * 2;
@@ -92,7 +92,7 @@ class DefaultShapeRenderer implements ShapeRenderer {
         }
     }
 
-    private void drawLine1(TerminalPosition start, int deltaX, int deltaY, boolean leftToRight, TextCharacter character) {
+    private void drawLine1(Point start, int deltaX, int deltaY, boolean leftToRight, TextCharacter character) {
         int x = start.getColumn();
         int y = start.getRow();
         int deltaXx2 = deltaX * 2;
@@ -113,17 +113,17 @@ class DefaultShapeRenderer implements ShapeRenderer {
     }
 
     @Override
-    public void drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public void drawTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         drawLine(p1, p2, character);
         drawLine(p2, p3, character);
         drawLine(p3, p1, character);
     }
 
     @Override
-    public void drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
-        TerminalPosition topRight = topLeft.withRelativeColumn(size.getColumns() - 1);
-        TerminalPosition bottomRight = topRight.withRelativeRow(size.getRows() - 1);
-        TerminalPosition bottomLeft = topLeft.withRelativeRow(size.getRows() - 1);
+    public void drawRectangle(Point topLeft, Dimension size, TextCharacter character) {
+        Point topRight = topLeft.withRelativeColumn(size.getColumns() - 1);
+        Point bottomRight = topRight.withRelativeRow(size.getRows() - 1);
+        Point bottomLeft = topLeft.withRelativeRow(size.getRows() - 1);
         drawLine(topLeft, topRight, character);
         drawLine(topRight, bottomRight, character);
         drawLine(bottomRight, bottomLeft, character);
@@ -131,11 +131,11 @@ class DefaultShapeRenderer implements ShapeRenderer {
     }
 
     @Override
-    public void fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public void fillTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         //I've used the algorithm described here:
         //http://www-users.mat.uni.torun.pl/~wrona/3d_tutor/tri_fillers.html
-        TerminalPosition[] points = new TerminalPosition[]{p1, p2, p3};
-        Arrays.sort(points, Comparator.comparingInt(TerminalPosition::getRow));
+        Point[] points = new Point[]{p1, p2, p3};
+        Arrays.sort(points, Comparator.comparingInt(Point::getRow));
 
         float dx1, dx2, dx3;
         if (points[1].getRow() - points[0].getRow() > 0) {
@@ -162,26 +162,26 @@ class DefaultShapeRenderer implements ShapeRenderer {
         startY =        points[0].getRow();
         if (dx1 > dx2) {
             for (; startY <= points[1].getRow(); startY++, startX += dx2, endX += dx1) {
-                drawLine(new TerminalPosition((int)startX, (int)startY), new TerminalPosition((int)endX, (int)startY), character);
+                drawLine(new Point((int)startX, (int)startY), new Point((int)endX, (int)startY), character);
             }
             endX = points[1].getColumn();
             for (; startY <= points[2].getRow(); startY++, startX += dx2, endX += dx3) {
-                drawLine(new TerminalPosition((int)startX, (int)startY), new TerminalPosition((int)endX, (int)startY), character);
+                drawLine(new Point((int)startX, (int)startY), new Point((int)endX, (int)startY), character);
             }
         } else {
             for (; startY <= points[1].getRow(); startY++, startX += dx1, endX += dx2) {
-                drawLine(new TerminalPosition((int)startX, (int)startY), new TerminalPosition((int)endX, (int)startY), character);
+                drawLine(new Point((int)startX, (int)startY), new Point((int)endX, (int)startY), character);
             }
             startX = points[1].getColumn();
             startY = points[1].getRow();
             for (; startY <= points[2].getRow(); startY++, startX += dx3, endX += dx2) {
-                drawLine(new TerminalPosition((int)startX, (int)startY), new TerminalPosition((int)endX, (int)startY), character);
+                drawLine(new Point((int)startX, (int)startY), new Point((int)endX, (int)startY), character);
             }
         }
     }
 
     @Override
-    public void fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public void fillRectangle(Point topLeft, Dimension size, TextCharacter character) {
         final boolean characterDoubleWidth = character.isDoubleWidth();
         for(int y = 0; y < size.getRows(); y++) {
             for(int x = 0; x < size.getColumns(); x++) {

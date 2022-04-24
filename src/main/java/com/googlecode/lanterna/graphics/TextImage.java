@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.graphics;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
 
 /**
@@ -32,14 +32,14 @@ public interface TextImage extends Scrollable {
      * Returns the dimensions of this TextImage, in columns and rows
      * @return Size of this TextImage
      */
-    TerminalSize getSize();
+    Dimension getSize();
     
     /**
      * Returns the character stored at a particular position in this image
-     * @param position Coordinates of the character
+     * @param point Coordinates of the character
      * @return TextCharacter stored at the specified position
      */
-    TextCharacter getCharacterAt(TerminalPosition position);
+    TextCharacter getCharacterAt(Point point);
     
     /**
      * Returns the character stored at a particular position in this image
@@ -52,10 +52,10 @@ public interface TextImage extends Scrollable {
     /**
      * Sets the character at a specific position in the image to a particular TextCharacter. If the position is outside
      * of the image's size, this method does nothing.
-     * @param position Coordinates of the character
+     * @param point Coordinates of the character
      * @param character What TextCharacter to assign at the specified position
      */
-    void setCharacterAt(TerminalPosition position, TextCharacter character);
+    void setCharacterAt(Point point, TextCharacter character);
             
     /**
      * Sets the character at a specific position in the image to a particular TextCharacter. If the position is outside
@@ -86,7 +86,7 @@ public interface TextImage extends Scrollable {
      * @param filler Filler character to use on the new areas when enlarging the image (is not used when shrinking)
      * @return Copy of this image, but resized
      */
-    TextImage resize(TerminalSize newSize, TextCharacter filler);
+    TextImage resize(Dimension newSize, TextCharacter filler);
     
     
     /**

@@ -19,8 +19,8 @@
 package com.googlecode.lanterna.gui2;
 
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 /**
  * Abstract implementation of {@code Border} interface that has some of the methods filled out. If you want to create
@@ -49,11 +49,11 @@ public abstract class AbstractBorder extends AbstractComposite<Border> implement
         return (BorderRenderer) super.getRenderer();
     }
 
-    private TerminalSize getWrappedComponentSize(TerminalSize borderSize) {
+    private Dimension getWrappedComponentSize(Dimension borderSize) {
         return getRenderer().getWrappedComponentSize(borderSize);
     }
 
-    private TerminalPosition getWrappedComponentTopLeftOffset() {
+    private Point getWrappedComponentTopLeftOffset() {
         return getRenderer().getWrappedComponentTopLeftOffset();
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractBorder extends AbstractComposite<Border> implement
     public Border setComponent(Component component) {
         super.setComponent(component);
         if (component != null) {
-            component.setPosition(TerminalPosition.TOP_LEFT_CORNER);
+            component.setPosition(Point.TOP_LEFT_CORNER);
         }
         return this;
     }
@@ -73,19 +73,19 @@ public abstract class AbstractBorder extends AbstractComposite<Border> implement
     }
 
     @Override
-    public Border setSize(TerminalSize size) {
+    public Border setSize(Dimension size) {
         super.setSize(size);
         getComponent().setSize(getWrappedComponentSize(size));
         return self();
     }
 
     @Override
-    public TerminalPosition toBasePane(TerminalPosition position) {
-        return super.toBasePane(position).withRelative(getWrappedComponentTopLeftOffset());
+    public Point toBasePane(Point point) {
+        return super.toBasePane(point).withRelative(getWrappedComponentTopLeftOffset());
     }
 
     @Override
-    public TerminalPosition toGlobal(TerminalPosition position) {
-        return super.toGlobal(position).withRelative(getWrappedComponentTopLeftOffset());
+    public Point toGlobal(Point point) {
+        return super.toGlobal(point).withRelative(getWrappedComponentTopLeftOffset());
     }
 }

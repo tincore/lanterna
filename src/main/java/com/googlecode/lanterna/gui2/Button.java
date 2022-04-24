@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -71,7 +71,7 @@ public class Button extends AbstractInteractableComponent<Button> {
     }
 
     @Override
-    public synchronized TerminalPosition getCursorLocation() {
+    public synchronized Point getCursorLocation() {
         return getRenderer().getCursorLocation(this);
     }
 
@@ -101,10 +101,10 @@ public class Button extends AbstractInteractableComponent<Button> {
     }
 
     @Override
-    public synchronized Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isActivationStroke(keyStroke)) {
             onClicked();
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         }
         return super.onKeyStroke(keyStroke);
     }
@@ -174,15 +174,15 @@ public class Button extends AbstractInteractableComponent<Button> {
         }
 
         @Override
-        public TerminalPosition getCursorLocation(Button button) {
+        public Point getCursorLocation(Button button) {
             if (button.getThemeDefinition().isCursorVisible()) {
-                return new TerminalPosition(1 + getLabelShift(button, button.getSize()), 0);
+                return new Point(1 + getLabelShift(button, button.getSize()), 0);
             } else {
                 return null;
             }
         }
 
-        private int getLabelShift(Button button, TerminalSize size) {
+        private int getLabelShift(Button button, Dimension size) {
             int availableSpace = size.getColumns() - 2;
             if (availableSpace <= 0) {
                 return 0;
@@ -196,8 +196,8 @@ public class Button extends AbstractInteractableComponent<Button> {
         }
 
         @Override
-        public TerminalSize getPreferredSize(Button button) {
-            return new TerminalSize(Math.max(8, TerminalTextUtils.getColumnWidth(button.getLabel()) + 2), 1);
+        public Dimension getPreferredSize(Button button) {
+            return new Dimension(Math.max(8, TerminalTextUtils.getColumnWidth(button.getLabel()) + 2), 1);
         }
     }
 
@@ -223,13 +223,13 @@ public class Button extends AbstractInteractableComponent<Button> {
         }
 
         @Override
-        public TerminalPosition getCursorLocation(Button component) {
+        public Point getCursorLocation(Button component) {
             return null;
         }
 
         @Override
-        public TerminalSize getPreferredSize(Button component) {
-            return new TerminalSize(TerminalTextUtils.getColumnWidth(component.getLabel()), 1);
+        public Dimension getPreferredSize(Button component) {
+            return new Dimension(TerminalTextUtils.getColumnWidth(component.getLabel()), 1);
         }
     }
 
@@ -238,7 +238,7 @@ public class Button extends AbstractInteractableComponent<Button> {
         public void drawComponent(TextGUIGraphics graphics, Button button) {
             ThemeDefinition themeDefinition = button.getThemeDefinition();
             graphics.applyThemeStyle(themeDefinition.getNormal());
-            TerminalSize size = graphics.getSize();
+            Dimension size = graphics.getSize();
             graphics.drawLine(1, 0, size.getColumns() - 3, 0, Symbols.SINGLE_LINE_HORIZONTAL);
             graphics.drawLine(1, size.getRows() - 2, size.getColumns() - 3, size.getRows() - 2, Symbols.SINGLE_LINE_HORIZONTAL);
             graphics.drawLine(0, 1, 0, size.getRows() - 3, Symbols.SINGLE_LINE_VERTICAL);
@@ -264,13 +264,13 @@ public class Button extends AbstractInteractableComponent<Button> {
         }
 
         @Override
-        public TerminalPosition getCursorLocation(Button component) {
+        public Point getCursorLocation(Button component) {
             return null;
         }
 
         @Override
-        public TerminalSize getPreferredSize(Button component) {
-            return new TerminalSize(TerminalTextUtils.getColumnWidth(component.getLabel()) + 5, 4);
+        public Dimension getPreferredSize(Button component) {
+            return new Dimension(TerminalTextUtils.getColumnWidth(component.getLabel()) + 5, 4);
         }
     }
 }

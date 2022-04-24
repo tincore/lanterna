@@ -18,10 +18,10 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.Theme;
-import com.googlecode.lanterna.gui2.Interactable.Result;
+import com.googlecode.lanterna.gui2.Interactable.KeyStrokeResult;
 import com.googlecode.lanterna.gui2.menu.MenuBar;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -31,16 +31,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * This abstract implementation of {@code BasePane} has the common code shared by all different concrete
- * implementations.
- */
-public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
+public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
 
     protected final ContentHolder contentHolder;
     private final Attributes attributes;
 
-    private final CopyOnWriteArrayList<BasePaneListener<T>> listeners;
+    private final CopyOnWriteArrayList<RootPaneListener<T>> rootPaneListeners;
     protected InteractableLookupMap interactableLookupMap;
     private Interactable focusedInteractable;
     private boolean invalid;
@@ -51,25 +47,25 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
     private Interactable mouseDownForDrag = null;
 
 
-    protected AbstractBasePane(Attributes attributes) {
+    protected AbstractRootPane(Attributes attributes) {
         this.attributes = attributes;
         this.contentHolder = new ContentHolder();
-        this.listeners = new CopyOnWriteArrayList<>();
-        this.interactableLookupMap = new InteractableLookupMap(new TerminalSize(80, 25));
+        this.rootPaneListeners = new CopyOnWriteArrayList<>();
+        this.interactableLookupMap = new InteractableLookupMap(new Dimension(80, 25));
         this.invalid = false;
         this.strictFocusChange = false;
         this.enableDirectionBasedMovements = true;
         this.theme = null;
     }
 
-    protected void addBasePaneListener(BasePaneListener<T> basePaneListener) {
-        listeners.addIfAbsent(basePaneListener);
+    public void addRootPaneListener(RootPaneListener<T> rootPaneListener) {
+        rootPaneListeners.addIfAbsent(rootPaneListener);
     }
 
-    private boolean doHandleInput(KeyStroke key) {
+    private boolean doHandleInput(KeyStroke keyStroke) {
         boolean result = false;
-        if (key.getKeyType() == KeyType.MouseEvent) {
-            return handleMouseInput((MouseAction) key);
+        if (keyStroke.getKeyType() == KeyType.MouseEvent) {
+            return handleMouseInput((MouseAction) keyStroke);
         }
         Interactable.FocusChangeDirection direction = Interactable.FocusChangeDirection.TELEPORT; // Default
         Interactable nextFocus = null;
@@ -78,7 +74,7 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
             // Interactable component we can move focus to.
             MenuBar menuBar = getMenuBar();
             Component baseComponent = getComponent();
-            switch (key.getKeyType()) {
+            switch (keyStroke.getKeyType()) {
                 case Tab:
                 case ArrowRight:
                 case ArrowDown:
@@ -114,15 +110,15 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
                 result = true;
             }
         } else {
-            Interactable.Result handleResult = focusedInteractable.handleInput(key);
+            KeyStrokeResult handleKeyStrokeResult = focusedInteractable.onInput(keyStroke);
             if (!enableDirectionBasedMovements) {
-                if (handleResult == Interactable.Result.MOVE_FOCUS_DOWN || handleResult == Interactable.Result.MOVE_FOCUS_RIGHT) {
-                    handleResult = Interactable.Result.MOVE_FOCUS_NEXT;
-                } else if (handleResult == Interactable.Result.MOVE_FOCUS_UP || handleResult == Interactable.Result.MOVE_FOCUS_LEFT) {
-                    handleResult = Interactable.Result.MOVE_FOCUS_PREVIOUS;
+                if (handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_DOWN || handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_RIGHT) {
+                    handleKeyStrokeResult = Interactable.KeyStrokeResult.MOVE_FOCUS_NEXT;
+                } else if (handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_UP || handleKeyStrokeResult == Interactable.KeyStrokeResult.MOVE_FOCUS_LEFT) {
+                    handleKeyStrokeResult = Interactable.KeyStrokeResult.MOVE_FOCUS_PREVIOUS;
                 }
             }
-            switch (handleResult) {
+            switch (handleKeyStrokeResult) {
                 case HANDLED:
                     result = true;
                     break;
@@ -131,7 +127,7 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
                     //a chance to absorb the event
                     Container parent = focusedInteractable.getParent();
                     while (parent != null) {
-                        if (parent.handleInput(key)) {
+                        if (parent.handleInput(keyStroke)) {
                             return true;
                         }
                         parent = parent.getParent();
@@ -202,8 +198,8 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         invalid = false;
     }
 
-    protected List<BasePaneListener<T>> getBasePaneListeners() {
-        return listeners;
+    protected List<RootPaneListener<T>> getBasePaneListeners() {
+        return rootPaneListeners;
     }
 
     @Override
@@ -212,22 +208,22 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
     }
 
     @Override
-    public TerminalPosition getCursorPosition() {
+    public Point getCursorPosition() {
         if (focusedInteractable == null) {
             return null;
         }
-        TerminalPosition position = focusedInteractable.getCursorLocation();
-        if (position == null) {
+        Point point = focusedInteractable.getCursorLocation();
+        if (point == null) {
             return null;
         }
         //Don't allow the component to set the cursor outside of its own boundaries
-        if (position.getColumn() < 0 ||
-            position.getRow() < 0 ||
-            position.getColumn() >= focusedInteractable.getSize().getColumns() ||
-            position.getRow() >= focusedInteractable.getSize().getRows()) {
+        if (point.getColumn() < 0 ||
+            point.getRow() < 0 ||
+            point.getColumn() >= focusedInteractable.getSize().getColumns() ||
+            point.getRow() >= focusedInteractable.getSize().getRows()) {
             return null;
         }
-        return focusedInteractable.toBasePane(position);
+        return focusedInteractable.toBasePane(point);
     }
 
     @Override
@@ -258,30 +254,24 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
     }
 
     @Override
-    public synchronized void setTheme(Theme theme) {
-        this.theme = theme;
-        invalidate();
-    }
-
-    @Override
-    public boolean handleInput(KeyStroke key) {
+    public boolean handleInput(KeyStroke keyStroke) {
         // Fire events first and decide if the event should be sent to the focused component or not
         AtomicBoolean deliverEvent = new AtomicBoolean(true);
-        for (BasePaneListener<T> listener : listeners) {
-            listener.onInput(self(), key, deliverEvent);
+        for (RootPaneListener<T> listener : rootPaneListeners) {
+            listener.onInput(self(), keyStroke, deliverEvent);
         }
         if (!deliverEvent.get()) {
             return true;
         }
 
         // Now try to deliver the event to the focused component
-        boolean handled = doHandleInput(key);
+        boolean handled = doHandleInput(keyStroke);
 
         // If it wasn't handled, fire the listeners and decide what to report to the TextGUI
         if (!handled) {
             AtomicBoolean hasBeenHandled = new AtomicBoolean(false);
-            for (BasePaneListener<T> listener : listeners) {
-                listener.onUnhandledInput(self(), key, hasBeenHandled);
+            for (RootPaneListener<T> listener : rootPaneListeners) {
+                listener.onUnhandledInput(self(), keyStroke, hasBeenHandled);
             }
             handled = hasBeenHandled.get();
         }
@@ -289,7 +279,7 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
     }
 
     private boolean handleMouseInput(MouseAction mouseAction) {
-        TerminalPosition localCoordinates = fromGlobal(mouseAction.getPosition());
+        Point localCoordinates = fromGlobal(mouseAction.getPosition());
         if (localCoordinates == null) {
             return false;
         }
@@ -302,7 +292,7 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
             mouseDownForDrag = null;
         }
         if (mouseAction.isMouseDrag() && mouseDownForDrag != null) {
-            return mouseDownForDrag.handleInput(mouseAction) == Result.HANDLED;
+            return mouseDownForDrag.onInput(mouseAction) == Interactable.KeyStrokeResult.HANDLED;
         }
         if (interactable == null) {
             return false;
@@ -310,12 +300,12 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         if (mouseAction.isMouseUp()) {
             // MouseUp only handled by same interactable as MouseDown
             if (wasMouseDownForDrag == interactable) {
-                return interactable.handleInput(mouseAction) == Result.HANDLED;
+                return interactable.onInput(mouseAction) == KeyStrokeResult.HANDLED;
             }
             // did not handleInput because mouse up was not on component mouse down was on
             return false;
         }
-        return interactable.handleInput(mouseAction) == Result.HANDLED;
+        return interactable.onInput(mouseAction) == Interactable.KeyStrokeResult.HANDLED;
     }
 
     @Override
@@ -331,8 +321,8 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         return invalid || contentHolder.isInvalid();
     }
 
-    protected void removeBasePaneListener(BasePaneListener<T> basePaneListener) {
-        listeners.remove(basePaneListener);
+    protected void removeBasePaneListener(RootPaneListener<T> rootPaneListener) {
+        rootPaneListeners.remove(rootPaneListener);
     }
 
     abstract T self();
@@ -377,6 +367,13 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         this.strictFocusChange = strictFocusChange;
     }
 
+    @Override
+    public synchronized T setTheme(Theme theme) {
+        this.theme = theme;
+        invalidate();
+        return self();
+    }
+
     private static class EmptyMenuBar extends MenuBar {
         @Override
         public boolean isEmptyMenuBar() {
@@ -412,9 +409,9 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
                 public void drawComponent(TextGUIGraphics graphics, Container component) {
                     if (!(menuBar instanceof EmptyMenuBar)) {
                         int menuBarHeight = menuBar.getPreferredSize().getRows();
-                        TextGUIGraphics menuGraphics = graphics.newTextGraphics(TerminalPosition.TOP_LEFT_CORNER, graphics.getSize().withRows(menuBarHeight));
+                        TextGUIGraphics menuGraphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER, graphics.getSize().withRows(menuBarHeight));
                         menuBar.draw(menuGraphics);
-                        graphics = graphics.newTextGraphics(TerminalPosition.TOP_LEFT_CORNER.withRelativeRow(menuBarHeight), graphics.getSize().withRelativeRows(-menuBarHeight));
+                        graphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER.withRelativeRow(menuBarHeight), graphics.getSize().withRelativeRows(-menuBarHeight));
                     }
 
                     Component subComponent = getComponent();
@@ -425,19 +422,14 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
                 }
 
                 @Override
-                public TerminalSize getPreferredSize(Container component) {
+                public Dimension getPreferredSize(Container component) {
                     Component subComponent = getComponent();
                     if (subComponent == null) {
-                        return TerminalSize.ZERO;
+                        return Dimension.ZERO;
                     }
                     return subComponent.getPreferredSize();
                 }
             };
-        }
-
-        @Override
-        public BasePane getBasePane() {
-            return AbstractBasePane.this;
         }
 
         private MenuBar getMenuBar() {
@@ -461,8 +453,13 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         }
 
         @Override
+        public RootPane getRootPane() {
+            return AbstractRootPane.this;
+        }
+
+        @Override
         public TextGUI getTextGUI() {
-            return AbstractBasePane.this.getTextGUI();
+            return AbstractRootPane.this.getTextGUI();
         }
 
         @Override
@@ -500,13 +497,13 @@ public abstract class AbstractBasePane<T extends BasePane> implements BasePane {
         }
 
         @Override
-        public TerminalPosition toBasePane(TerminalPosition position) {
-            return position;
+        public Point toBasePane(Point point) {
+            return point;
         }
 
         @Override
-        public TerminalPosition toGlobal(TerminalPosition position) {
-            return AbstractBasePane.this.toGlobal(position);
+        public Point toGlobal(Point point) {
+            return AbstractRootPane.this.toGlobal(point);
         }
 
         @Override

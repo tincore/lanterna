@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.terminal.swing.ScrollingAWTTerminal;
 import com.googlecode.lanterna.terminal.swing.TerminalEmulatorColorConfiguration;
 import com.googlecode.lanterna.terminal.swing.TerminalEmulatorDeviceConfiguration;
@@ -133,9 +133,9 @@ public class ScrollingAWTTerminalTest extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonPrint1LineActionPerformed
 
     private void buttonMoveCursorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMoveCursorActionPerformed
-        TerminalSize terminalSize = scrollingAwtTerminal.getTerminalSize();
+        Dimension dimension = scrollingAwtTerminal.getTerminalSize();
         Random random = new Random();
-        scrollingAwtTerminal.setCursorPosition(random.nextInt(terminalSize.getColumns()), random.nextInt(terminalSize.getRows()));
+        scrollingAwtTerminal.setCursorPosition(random.nextInt(dimension.getColumns()), random.nextInt(dimension.getRows()));
         scrollingAwtTerminal.flush();
     }//GEN-LAST:event_buttonMoveCursorActionPerformed
 

@@ -37,7 +37,7 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
     TextGUI getTextGUI();
 
     @Override
-    TextGUIGraphics newTextGraphics(TerminalPosition topLeftCorner, TerminalSize size) throws IllegalArgumentException;
+    TextGUIGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException;
 
     @Override
     TextGUIGraphics applyThemeStyle(ThemeStyle themeStyle);
@@ -67,34 +67,34 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
     TextGUIGraphics fill(char c);
 
     @Override
-    TextGUIGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character);
+    TextGUIGraphics fillRectangle(Point topLeft, Dimension size, char character);
 
     @Override
-    TextGUIGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character);
+    TextGUIGraphics fillRectangle(Point topLeft, Dimension size, TextCharacter character);
 
     @Override
-    TextGUIGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character);
+    TextGUIGraphics drawRectangle(Point topLeft, Dimension size, char character);
 
     @Override
-    TextGUIGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character);
+    TextGUIGraphics drawRectangle(Point topLeft, Dimension size, TextCharacter character);
 
     @Override
-    TextGUIGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character);
+    TextGUIGraphics fillTriangle(Point p1, Point p2, Point p3, char character);
 
     @Override
-    TextGUIGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character);
+    TextGUIGraphics fillTriangle(Point p1, Point p2, Point p3, TextCharacter character);
 
     @Override
-    TextGUIGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character);
+    TextGUIGraphics drawTriangle(Point p1, Point p2, Point p3, char character);
 
     @Override
-    TextGUIGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character);
+    TextGUIGraphics drawTriangle(Point p1, Point p2, Point p3, TextCharacter character);
 
     @Override
-    TextGUIGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, char character);
+    TextGUIGraphics drawLine(Point fromPoint, Point toPoint, char character);
 
     @Override
-    TextGUIGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, TextCharacter character);
+    TextGUIGraphics drawLine(Point fromPoint, Point toPoint, TextCharacter character);
 
     @Override
     TextGUIGraphics drawLine(int fromX, int fromY, int toX, int toY, char character);
@@ -103,16 +103,16 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
     TextGUIGraphics drawLine(int fromX, int fromY, int toX, int toY, TextCharacter character);
 
     @Override
-    TextGUIGraphics drawImage(TerminalPosition topLeft, TextImage image);
+    TextGUIGraphics drawImage(Point topLeft, TextImage image);
 
     @Override
-    TextGUIGraphics drawImage(TerminalPosition topLeft, TextImage image, TerminalPosition sourceImageTopLeft, TerminalSize sourceImageSize);
+    TextGUIGraphics drawImage(Point topLeft, TextImage image, Point sourceImageTopLeft, Dimension sourceImageSize);
 
     @Override
-    TextGUIGraphics setCharacter(TerminalPosition position, char character);
+    TextGUIGraphics setCharacter(Point point, char character);
 
     @Override
-    TextGUIGraphics setCharacter(TerminalPosition position, TextCharacter character);
+    TextGUIGraphics setCharacter(Point point, TextCharacter character);
 
     @Override
     TextGUIGraphics setCharacter(int column, int row, char character);
@@ -124,13 +124,13 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
     TextGUIGraphics putString(int column, int row, String string);
 
     @Override
-    TextGUIGraphics putString(TerminalPosition position, String string);
+    TextGUIGraphics putString(Point point, String string);
 
     @Override
     TextGUIGraphics putString(int column, int row, String string, SGR extraModifier, SGR... optionalExtraModifiers);
 
     @Override
-    TextGUIGraphics putString(TerminalPosition position, String string, SGR extraModifier, SGR... optionalExtraModifiers);
+    TextGUIGraphics putString(Point point, String string, SGR extraModifier, SGR... optionalExtraModifiers);
 
     @Override
     TextGUIGraphics putString(int column, int row, String string, Collection<SGR> extraModifiers);
@@ -139,7 +139,7 @@ public interface TextGUIGraphics extends ThemedTextGraphics, TextGraphics {
     TextGUIGraphics putCSIStyledString(int column, int row, String string);
 
     @Override
-    TextGUIGraphics putCSIStyledString(TerminalPosition position, String string);
+    TextGUIGraphics putCSIStyledString(Point point, String string);
 
     @Override
     TextGUIGraphics setStyleFrom(StyleSet<?> source);

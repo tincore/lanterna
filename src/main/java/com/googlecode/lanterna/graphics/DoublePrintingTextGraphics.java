@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.graphics;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TerminalSize;
 
 /**
  * This TextGraphics implementation wraps another TextGraphics and forwards all operations to it, but with a few
@@ -56,8 +56,8 @@ public class DoublePrintingTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public TerminalSize getSize() {
-        TerminalSize size = underlyingTextGraphics.getSize();
+    public Dimension getSize() {
+        Dimension size = underlyingTextGraphics.getSize();
         return size.withColumns(size.getColumns() / 2);
     }
 }

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.TestTerminalFactory;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class TerminalResizeTest implements TerminalResizeListener {
     }
 
     @Override
-    public void onResized(Terminal terminal, TerminalSize newSize) {
+    public void onResized(Terminal terminal, Dimension newSize) {
         try {
             terminal.setCursorPosition(0, 0);
             String string = newSize.getColumns() + "x" + newSize.getRows() + "                     ";

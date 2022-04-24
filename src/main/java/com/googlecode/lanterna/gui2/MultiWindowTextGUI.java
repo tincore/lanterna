@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTextGUI {
     private final WindowManager windowManager;
-    private final BasePane backgroundPane;
+    private final RootPane backgroundPane;
     private final WindowList windowList;
     private final IdentityHashMap<Window, TextImage> windowRenderBufferCache;
     private final WindowPostRenderer postRenderer;
@@ -52,8 +52,8 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     private boolean eofWhenNoWindows;
     
     private Window titleBarDragWindow;
-    private TerminalPosition originWindowPosition;
-    private TerminalPosition dragStart;
+    private Point originWindowPoint;
+    private Point dragStart;
 
     /**
      * Creates a new {@code MultiWindowTextGUI} that uses the specified {@code Screen} as the backend for all drawing
@@ -176,22 +176,22 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             background = new GUIBackdrop();
         }
         this.windowManager = windowManager;
-        this.backgroundPane = new AbstractBasePane<>(Attributes.EMPTY) {
+        this.backgroundPane = new AbstractRootPane<>(Attributes.EMPTY) {
             @Override
             public TextGUI getTextGUI() {
                 return MultiWindowTextGUI.this;
             }
 
             @Override
-            public TerminalPosition toGlobal(TerminalPosition localPosition) {
-                return localPosition;
+            public Point toGlobal(Point localPoint) {
+                return localPoint;
             }
 
-            public TerminalPosition fromGlobal(TerminalPosition globalPosition) {
-                return globalPosition;
+            public Point fromGlobal(Point globalPoint) {
+                return globalPoint;
             }
 
-            BasePane self() {
+            RootPane self() {
                 return this;
             }
         };
@@ -216,7 +216,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
         if (getScreen() instanceof VirtualScreen) {
             // If the user has passed in a virtual screen, we should calculate the minimum size required and tell it.
             // Previously the constructor always wrapped the screen in a VirtualScreen, but now we need to check.
-            TerminalSize minimumTerminalSize = TerminalSize.ZERO;
+            Dimension minimumDimension = Dimension.ZERO;
             for (Window window : getWindows()) {
                 if (window.isVisible()) {
                     if (window.isHint(Hint.FULL_SCREEN) ||
@@ -225,15 +225,15 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
                         //Don't take full screen windows or auto-sized windows into account
                         continue;
                     }
-                    TerminalPosition lastPosition = window.getPosition();
-                    minimumTerminalSize = minimumTerminalSize.max(
+                    Point lastPoint = window.getPosition();
+                    minimumDimension = minimumDimension.max(
                             //Add position to size to get the bottom-right corner of the window
                             window.getDecoratedSize().withRelative(
-                                    Math.max(lastPosition.getColumn(), 0),
-                                    Math.max(lastPosition.getRow(), 0)));
+                                    Math.max(lastPoint.getColumn(), 0),
+                                    Math.max(lastPoint.getRow(), 0)));
                 }
             }
-            ((VirtualScreen) getScreen()).setMinimumSize(minimumTerminalSize);
+            ((VirtualScreen) getScreen()).setMinimumSize(minimumDimension);
         }
         super.updateScreen();
     }
@@ -267,7 +267,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
                 }
                 TextGUIGraphics windowGraphics = new DefaultTextGUIGraphics(this, textImage.newTextGraphics());
                 TextGUIGraphics insideWindowDecorationsGraphics = windowGraphics;
-                TerminalPosition contentOffset = TerminalPosition.TOP_LEFT_CORNER;
+                Point contentOffset = Point.TOP_LEFT_CORNER;
                 if (!window.isHint(Hint.NO_DECORATIONS)) {
                     WindowDecorationRenderer decorationRenderer = windowManager.getWindowDecorationRenderer(window);
                     insideWindowDecorationsGraphics = decorationRenderer.draw(this, windowGraphics, window);
@@ -305,7 +305,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public synchronized TerminalPosition getCursorPosition() {
+    public synchronized Point getCursorPosition() {
         Window activeWindow = getActiveWindow();
         if(activeWindow != null) {
             return activeWindow.toGlobal(activeWindow.getCursorPosition());
@@ -416,11 +416,11 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
             }
             
             WindowDecorationRenderer decorator = windowManager.getWindowDecorationRenderer(window);
-            TerminalRectangle titleBarRectangle = decorator.getTitleBarRectangle(window);
-            TerminalPosition local = window.fromGlobalToDecoratedRelative(mouse.getPosition());
+            Rectangle titleBarRectangle = decorator.getTitleBarRectangle(window);
+            Point local = window.fromGlobalToDecoratedRelative(mouse.getPosition());
             titleBarRectangle.whenContains(local, () -> {
                 titleBarDragWindow = window;
-                originWindowPosition = titleBarDragWindow.getPosition();
+                originWindowPoint = titleBarDragWindow.getPosition();
                 dragStart = mouse.getPosition();
             });
         }
@@ -435,12 +435,12 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
         }
         MouseAction mouse = (MouseAction)keyStroke;
         if(mouse.isMouseDrag()) {
-            TerminalPosition mp = mouse.getPosition();
-            TerminalPosition wp = originWindowPosition;
+            Point mp = mouse.getPosition();
+            Point wp = originWindowPoint;
             int dx = mp.getColumn() - dragStart.getColumn();
             int dy = mp.getRow() - dragStart.getRow();
             titleBarDragWindow.setDraggable();
-            titleBarDragWindow.setPosition(new TerminalPosition(wp.getColumn() + dx, wp.getRow() + dy));
+            titleBarDragWindow.setPosition(new Point(wp.getColumn() + dx, wp.getRow() + dy));
             // TODO ? any additional children popups (shown menus, etc) should also be moved (or just closed)
         }
         
@@ -456,7 +456,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     public synchronized WindowBasedTextGUI addWindow(Window window) {
         //To protect against NPE if the user forgot to set a content component
         if(window.getComponent() == null) {
-            window.setComponent(new EmptySpace(TerminalSize.ONE));
+            window.setComponent(new EmptySpace(Dimension.ONE));
         }
 
         if(window.getTextGUI() != null) {
@@ -534,7 +534,7 @@ public class MultiWindowTextGUI extends AbstractTextGUI implements WindowBasedTe
     }
 
     @Override
-    public BasePane getBackgroundPane() {
+    public RootPane getBackgroundPane() {
         return backgroundPane;
     }
 

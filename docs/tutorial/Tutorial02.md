@@ -48,7 +48,7 @@ further modified.
             textGraphics.setBackgroundColor(TextColor.ANSI.BLACK);
 
 `putString(..)` exists in a couple of different flavors but it generally works by taking a string and
-outputting it somewhere in terminal window. Notice that it doesn't take the current position of the text
+outputting it somewhere in terminal window. Notice that it doesn't take the current point of the text
 cursor when doing this.
 
             textGraphics.putString(2, 1, "Lanterna Tutorial 2 - Press ESC to exit", SGR.BOLD);

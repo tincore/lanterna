@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 
 import java.util.List;
@@ -30,12 +30,12 @@ import java.util.List;
  */
 public class ActionListDialog extends DialogWindow {
 
-    public ActionListDialog(String title, String description, TerminalSize actionListPreferredSize,
+    public ActionListDialog(String title, String description, Dimension actionListPreferredSize,
                             boolean cancellable, final boolean onSelectionClose, ActionListBox.Item... items) {
         this(title, description, actionListPreferredSize, cancellable, onSelectionClose, List.of(items));
     }
 
-    public ActionListDialog(String title, String description, TerminalSize actionListPreferredSize,
+    public ActionListDialog(String title, String description, Dimension actionListPreferredSize,
                             boolean cancellable, final boolean onSelectionClose, List<ActionListBox.Item> items) {
 
         super(title);
@@ -48,7 +48,7 @@ public class ActionListDialog extends DialogWindow {
         if (description != null) {
             mainPanel
                 .add(new Label(description))
-                .add(new EmptySpace(TerminalSize.ONE));
+                .add(new EmptySpace(Dimension.ONE));
         }
 
         ActionListBox listBox = new ActionListBox(actionListPreferredSize);
@@ -70,7 +70,7 @@ public class ActionListDialog extends DialogWindow {
                 true,
                 false))
             .addTo(mainPanel);
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
 
         if (cancellable) {
             Panel buttonPanel = new Panel();

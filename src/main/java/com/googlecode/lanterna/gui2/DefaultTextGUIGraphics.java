@@ -25,7 +25,7 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics newTextGraphics(TerminalPosition topLeftCorner, TerminalSize size) throws IllegalArgumentException {
+    public DefaultTextGUIGraphics newTextGraphics(Point topLeftCorner, Dimension size) throws IllegalArgumentException {
         return new DefaultTextGUIGraphics(textGUI, backend.newTextGraphics(topLeftCorner, size));
     }
 
@@ -38,7 +38,7 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return backend.getSize();
     }
 
@@ -111,61 +111,61 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public DefaultTextGUIGraphics fillRectangle(Point topLeft, Dimension size, char character) {
         backend.fillRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public DefaultTextGUIGraphics fillRectangle(Point topLeft, Dimension size, TextCharacter character) {
         backend.fillRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public DefaultTextGUIGraphics drawRectangle(Point topLeft, Dimension size, char character) {
         backend.drawRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, TextCharacter character) {
+    public DefaultTextGUIGraphics drawRectangle(Point topLeft, Dimension size, TextCharacter character) {
         backend.drawRectangle(topLeft, size, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public DefaultTextGUIGraphics fillTriangle(Point p1, Point p2, Point p3, char character) {
         backend.fillTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public DefaultTextGUIGraphics fillTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         backend.fillTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public DefaultTextGUIGraphics drawTriangle(Point p1, Point p2, Point p3, char character) {
         backend.drawTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, TextCharacter character) {
+    public DefaultTextGUIGraphics drawTriangle(Point p1, Point p2, Point p3, TextCharacter character) {
         backend.drawTriangle(p1, p2, p3, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, char character) {
+    public DefaultTextGUIGraphics drawLine(Point fromPoint, Point toPoint, char character) {
         backend.drawLine(fromPoint, toPoint, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, TextCharacter character) {
+    public DefaultTextGUIGraphics drawLine(Point fromPoint, Point toPoint, TextCharacter character) {
         backend.drawLine(fromPoint, toPoint, character);
         return this;
     }
@@ -183,26 +183,26 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics drawImage(TerminalPosition topLeft, TextImage image) {
+    public DefaultTextGUIGraphics drawImage(Point topLeft, TextImage image) {
         backend.drawImage(topLeft, image);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics drawImage(TerminalPosition topLeft, TextImage image, TerminalPosition sourceImageTopLeft, TerminalSize sourceImageSize) {
+    public DefaultTextGUIGraphics drawImage(Point topLeft, TextImage image, Point sourceImageTopLeft, Dimension sourceImageSize) {
         backend.drawImage(topLeft, image, sourceImageTopLeft, sourceImageSize);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics setCharacter(TerminalPosition position, char character) {
-        backend.setCharacter(position, character);
+    public DefaultTextGUIGraphics setCharacter(Point point, char character) {
+        backend.setCharacter(point, character);
         return this;
     }
 
     @Override
-    public DefaultTextGUIGraphics setCharacter(TerminalPosition position, TextCharacter character) {
-        backend.setCharacter(position, character);
+    public DefaultTextGUIGraphics setCharacter(Point point, TextCharacter character) {
+        backend.setCharacter(point, character);
         return this;
     }
 
@@ -225,8 +225,8 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics putString(TerminalPosition position, String string) {
-        backend.putString(position, string);
+    public DefaultTextGUIGraphics putString(Point point, String string) {
+        backend.putString(point, string);
         return this;
     }
 
@@ -237,8 +237,8 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics putString(TerminalPosition position, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
-        backend.putString(position, string, extraModifier, optionalExtraModifiers);
+    public DefaultTextGUIGraphics putString(Point point, String string, SGR extraModifier, SGR... optionalExtraModifiers) {
+        backend.putString(point, string, extraModifier, optionalExtraModifiers);
         return this;
     }
 
@@ -255,8 +255,8 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public DefaultTextGUIGraphics putCSIStyledString(TerminalPosition position, String string) {
-        backend.putCSIStyledString(position, string);
+    public DefaultTextGUIGraphics putCSIStyledString(Point point, String string) {
+        backend.putCSIStyledString(point, string);
         return this;
     }
 
@@ -266,8 +266,8 @@ public class DefaultTextGUIGraphics implements TextGUIGraphics {
     }
 
     @Override
-    public TextCharacter getCharacter(TerminalPosition position) {
-        return backend.getCharacter(position);
+    public TextCharacter getCharacter(Point point) {
+        return backend.getCharacter(point);
     }
 
     @Override

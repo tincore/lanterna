@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
 /**
@@ -88,8 +88,8 @@ public class Separator extends AbstractComponent<Separator> {
         }
 
         @Override
-        public TerminalSize getPreferredSize(Separator component) {
-            return TerminalSize.ONE;
+        public Dimension getPreferredSize(Separator component) {
+            return Dimension.ONE;
         }
     }
 }

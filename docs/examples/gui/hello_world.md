@@ -6,7 +6,7 @@ There is little to no interactivity in this example, however, it should be a goo
 how easy it is to build up interfaces. If you're familiar with Java Swing, you'll feel right at home with Lanterna.
 
 ```
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;

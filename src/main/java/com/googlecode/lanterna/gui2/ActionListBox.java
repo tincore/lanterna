@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.input.MouseAction;
@@ -55,11 +55,11 @@ public class ActionListBox extends AbstractListBox<ActionListBox.Item, ActionLis
      *
      * @param preferredSize Preferred size of this {@link ActionListBox}
      */
-    public ActionListBox(TerminalSize preferredSize) {
+    public ActionListBox(Dimension preferredSize) {
         this(preferredSize, Attributes.EMPTY);
     }
 
-    public ActionListBox(TerminalSize preferredSize, Attributes attributes) {
+    public ActionListBox(Dimension preferredSize, Attributes attributes) {
         super(preferredSize, new ActionListBoxItemRenderer(), attributes);
     }
 
@@ -75,7 +75,7 @@ public class ActionListBox extends AbstractListBox<ActionListBox.Item, ActionLis
     }
 
     @Override
-    public TerminalPosition getCursorLocation() {
+    public Point getCursorLocation() {
         return null;
     }
 
@@ -84,10 +84,10 @@ public class ActionListBox extends AbstractListBox<ActionListBox.Item, ActionLis
     }
 
     @Override
-    public Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isKeyboardActivationStroke(keyStroke)) {
             onItemSelected();
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         } else if (keyStroke.getKeyType() == KeyType.MouseEvent) {
             MouseAction mouseAction = (MouseAction) keyStroke;
             MouseActionType actionType = mouseAction.getActionType();
@@ -104,11 +104,11 @@ public class ActionListBox extends AbstractListBox<ActionListBox.Item, ActionLis
             int newIndex = getIndexByMouseAction(mouseAction);
             if (existingIndex != newIndex || !isFocused() || actionType == MouseActionType.CLICK_DOWN) {
                 // the index has changed, or the focus needs to be obtained, or the user is clicking on the current selection to perform the action again
-                Result result = super.onKeyStroke(keyStroke);
+                KeyStrokeResult keyStrokeResult = super.onKeyStroke(keyStroke);
                 onItemSelected();
-                return result;
+                return keyStrokeResult;
             }
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         } else {
             return super.onKeyStroke(keyStroke);
         }

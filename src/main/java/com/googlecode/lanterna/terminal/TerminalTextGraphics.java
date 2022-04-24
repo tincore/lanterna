@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.terminal;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.graphics.AbstractTextGraphics;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -43,50 +43,50 @@ import java.util.concurrent.atomic.AtomicInteger;
 class TerminalTextGraphics extends AbstractTextGraphics {
 
     private final Terminal terminal;
-    private final TerminalSize terminalSize;
+    private final Dimension dimension;
 
-    private final Map<TerminalPosition, TextCharacter> writeHistory;
+    private final Map<Point, TextCharacter> writeHistory;
 
     private AtomicInteger manageCallStackSize;
     private TextCharacter lastCharacter;
-    private TerminalPosition lastPosition;
+    private Point lastPoint;
 
     TerminalTextGraphics(Terminal terminal) throws IOException {
         this.terminal = terminal;
-        this.terminalSize = terminal.getTerminalSize();
+        this.dimension = terminal.getTerminalSize();
         this.manageCallStackSize = new AtomicInteger(0);
         this.writeHistory = new HashMap<>();
         this.lastCharacter = null;
-        this.lastPosition = null;
+        this.lastPoint = null;
     }
 
     @Override
     public TextGraphics setCharacter(int columnIndex, int rowIndex, TextCharacter textCharacter) {
-        return setCharacter(new TerminalPosition(columnIndex, rowIndex), textCharacter);
+        return setCharacter(new Point(columnIndex, rowIndex), textCharacter);
     }
 
     @Override
-    public synchronized TextGraphics setCharacter(TerminalPosition position, TextCharacter textCharacter) {
+    public synchronized TextGraphics setCharacter(Point point, TextCharacter textCharacter) {
         try {
             if(manageCallStackSize.get() > 0) {
                 if(lastCharacter == null || !lastCharacter.equals(textCharacter)) {
                     applyGraphicState(textCharacter);
                     lastCharacter = textCharacter;
                 }
-                if(lastPosition == null || !lastPosition.equals(position)) {
-                    terminal.setCursorPosition(position.getColumn(), position.getRow());
-                    lastPosition = position;
+                if(lastPoint == null || !lastPoint.equals(point)) {
+                    terminal.setCursorPosition(point.getColumn(), point.getRow());
+                    lastPoint = point;
                 }
             }
             else {
-                terminal.setCursorPosition(position.getColumn(), position.getRow());
+                terminal.setCursorPosition(point.getColumn(), point.getRow());
                 applyGraphicState(textCharacter);
             }
             terminal.putString(textCharacter.getCharacterString());
             if(manageCallStackSize.get() > 0) {
-                lastPosition = position.withRelativeColumn(1);
+                lastPoint = point.withRelativeColumn(1);
             }
-            writeHistory.put(position, textCharacter);
+            writeHistory.put(point, textCharacter);
         }
         catch(IOException e) {
             throw new RuntimeException(e);
@@ -96,12 +96,12 @@ class TerminalTextGraphics extends AbstractTextGraphics {
 
     @Override
     public TextCharacter getCharacter(int column, int row) {
-        return getCharacter(new TerminalPosition(column, row));
+        return getCharacter(new Point(column, row));
     }
 
     @Override
-    public synchronized TextCharacter getCharacter(TerminalPosition position) {
-        return writeHistory.get(position);
+    public synchronized TextCharacter getCharacter(Point point) {
+        return writeHistory.get(point);
     }
 
     private void applyGraphicState(TextCharacter textCharacter) throws IOException {
@@ -114,12 +114,12 @@ class TerminalTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public TerminalSize getSize() {
-        return terminalSize;
+    public Dimension getSize() {
+        return dimension;
     }
 
     @Override
-    public synchronized TextGraphics drawLine(TerminalPosition fromPoint, TerminalPosition toPoint, char character) {
+    public synchronized TextGraphics drawLine(Point fromPoint, Point toPoint, char character) {
         try {
             enterAtomic();
             super.drawLine(fromPoint, toPoint, character);
@@ -131,7 +131,7 @@ class TerminalTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public synchronized TextGraphics drawTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public synchronized TextGraphics drawTriangle(Point p1, Point p2, Point p3, char character) {
         try {
             enterAtomic();
             super.drawTriangle(p1, p2, p3, character);
@@ -143,7 +143,7 @@ class TerminalTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public synchronized TextGraphics fillTriangle(TerminalPosition p1, TerminalPosition p2, TerminalPosition p3, char character) {
+    public synchronized TextGraphics fillTriangle(Point p1, Point p2, Point p3, char character) {
         try {
             enterAtomic();
             super.fillTriangle(p1, p2, p3, character);
@@ -155,7 +155,7 @@ class TerminalTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public synchronized TextGraphics fillRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public synchronized TextGraphics fillRectangle(Point topLeft, Dimension size, char character) {
         try {
             enterAtomic();
             super.fillRectangle(topLeft, size, character);
@@ -167,7 +167,7 @@ class TerminalTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public synchronized TextGraphics drawRectangle(TerminalPosition topLeft, TerminalSize size, char character) {
+    public synchronized TextGraphics drawRectangle(Point topLeft, Dimension size, char character) {
         try {
             enterAtomic();
             super.drawRectangle(topLeft, size, character);
@@ -206,7 +206,7 @@ class TerminalTextGraphics extends AbstractTextGraphics {
 
     private void leaveAtomic() {
         if(manageCallStackSize.decrementAndGet() == 0) {
-            lastPosition = null;
+            lastPoint = null;
             lastCharacter = null;
         }
     }

@@ -1,7 +1,7 @@
 package com.googlecode.lanterna.tutorial;
 
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
@@ -89,8 +89,8 @@ public class Tutorial01 {
             terminal bounds are usually rounded to the first/last column/row. If you run into this, please clear the
             terminal content so the cursor is at the top again before running this code.
              */
-            TerminalPosition startPosition = terminal.getCursorPosition();
-            terminal.setCursorPosition(startPosition.withRelativeColumn(3).withRelativeRow(2));
+            Point startPoint = terminal.getCursorPosition();
+            terminal.setCursorPosition(startPoint.withRelativeColumn(3).withRelativeRow(2));
             terminal.flush();
             Thread.sleep(2000);
 
@@ -131,7 +131,7 @@ public class Tutorial01 {
             TerminalPosition class is immutable and calling the with* methods will return a copy. So the following
             setCursorPosition(..) call will put us exactly one row below the previous row.
              */
-            terminal.setCursorPosition(startPosition.withRelativeColumn(3).withRelativeRow(3));
+            terminal.setCursorPosition(startPoint.withRelativeColumn(3).withRelativeRow(3));
             terminal.flush();
             Thread.sleep(2000);
             terminal.enableSGR(SGR.BOLD);

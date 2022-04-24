@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -40,7 +40,7 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
 
     private final List<V> items = new ArrayList<>();
     private final ListItemRenderer<V, T> listItemRenderer;
-    protected TerminalPosition scrollOffset = new TerminalPosition(0, 0);
+    protected Point scrollOffset = new Point(0, 0);
     private int selectedIndex = -1;
 
     /**
@@ -53,7 +53,7 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
      *                         or if set to {@code null} will ask to be big enough to display all items.
      * @param listItemRenderer
      */
-    protected AbstractListBox(TerminalSize size, ListItemRenderer<V, T> listItemRenderer, Attributes attributes) {
+    protected AbstractListBox(Dimension size, ListItemRenderer<V, T> listItemRenderer, Attributes attributes) {
         super(attributes);
         setPreferredSize(size);
         this.listItemRenderer = listItemRenderer;
@@ -96,8 +96,8 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
     }
 
     /**
-     * By converting {@link TerminalPosition}s to
-     * {@link #toGlobal(TerminalPosition)} gets index clicked on by mouse action.
+     * By converting {@link Point}s to
+     * {@link #toGlobal(Point)} gets index clicked on by mouse action.
      *
      * @return index of a item that was clicked on with {@link MouseAction}
      */
@@ -185,87 +185,87 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
     }
 
     @Override
-    public synchronized Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         try {
             switch (keyStroke.getKeyType()) {
                 case Tab:
-                    return Result.MOVE_FOCUS_NEXT;
+                    return KeyStrokeResult.MOVE_FOCUS_NEXT;
 
                 case ReverseTab:
-                    return Result.MOVE_FOCUS_PREVIOUS;
+                    return KeyStrokeResult.MOVE_FOCUS_PREVIOUS;
 
                 case ArrowRight:
-                    return Result.MOVE_FOCUS_RIGHT;
+                    return KeyStrokeResult.MOVE_FOCUS_RIGHT;
 
                 case ArrowLeft:
-                    return Result.MOVE_FOCUS_LEFT;
+                    return KeyStrokeResult.MOVE_FOCUS_LEFT;
 
                 case ArrowDown:
                     if (items.isEmpty() || selectedIndex == items.size() - 1) {
-                        return Result.MOVE_FOCUS_DOWN;
+                        return KeyStrokeResult.MOVE_FOCUS_DOWN;
                     }
                     selectedIndex++;
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case ArrowUp:
                     if (items.isEmpty() || selectedIndex == 0) {
-                        return Result.MOVE_FOCUS_UP;
+                        return KeyStrokeResult.MOVE_FOCUS_UP;
                     }
                     selectedIndex--;
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case Home:
                     selectedIndex = 0;
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case End:
                     selectedIndex = items.size() - 1;
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case PageUp:
                     if (getSize() != null) {
                         setSelectedIndex(getSelectedIndex() - getSize().getRows());
                     }
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case PageDown:
                     if (getSize() != null) {
                         setSelectedIndex(getSelectedIndex() + getSize().getRows());
                     }
-                    return Result.HANDLED;
+                    return KeyStrokeResult.HANDLED;
 
                 case Character:
                     if (selectByCharacter(keyStroke.getCharacter())) {
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     }
-                    return Result.UNHANDLED;
+                    return KeyStrokeResult.UNHANDLED;
                 case MouseEvent:
                     MouseAction mouseAction = (MouseAction) keyStroke;
                     MouseActionType actionType = mouseAction.getActionType();
                     if (isMouseMove(keyStroke)) {
-                        takeFocus();
+                        grabFocus();
                         selectedIndex = getIndexByMouseAction(mouseAction);
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     }
 
                     if (actionType == MouseActionType.CLICK_RELEASE) {
                         // do nothing, desired actioning has been performed already on CLICK_DOWN and DRAG
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     } else if (actionType == MouseActionType.SCROLL_UP) {
                         // relying on setSelectedIndex(index) to clip the index to valid values within range
                         setSelectedIndex(getSelectedIndex() - 1);
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     } else if (actionType == MouseActionType.SCROLL_DOWN) {
                         // relying on setSelectedIndex(index) to clip the index to valid values within range
                         setSelectedIndex(getSelectedIndex() + 1);
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     }
 
                     selectedIndex = getIndexByMouseAction(mouseAction);
                     return super.onKeyStroke(keyStroke);
                 default:
             }
-            return Result.UNHANDLED;
+            return KeyStrokeResult.UNHANDLED;
         } finally {
             invalidate();
         }
@@ -398,18 +398,18 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
                 scrollTopIndex = items.size() - componentHeight;
             }
 
-            listBox.scrollOffset = new TerminalPosition(0, -scrollTopIndex);
+            listBox.scrollOffset = new Point(0, -scrollTopIndex);
 
             graphics.applyThemeStyle(themeDefinition.getNormal());
             graphics.fill(' ');
 
-            TerminalSize itemSize = graphics.getSize().withRows(1);
+            Dimension itemSize = graphics.getSize().withRows(1);
             for (int i = scrollTopIndex; i < items.size(); i++) {
                 if (i - scrollTopIndex >= componentHeight) {
                     break;
                 }
                 listItemRenderer.drawItem(
-                    graphics.newTextGraphics(new TerminalPosition(0, i - scrollTopIndex), itemSize),
+                    graphics.newTextGraphics(new Point(0, i - scrollTopIndex), itemSize),
                     listBox,
                     i,
                     items.get(i),
@@ -424,13 +424,13 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
                 verticalScrollBar.setScrollMaximum(items.size());
                 verticalScrollBar.setScrollPosition(scrollTopIndex);
                 verticalScrollBar.draw(graphics.newTextGraphics(
-                    new TerminalPosition(graphics.getSize().getColumns() - 1, 0),
-                    new TerminalSize(1, graphics.getSize().getRows())));
+                    new Point(graphics.getSize().getColumns() - 1, 0),
+                    new Dimension(1, graphics.getSize().getRows())));
             }
         }
 
         @Override
-        public TerminalPosition getCursorLocation(T listBox) {
+        public Point getCursorLocation(T listBox) {
             if (!listBox.getThemeDefinition().isCursorVisible()) {
                 return null;
             }
@@ -439,11 +439,11 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
             if (columnAccordingToRenderer == -1) {
                 return null;
             }
-            return new TerminalPosition(columnAccordingToRenderer, selectedIndex - scrollTopIndex);
+            return new Point(columnAccordingToRenderer, selectedIndex - scrollTopIndex);
         }
 
         @Override
-        public TerminalSize getPreferredSize(T listBox) {
+        public Dimension getPreferredSize(T listBox) {
             int maxWidth = 5;   //Set it to something...
             int index = 0;
             for (V item : listBox.getItems()) {
@@ -453,7 +453,7 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
                     maxWidth = stringLengthInColumns;
                 }
             }
-            return new TerminalSize(maxWidth + 1, listBox.getItemCount());
+            return new Dimension(maxWidth + 1, listBox.getItemCount());
         }
     }
 

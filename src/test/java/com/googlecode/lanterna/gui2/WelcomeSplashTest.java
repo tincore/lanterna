@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogBuilder;
 
@@ -30,7 +30,7 @@ import java.util.EnumSet;
 /**
  * Created to supply us with a screenshot for the Github page
  */
-public class WelcomeSplashTest extends TestBase {
+public class WelcomeSplashTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new WelcomeSplashTest().run(args);
     }
@@ -42,8 +42,8 @@ public class WelcomeSplashTest extends TestBase {
             protected ComponentRenderer<EmptySpace> createDefaultRenderer() {
                 return new ComponentRenderer<EmptySpace>() {
                     @Override
-                    public TerminalSize getPreferredSize(EmptySpace component) {
-                        return TerminalSize.ONE;
+                    public Dimension getPreferredSize(EmptySpace component) {
+                        return Dimension.ONE;
                     }
 
                     @Override

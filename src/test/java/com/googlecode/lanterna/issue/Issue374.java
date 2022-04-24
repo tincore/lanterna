@@ -42,7 +42,7 @@ public class Issue374 {
 
         mainPanel.add(new Button("Button"));
 
-        first.takeFocus();
+        first.grabFocus();
         gui.addWindowAndWait(window);
     }
 

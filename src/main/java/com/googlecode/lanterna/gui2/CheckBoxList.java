@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.graphics.ThemeStyle;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -62,11 +62,11 @@ public class CheckBoxList<V> extends AbstractListBox<V, CheckBoxList<V>> {
      *
      * @param preferredSize Size the list box should request, no matter how many items it contains
      */
-    public CheckBoxList(TerminalSize preferredSize) {
+    public CheckBoxList(Dimension preferredSize) {
         this(preferredSize, Attributes.EMPTY);
     }
 
-    public CheckBoxList(TerminalSize preferredSize, Attributes attributes) {
+    public CheckBoxList(Dimension preferredSize, Attributes attributes) {
         super(preferredSize, new CheckBoxListItemRenderer<>(), attributes);
     }
 
@@ -129,10 +129,10 @@ public class CheckBoxList<V> extends AbstractListBox<V, CheckBoxList<V>> {
     }
 
     @Override
-    public synchronized Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isKeyboardActivationStroke(keyStroke)) {
             toggleChecked(getSelectedIndex());
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         } else if (keyStroke.getKeyType() == KeyType.MouseEvent) {
             MouseAction mouseAction = (MouseAction) keyStroke;
             MouseActionType actionType = mouseAction.getActionType();
@@ -144,7 +144,7 @@ public class CheckBoxList<V> extends AbstractListBox<V, CheckBoxList<V>> {
                 return super.onKeyStroke(keyStroke);
             }
 
-            Result result = super.onKeyStroke(keyStroke);
+            KeyStrokeResult keyStrokeResult = super.onKeyStroke(keyStroke);
             int newIndex = getIndexByMouseAction(mouseAction);
             if (actionType == MouseActionType.CLICK_DOWN) {
                 stateForMouseDragged = !isChecked(newIndex);
@@ -161,7 +161,7 @@ public class CheckBoxList<V> extends AbstractListBox<V, CheckBoxList<V>> {
                     setChecked(i, stateForMouseDragged);
                 }
             }
-            return result;
+            return keyStrokeResult;
         }
 
         return super.onKeyStroke(keyStroke);

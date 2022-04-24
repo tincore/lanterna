@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Point;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.googlecode.lanterna.gui2.Panels.vertical;
+import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
 
 public class GUIOverTelnet {
     private static final List<TextBox> ALL_TEXTBOXES = new ArrayList<>();
@@ -68,18 +69,17 @@ public class GUIOverTelnet {
         textGUI.setEOFWhenNoWindows(true);
         try {
             final BasicWindow window = new BasicWindow("Text GUI over Telnet");
-            Panel contentArea = new Panel(new LinearLayout(Direction.VERTICAL))
+            Panel contentArea = Panels.vertical()
                 .add(new Button("Button", s2 -> {
-                    final BasicWindow messageBox = new BasicWindow("Response");
-                    messageBox.setComponent(vertical(
-                        new Label("Hello!"),
-                        new Button("Close", s -> messageBox.close())));
-                    textGUI.addWindow(messageBox);
+                    textGUI.addWindow(new BasicWindow("Response")
+                        .setComponent(vertical(
+                            new Label("Hello!"),
+                            createButtonCloseContainer())));
                 }).withBorder(Borders.singleLine("This is a button")));
 
-            final TextBox textBox = new TextBox(new TerminalSize(20, 4)) {
+            final TextBox textBox = new TextBox(new Dimension(40, 4)) {
                 @Override
-                public Result onKeyStroke(KeyStroke keyStroke) {
+                public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
                     try {
                         return super.onKeyStroke(keyStroke);
                     } finally {
@@ -106,19 +106,19 @@ public class GUIOverTelnet {
                             }
 
                             @Override
-                            public TerminalPosition getCursorLocation(Component component) {
-                                return TerminalPosition.TOP_LEFT_CORNER;
+                            public Point getCursorLocation(Component component) {
+                                return Point.TOP_LEFT_CORNER;
                             }
 
                             @Override
-                            public TerminalSize getPreferredSize(Component component) {
-                                return new TerminalSize(30, 1);
+                            public Dimension getPreferredSize(Component component) {
+                                return new Dimension(30, 1);
                             }
                         };
                     }
 
                     @Override
-                    public Result onKeyStroke(KeyStroke keyStroke) {
+                    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
                         if (keyStroke.getKeyType() == KeyType.Tab ||
                             keyStroke.getKeyType() == KeyType.ReverseTab) {
                             return super.onKeyStroke(keyStroke);
@@ -130,11 +130,11 @@ public class GUIOverTelnet {
                             text = "Key: " + keyStroke.getKeyType() + (keyStroke.isCtrlDown() ? " (ctrl)" : "") +
                                 (keyStroke.isAltDown() ? " (alt)" : "");
                         }
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     }
                 }.withBorder(Borders.singleLine("Custom component")));
 
-            contentArea.add(new Button("Close", s -> window.close()));
+            contentArea.add(createButtonCloseContainer());
             window.setComponent(contentArea);
 
             textGUI.addWindowAndWait(window);

@@ -19,15 +19,11 @@
 
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFrame;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class Terminal4bitColorTest {
     public static void main(String[] args) throws IOException {

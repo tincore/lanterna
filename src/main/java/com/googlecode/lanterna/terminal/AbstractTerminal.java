@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.List;
 public abstract class AbstractTerminal implements Terminal {
 
     private final List<TerminalResizeListener> resizeListeners;
-    private TerminalSize lastKnownSize;
+    private Dimension lastKnownSize;
 
     protected AbstractTerminal() {
         this.resizeListeners = new ArrayList<>();
@@ -63,7 +63,7 @@ public abstract class AbstractTerminal implements Terminal {
      * @param rows Number of rows in the new size
      */
     protected synchronized void onResized(int columns, int rows) {
-        onResized(new TerminalSize(columns, rows));
+        onResized(new Dimension(columns, rows));
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbstractTerminal implements Terminal {
      *
      * @param newSize Last discovered terminal size
      */
-    protected synchronized void onResized(TerminalSize newSize) {
+    protected synchronized void onResized(Dimension newSize) {
         if (lastKnownSize == null || !lastKnownSize.equals(newSize)) {
             lastKnownSize = newSize;
             for (TerminalResizeListener resizeListener : resizeListeners) {

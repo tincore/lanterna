@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.graphics.ThemeStyle;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -60,11 +60,11 @@ public class RadioBoxList<V> extends AbstractListBox<V, RadioBoxList<V>> {
      * @param preferredSize Size of the {@code RadioBoxList} or {@code null} to have it try to be as big as necessary to
      *                      be able to draw all items
      */
-    public RadioBoxList(TerminalSize preferredSize) {
+    public RadioBoxList(Dimension preferredSize) {
         this(preferredSize, Attributes.EMPTY);
     }
 
-    public RadioBoxList(TerminalSize preferredSize, Attributes attributes) {
+    public RadioBoxList(Dimension preferredSize, Attributes attributes) {
         super(preferredSize, new RadioBoxListItemRenderer<>(), attributes);
     }
 
@@ -144,7 +144,7 @@ public class RadioBoxList<V> extends AbstractListBox<V, RadioBoxList<V>> {
     }
 
     @Override
-    public synchronized Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isKeyboardActivationStroke(keyStroke)) {
             setCheckedIndex(getSelectedIndex());
         } else if (keyStroke.getKeyType() == KeyType.MouseEvent) {
@@ -162,12 +162,12 @@ public class RadioBoxList<V> extends AbstractListBox<V, RadioBoxList<V>> {
             int existingIndex = getSelectedIndex();
             int newIndex = getIndexByMouseAction(mouseAction);
             if (existingIndex != newIndex || !isFocused()) {
-                Result result = super.onKeyStroke(keyStroke);
+                KeyStrokeResult keyStrokeResult = super.onKeyStroke(keyStroke);
                 setCheckedIndex(getSelectedIndex());
-                return result;
+                return keyStrokeResult;
             }
             setCheckedIndex(getSelectedIndex());
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         }
         return super.onKeyStroke(keyStroke);
     }

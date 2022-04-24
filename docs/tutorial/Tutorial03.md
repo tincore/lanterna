@@ -37,9 +37,9 @@ Let's turn off the cursor for this tutorial
 Now let's draw some random content in the screen buffer
 
             Random random = new Random();
-            TerminalSize terminalSize = screen.getTerminalSize();
-            for(int column = 0; column < terminalSize.getColumns(); column++) {
-                for(int row = 0; row < terminalSize.getRows(); row++) {
+            TerminalSize dimension = screen.getTerminalSize();
+            for(int column = 0; column < dimension.getColumns(); column++) {
+                for(int row = 0; row < dimension.getRows(); row++) {
                     screen.setCharacter(column, row, new TextCharacter(
                             ' ',
                             TextColor.ANSI.DEFAULT,
@@ -82,15 +82,15 @@ result in an EOF `KeyStroke`.
 
 Screens will automatically listen and record size changes, but you have to let the `Screen` know when is
 a good time to update its internal buffers. Usually you should do this at the start of your "drawing"
-loop, if you have one. This ensures that the dimensions of the buffers stays constant and doesn't change
+loop, if you have one. This ensures that the dimension of the buffers stays constant and doesn't change
 while you are drawing content. The method `doReizeIfNecessary()` will check if the terminal has been
 resized since last time it was called (or since the screen was created if this is the first time
-calling) and update the buffer dimensions accordingly. It returns null if the terminal has not changed
+calling) and update the buffer dimension accordingly. It returns null if the terminal has not changed
 size since last time.
 
                 TerminalSize newSize = screen.doResizeIfNecessary();
                 if(newSize != null) {
-                    terminalSize = newSize;
+                    dimension = newSize;
                 }
 
                 // Increase this to increase speed
@@ -100,8 +100,8 @@ size since last time.
 We pick a random location
 
                         TerminalPosition cellToModify = new TerminalPosition(
-                                random.nextInt(terminalSize.getColumns()),
-                                random.nextInt(terminalSize.getRows()));
+                                random.nextInt(dimension.getColumns()),
+                                random.nextInt(dimension.getRows()));
 
 Pick a random background color again
 
@@ -120,7 +120,7 @@ modified.
 Just like with `Terminal`, it's probably easier to draw using `TextGraphics`. Let's do that to put a little
 box with information on the size of the terminal window
 
-                String sizeLabel = "Terminal Size: " + terminalSize;
+                String sizeLabel = "Terminal Size: " + dimension;
                 TerminalPosition labelBoxTopLeft = new TerminalPosition(1, 1);
                 TerminalSize labelBoxSize = new TerminalSize(sizeLabel.length() + 2, 3);
                 TerminalPosition labelBoxTopRightCorner = labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 1);

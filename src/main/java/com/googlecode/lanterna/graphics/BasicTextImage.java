@@ -20,8 +20,8 @@ package com.googlecode.lanterna.graphics;
 
 import java.util.Arrays;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 
@@ -32,7 +32,7 @@ import com.googlecode.lanterna.TextColor;
  * @author martin
  */
 public class BasicTextImage implements TextImage {
-    private final TerminalSize size;
+    private final Dimension size;
     private final TextCharacter[][] buffer;
     
     /**
@@ -42,7 +42,7 @@ public class BasicTextImage implements TextImage {
      * @param rows Size of the image in number of rows
      */
     public BasicTextImage(int columns, int rows) {
-        this(new TerminalSize(columns, rows));
+        this(new Dimension(columns, rows));
     }
     
     /**
@@ -50,7 +50,7 @@ public class BasicTextImage implements TextImage {
      * default foreground and background color
      * @param size Size to make the image
      */
-    public BasicTextImage(TerminalSize size) {
+    public BasicTextImage(Dimension size) {
         this(size, new TextCharacter(' ', TextColor.ANSI.DEFAULT, TextColor.ANSI.DEFAULT));
     }
     
@@ -59,7 +59,7 @@ public class BasicTextImage implements TextImage {
      * @param size Size of the image
      * @param initialContent What character to set as the initial content
      */
-    public BasicTextImage(TerminalSize size, TextCharacter initialContent) {
+    public BasicTextImage(Dimension size, TextCharacter initialContent) {
         this(size, new TextCharacter[0][], initialContent);
     }    
     
@@ -70,7 +70,7 @@ public class BasicTextImage implements TextImage {
      * @param toCopy Array to copy initial data from
      * @param initialContent Filler character to use if the source array is smaller than the requested size
      */
-    private BasicTextImage(TerminalSize size, TextCharacter[][] toCopy, TextCharacter initialContent) {
+    private BasicTextImage(Dimension size, TextCharacter[][] toCopy, TextCharacter initialContent) {
         if(size == null || toCopy == null || initialContent == null) {
             throw new IllegalArgumentException("Cannot create BasicTextImage with null " +
                     (size == null ? "size" : (toCopy == null ? "toCopy" : "filler")));
@@ -94,7 +94,7 @@ public class BasicTextImage implements TextImage {
     }
 
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return size;
     }
     
@@ -109,7 +109,7 @@ public class BasicTextImage implements TextImage {
     }
 
     @Override
-    public BasicTextImage resize(TerminalSize newSize, TextCharacter filler) {
+    public BasicTextImage resize(Dimension newSize, TextCharacter filler) {
         if(newSize == null || filler == null) {
             throw new IllegalArgumentException("Cannot resize BasicTextImage with null " +
                     (newSize == null ? "newSize" : "filler"));
@@ -122,11 +122,11 @@ public class BasicTextImage implements TextImage {
     }
 
     @Override
-    public void setCharacterAt(TerminalPosition position, TextCharacter character) {
-        if(position == null) {
+    public void setCharacterAt(Point point, TextCharacter character) {
+        if(point == null) {
             throw new IllegalArgumentException("Cannot call BasicTextImage.setCharacterAt(..) with null position");
         }
-        setCharacterAt(position.getColumn(), position.getRow(), character);
+        setCharacterAt(point.getColumn(), point.getRow(), character);
     }
     
     @Override
@@ -153,11 +153,11 @@ public class BasicTextImage implements TextImage {
     }
 
     @Override
-    public TextCharacter getCharacterAt(TerminalPosition position) {
-        if(position == null) {
+    public TextCharacter getCharacterAt(Point point) {
+        if(point == null) {
             throw new IllegalArgumentException("Cannot call BasicTextImage.getCharacterAt(..) with null position");
         }
-        return getCharacterAt(position.getColumn(), position.getRow());
+        return getCharacterAt(point.getColumn(), point.getRow());
     }
     
     @Override
@@ -222,7 +222,7 @@ public class BasicTextImage implements TextImage {
             return;
         }
 
-        TerminalSize destinationSize = destination.getSize();
+        Dimension destinationSize = destination.getSize();
         if(destination instanceof BasicTextImage) {
             int targetRow = destinationRowOffset;
             for(int y = startRowIndex; y < startRowIndex + rows && targetRow < destinationSize.getRows(); y++) {
@@ -286,7 +286,7 @@ public class BasicTextImage implements TextImage {
             }
 
             @Override
-            public TerminalSize getSize() {
+            public Dimension getSize() {
                 return size;
             }
         };

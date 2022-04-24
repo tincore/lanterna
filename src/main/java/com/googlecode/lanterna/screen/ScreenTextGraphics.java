@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.screen;
 import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.graphics.AbstractTextGraphics;
 import com.googlecode.lanterna.graphics.TextGraphics;
 
@@ -52,7 +52,7 @@ class ScreenTextGraphics extends AbstractTextGraphics {
     }
 
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return screen.getTerminalSize();
     }
 }

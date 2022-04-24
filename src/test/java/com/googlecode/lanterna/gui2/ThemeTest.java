@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.SimpleTheme;
@@ -27,7 +27,6 @@ import com.googlecode.lanterna.gui2.dialogs.ActionListDialogBuilder;
 import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.gui2.table.TableModel;
 import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,23 +36,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ThemeTest extends TestBase {
+import static com.googlecode.lanterna.input.KeyType.ReverseTab;
+import static com.googlecode.lanterna.input.KeyType.Tab;
+
+public class ThemeTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new ThemeTest().run(args);
     }
 
     @Override
     public void init(final WindowBasedTextGUI textGUI) {
-        final BasicWindow window = new BasicWindow("Theme Tests");
-        window
+        textGUI.addWindow(new BasicWindow("Theme Tests")
             .setComponent(new ActionListBox()
                 .addItem("Component test", s -> runComponentTest(textGUI))
                 .addItem("Multi-theme test", s -> runMultiThemeTest(textGUI))
                 .addItem("Make custom theme", s -> runCustomTheme(textGUI))
-                .addItem("Exit", s -> window.close()))
-            .setHints(Collections.singletonList(Window.Hint.CENTERED));
-
-        textGUI.addWindow(window);
+                .addItem("Exit", ON_CLICK_CLOSE_CONTAINER))
+            .setHints(Window.Hint.CENTERED));
     }
 
     private void runComponentTest(WindowBasedTextGUI textGUI) {
@@ -65,7 +64,7 @@ public class ThemeTest extends TestBase {
         mainPanel.add(new EmptySpace());
         ThemedComponentTestDialog[] componentTestDialogs = new ThemedComponentTestDialog[]{
             new ThemedComponentTestDialog(textGUI, "ActionListBox",
-                new ActionListBox(new TerminalSize(15, 5))
+                new ActionListBox(new Dimension(15, 5))
                     .addItem(new ActionListBox.Item("Item #1", s8 -> {
                     }))
                     .addItem(new ActionListBox.Item("Item #2", s7 -> {
@@ -90,16 +89,16 @@ public class ThemeTest extends TestBase {
             new ThemedComponentTestDialog(textGUI, "Borders",
                 new Panel()
                     .setLayoutManager(new GridLayout(4))
-                    .add(new EmptySpace(new TerminalSize(4, 2)).withBorder(Borders.singleLine()))
-                    .add(new EmptySpace(new TerminalSize(4, 2)).withBorder(Borders.singleLineBevel()))
-                    .add(new EmptySpace(new TerminalSize(4, 2)).withBorder(Borders.doubleLine()))
-                    .add(new EmptySpace(new TerminalSize(4, 2)).withBorder(Borders.doubleLineBevel()))),
+                    .add(new EmptySpace(new Dimension(4, 2)).withBorder(Borders.singleLine()))
+                    .add(new EmptySpace(new Dimension(4, 2)).withBorder(Borders.singleLineBevel()))
+                    .add(new EmptySpace(new Dimension(4, 2)).withBorder(Borders.doubleLine()))
+                    .add(new EmptySpace(new Dimension(4, 2)).withBorder(Borders.doubleLineBevel()))),
             new ThemedComponentTestDialog(textGUI, "Button",
                 new Button("This is a button")),
             new ThemedComponentTestDialog(textGUI, "CheckBox",
                 new CheckBox("This is a checkbox")),
             new ThemedComponentTestDialog(textGUI, "CheckBoxList",
-                new CheckBoxList<String>(new TerminalSize(15, 5))
+                new CheckBoxList<String>(new Dimension(15, 5))
                     .addItem("Item #1")
                     .addItem("Item #2")
                     .addItem("Item #3")
@@ -112,15 +111,15 @@ public class ThemeTest extends TestBase {
                 new Panel()
                     .add(new ComboBox<>("Editable", "Item #2", "Item #3", "Item #4", "Item #5", "Item #6", "Item #7")
                         .setReadOnly(false)
-                        .setPreferredSize(new TerminalSize(12, 1)))
+                        .setPreferredSize(new Dimension(12, 1)))
                     .add(new EmptySpace())
                     .add(new ComboBox<>("Read-only", "Item #2", "Item #3", "Item #4", "Item #5", "Item #6", "Item #7")
                         .setReadOnly(true)
-                        .setPreferredSize(new TerminalSize(12, 1)))),
+                        .setPreferredSize(new Dimension(12, 1)))),
             new ThemedComponentTestDialog(textGUI, "Label",
                 new Label("This is a label")),
             new ThemedComponentTestDialog(textGUI, "RadioBoxList",
-                new RadioBoxList<String>(new TerminalSize(15, 5))
+                new RadioBoxList<String>(new Dimension(15, 5))
                     .addItem("Item #1")
                     .addItem("Item #2")
                     .addItem("Item #3")
@@ -136,13 +135,13 @@ public class ThemeTest extends TestBase {
             new ThemedComponentTestDialog(textGUI, "ScrollBar",
                 new Panel()
                     .setLayoutManager(new GridLayout(2))
-                    .add(new ScrollBar(Direction.HORIZONTAL).setPreferredSize(new TerminalSize(6, 1)))
-                    .add(new ScrollBar(Direction.VERTICAL).setPreferredSize(new TerminalSize(1, 6)))),
+                    .add(new ScrollBar(Direction.HORIZONTAL).setPreferredSize(new Dimension(6, 1)))
+                    .add(new ScrollBar(Direction.VERTICAL).setPreferredSize(new Dimension(1, 6)))),
             new ThemedComponentTestDialog(textGUI, "Separator",
                 new Panel()
                     .setLayoutManager(new GridLayout(2))
-                    .add(new Separator(Direction.HORIZONTAL).setPreferredSize(new TerminalSize(6, 1)))
-                    .add(new Separator(Direction.VERTICAL).setPreferredSize(new TerminalSize(1, 6)))),
+                    .add(new Separator(Direction.HORIZONTAL).setPreferredSize(new Dimension(6, 1)))
+                    .add(new Separator(Direction.VERTICAL).setPreferredSize(new Dimension(1, 6)))),
             new ThemedComponentTestDialog(textGUI, "Table",
                 new Table<String>("Column #1", "Column #2", "Column #3")
                     .setTableModel(
@@ -156,21 +155,21 @@ public class ThemeTest extends TestBase {
                     .add(
                         Panels.horizontal(
                             new TextBox("Single-line text box")
-                                .setPreferredSize(new TerminalSize(15, 1)),
+                                .setPreferredSize(new Dimension(15, 1)),
                             new TextBox("Single-line read-only")
-                                .setPreferredSize(new TerminalSize(15, 1))
+                                .setPreferredSize(new Dimension(15, 1))
                                 .setReadOnly(true)))
                     .add(new EmptySpace())
                     .add(
                         Panels.horizontal(
-                            new TextBox(new TerminalSize(15, 5), "Multi\nline\ntext\nbox\nHere is a very long line that doesn't fit")
+                            new TextBox(new Dimension(15, 5), "Multi\nline\ntext\nbox\nHere is a very long line that doesn't fit")
                                 .setVerticalFocusSwitching(false),
-                            new TextBox(new TerminalSize(15, 5), "Multi\nline\nread-only\ntext\nbox\n" +
+                            new TextBox(new Dimension(15, 5), "Multi\nline\nread-only\ntext\nbox\n" +
                                 "Here is a very long line that doesn't fit")
                                 .setReadOnly(true))))
         };
 
-        mainPanel.add(new ActionListBox(new TerminalSize(15, 7))
+        mainPanel.add(new ActionListBox(new Dimension(15, 7))
             .setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center))
             .addItems(Stream.of(componentTestDialogs).map(d -> new ActionListBox.Item(d.label, s1 -> d.render())).collect(Collectors.toList())))
             .add(new EmptySpace())
@@ -242,7 +241,7 @@ public class ThemeTest extends TestBase {
         ).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.End)));
 
         customThemeCreator.setComponent(mainPanel);
-        okButton.takeFocus();
+        okButton.grabFocus();
         textGUI.addWindowAndWait(customThemeCreator);
     }
 
@@ -251,16 +250,16 @@ public class ThemeTest extends TestBase {
         final int[] windowThemeIndex = new int[]{themes.indexOf("bigsnake"), themes.indexOf("conqueror")};
         final BasicWindow window1 = new BasicWindow("Theme: bigsnake");
         window1.setHints(Collections.singletonList(Window.Hint.FIXED_POSITION));
-        window1.setTheme(LanternaThemes.getRegisteredTheme(themes.get(windowThemeIndex[0])));
-        window1.setPosition(new TerminalPosition(2, 1));
+        window1.setTheme(LanternaThemes.getTheme(themes.get(windowThemeIndex[0])));
+        window1.setPosition(new Point(2, 1));
 
         final BasicWindow window2 = new BasicWindow("Theme: conqueror");
         window2.setHints(Collections.singletonList(Window.Hint.FIXED_POSITION));
-        window2.setTheme(LanternaThemes.getRegisteredTheme(themes.get(windowThemeIndex[1])));
-        window2.setPosition(new TerminalPosition(30, 1));
+        window2.setTheme(LanternaThemes.getTheme(themes.get(windowThemeIndex[1])));
+        window2.setPosition(new Point(30, 1));
 
-        final Panel leftHolder = new Panel().setPreferredSize(new TerminalSize(15, 4));
-        final Panel rightHolder = new Panel().setPreferredSize(new TerminalSize(15, 4));
+        final Panel leftHolder = new Panel().setPreferredSize(new Dimension(15, 4));
+        final Panel rightHolder = new Panel().setPreferredSize(new Dimension(15, 4));
         GridLayout layoutManager = new GridLayout(1);
         leftHolder.setLayoutManager(layoutManager);
         rightHolder.setLayoutManager(layoutManager);
@@ -276,7 +275,7 @@ public class ThemeTest extends TestBase {
                 ActionListDialogBuilder actionListDialogBuilder = new ActionListDialogBuilder();
                 actionListDialogBuilder.title("Choose theme for the button");
                 for (final String theme : themes) {
-                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
+                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getTheme(theme)));
                 }
                 actionListDialogBuilder.item("Clear override", () -> exampleButton.setTheme(null));
                 actionListDialogBuilder.build().show(textGUI);
@@ -287,7 +286,7 @@ public class ThemeTest extends TestBase {
                     windowThemeIndex[0] = 0;
                 }
                 String themeName = themes.get(windowThemeIndex[0]);
-                window1.setTheme(LanternaThemes.getRegisteredTheme(themeName));
+                window1.setTheme(LanternaThemes.getTheme(themeName));
                 window1.setTitle("Theme: " + themeName);
             })
             .addItem("Switch active window", s -> textGUI.setActiveWindow(window2))
@@ -302,8 +301,7 @@ public class ThemeTest extends TestBase {
         window1.addWindowListener(new WindowListenerAdapter() {
             @Override
             public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
-                if (keyStroke.getKeyType() == KeyType.Tab ||
-                    keyStroke.getKeyType() == KeyType.ReverseTab) {
+                if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window2);
                     deliverEvent.set(false);
                 }
@@ -316,7 +314,7 @@ public class ThemeTest extends TestBase {
                 ActionListDialogBuilder actionListDialogBuilder = new ActionListDialogBuilder();
                 actionListDialogBuilder.title("Choose theme for the button");
                 for (final String theme : themes) {
-                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getRegisteredTheme(theme)));
+                    actionListDialogBuilder.item(theme, () -> exampleButton.setTheme(LanternaThemes.getTheme(theme)));
                 }
                 actionListDialogBuilder.item("Clear override", () -> exampleButton.setTheme(null));
                 actionListDialogBuilder.build().show(textGUI);
@@ -327,7 +325,7 @@ public class ThemeTest extends TestBase {
                     windowThemeIndex[1] = 0;
                 }
                 String themeName = themes.get(windowThemeIndex[1]);
-                window2.setTheme(LanternaThemes.getRegisteredTheme(themeName));
+                window2.setTheme(LanternaThemes.getTheme(themeName));
                 window2.setTitle("Theme: " + themeName);
             })
             .addItem("Switch active window", s -> textGUI.setActiveWindow(window1))
@@ -342,12 +340,12 @@ public class ThemeTest extends TestBase {
         window2.addWindowListener(new WindowListenerAdapter() {
             @Override
             public void onInput(Window basePane, KeyStroke keyStroke, AtomicBoolean deliverEvent) {
-                if (keyStroke.getKeyType() == KeyType.Tab ||
-                    keyStroke.getKeyType() == KeyType.ReverseTab) {
+                if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window1);
                     deliverEvent.set(false);
                 }
             }
+
         });
 
         window1.setFocusedInteractable(leftWindowActionBox);
@@ -417,7 +415,7 @@ public class ThemeTest extends TestBase {
 
             ActionListBox actionListBox = new ActionListBox();
             for (final String themeName : LanternaThemes.getRegisteredThemes()) {
-                actionListBox.addItem(themeName, s -> borderedComponent.setTheme(LanternaThemes.getRegisteredTheme(themeName)));
+                actionListBox.addItem(themeName, s -> borderedComponent.setTheme(LanternaThemes.getTheme(themeName)));
             }
             mainPanel.add(actionListBox
                 .withBorder(Borders.doubleLine("Change theme:"))
@@ -427,7 +425,7 @@ public class ThemeTest extends TestBase {
             mainPanel.add(closeButton);
 
             componentWindow.setComponent(mainPanel);
-            closeButton.takeFocus();
+            closeButton.grabFocus();
             textGUI.addWindowAndWait(componentWindow);
         }
 

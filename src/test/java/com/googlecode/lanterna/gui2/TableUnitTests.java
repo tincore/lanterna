@@ -1,6 +1,6 @@
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.Window.Hint;
 import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.gui2.table.TableModel;
@@ -24,7 +24,7 @@ public class TableUnitTests {
 
     @Before
     public void setUp() throws IOException {
-        TerminalSize size = new TerminalSize(30, 24);
+        Dimension size = new Dimension(30, 24);
         terminal = new DefaultVirtualTerminal(size);
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();

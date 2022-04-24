@@ -28,7 +28,7 @@ import java.util.Collections;
  *
  * @author Martin
  */
-public class SimpleWindowManagerTest extends TestBase {
+public class SimpleWindowManagerTest extends AbstractGuiTest {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {

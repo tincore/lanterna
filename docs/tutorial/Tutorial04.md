@@ -10,7 +10,7 @@ GUI isn't aware of.
 The GUI system is designed around a background surface that is usually static, but can have components, and
 multiple windows. The recommended approach it to make all windows modal and not let the user switch between
 windows, but the latter can also be done. Components are added to windows by using a layout manager that
-determines the position of each component.
+determines the point of each component.
 
     DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
     Screen screen = null;

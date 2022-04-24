@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -39,10 +39,9 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
     private final List<Listener> listeners;
     private String label;
     private boolean checked;
+
     /**
      * Creates a new checkbox with no label, initially set to un-checked
-     *
-     * @param attributes
      */
     public CheckBox() {
         this(Attributes.EMPTY);
@@ -56,7 +55,6 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
      * Creates a new checkbox with a specific label, initially set to un-checked
      *
      * @param label Label to assign to the check box
-     * @param attributes
      */
     public CheckBox(String label) {
         this(label, Attributes.EMPTY);
@@ -72,6 +70,48 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
         this.listeners = new CopyOnWriteArrayList<>();
         this.label = label;
         this.checked = false;
+    }
+
+    /**
+     * Adds a listener to this check box so that it will be notificed on certain user actions
+     *
+     * @param listener Listener to fire events on
+     * @return Itself
+     */
+    public CheckBox addListener(Listener listener) {
+        if (listener != null && !listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+        return this;
+    }
+
+    @Override
+    protected CheckBoxRenderer createDefaultRenderer() {
+        return new DefaultCheckBoxRenderer();
+    }
+
+    /**
+     * Returns the label of check box
+     *
+     * @return Label currently assigned to the check box
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * Updates the label of the checkbox
+     *
+     * @param label New label to assign to the check box
+     * @return Itself
+     */
+    public synchronized CheckBox setLabel(String label) {
+        if (label == null) {
+            throw new IllegalArgumentException("Cannot set CheckBox label to null");
+        }
+        this.label = label;
+        invalidate();
+        return this;
     }
 
     /**
@@ -101,53 +141,16 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
     }
 
     @Override
-    public Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isKeyboardActivationStroke(keyStroke)) {
             setChecked(!isChecked());
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         } else if (isMouseActivationStroke(keyStroke)) {
-            getBasePane().setFocusedInteractable(this);
+            getRootPane().setFocusedInteractable(this);
             setChecked(!isChecked());
-            return Result.HANDLED;
+            return KeyStrokeResult.HANDLED;
         }
         return super.onKeyStroke(keyStroke);
-    }
-
-    /**
-     * Returns the label of check box
-     *
-     * @return Label currently assigned to the check box
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
-     * Updates the label of the checkbox
-     *
-     * @param label New label to assign to the check box
-     * @return Itself
-     */
-    public synchronized CheckBox setLabel(String label) {
-        if (label == null) {
-            throw new IllegalArgumentException("Cannot set CheckBox label to null");
-        }
-        this.label = label;
-        invalidate();
-        return this;
-    }
-
-    /**
-     * Adds a listener to this check box so that it will be notificed on certain user actions
-     *
-     * @param listener Listener to fire events on
-     * @return Itself
-     */
-    public CheckBox addListener(Listener listener) {
-        if (listener != null && !listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-        return this;
     }
 
     /**
@@ -159,11 +162,6 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
     public CheckBox removeListener(Listener listener) {
         listeners.remove(listener);
         return this;
-    }
-
-    @Override
-    protected CheckBoxRenderer createDefaultRenderer() {
-        return new DefaultCheckBoxRenderer();
     }
 
     /**
@@ -190,25 +188,7 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
      * of a "[ ]" block which will contain a "X" inside it if the check box has toggle status on
      */
     public static class DefaultCheckBoxRenderer extends CheckBoxRenderer {
-        private static final TerminalPosition CURSOR_LOCATION = new TerminalPosition(1, 0);
-
-        @Override
-        public TerminalPosition getCursorLocation(CheckBox component) {
-            if (component.getThemeDefinition().isCursorVisible()) {
-                return CURSOR_LOCATION;
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        public TerminalSize getPreferredSize(CheckBox component) {
-            int width = 3;
-            if (!component.label.isEmpty()) {
-                width += 1 + TerminalTextUtils.getColumnWidth(component.label);
-            }
-            return new TerminalSize(width, 1);
-        }
+        private static final Point CURSOR_LOCATION = new Point(1, 0);
 
         @Override
         public void drawComponent(TextGUIGraphics graphics, CheckBox component) {
@@ -237,6 +217,24 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
                 graphics.applyThemeStyle(themeDefinition.getNormal());
             }
             graphics.setCharacter(1, 0, (component.isChecked() ? themeDefinition.getCharacter("MARKER", 'x') : ' '));
+        }
+
+        @Override
+        public Point getCursorLocation(CheckBox component) {
+            if (component.getThemeDefinition().isCursorVisible()) {
+                return CURSOR_LOCATION;
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public Dimension getPreferredSize(CheckBox component) {
+            int width = 3;
+            if (!component.label.isEmpty()) {
+                width += 1 + TerminalTextUtils.getColumnWidth(component.label);
+            }
+            return new Dimension(width, 1);
         }
     }
 }

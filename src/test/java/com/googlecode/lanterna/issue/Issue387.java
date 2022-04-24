@@ -1,6 +1,6 @@
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.screen.Screen;
@@ -30,9 +30,9 @@ public class Issue387 {
 
             Panel panel = new Panel();
             panel.add(new TextBox());
-            panel.add(new EmptySpace(new TerminalSize(15, 1)));
+            panel.add(new EmptySpace(new Dimension(15, 1)));
             panel.add(table);
-            panel.add(new EmptySpace(new TerminalSize(15, 1)));
+            panel.add(new EmptySpace(new Dimension(15, 1)));
             panel.add(new TextBox());
 
             window.setComponent(panel);

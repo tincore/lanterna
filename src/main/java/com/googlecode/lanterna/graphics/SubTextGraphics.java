@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.graphics;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 
 /**
  * This implementation of TextGraphics will take a 'proper' object and composite a view on top of it, by using a
@@ -29,39 +29,39 @@ import com.googlecode.lanterna.TerminalSize;
  */
 class SubTextGraphics extends AbstractTextGraphics {
     private final TextGraphics underlyingTextGraphics;
-    private final TerminalPosition topLeft;
-    private final TerminalSize writableAreaSize;
+    private final Point topLeft;
+    private final Dimension writableAreaSize;
 
-    SubTextGraphics(TextGraphics underlyingTextGraphics, TerminalPosition topLeft, TerminalSize writableAreaSize) {
+    SubTextGraphics(TextGraphics underlyingTextGraphics, Point topLeft, Dimension writableAreaSize) {
         this.underlyingTextGraphics = underlyingTextGraphics;
         this.topLeft = topLeft;
         this.writableAreaSize = writableAreaSize;
     }
 
-    private TerminalPosition project(int column, int row) {
+    private Point project(int column, int row) {
         return topLeft.withRelative(column, row);
     }
 
     @Override
     public TextGraphics setCharacter(int columnIndex, int rowIndex, TextCharacter textCharacter) {
-        TerminalSize writableArea = getSize();
+        Dimension writableArea = getSize();
         if(columnIndex < 0 || columnIndex >= writableArea.getColumns() ||
                 rowIndex < 0 || rowIndex >= writableArea.getRows()) {
             return this;
         }
-        TerminalPosition projectedPosition = project(columnIndex, rowIndex);
-        underlyingTextGraphics.setCharacter(projectedPosition, textCharacter);
+        Point projectedPoint = project(columnIndex, rowIndex);
+        underlyingTextGraphics.setCharacter(projectedPoint, textCharacter);
         return this;
     }
 
     @Override
-    public TerminalSize getSize() {
+    public Dimension getSize() {
         return writableAreaSize;
     }
 
     @Override
     public TextCharacter getCharacter(int column, int row) {
-        TerminalPosition projectedPosition = project(column, row);
-        return underlyingTextGraphics.getCharacter(projectedPosition.getColumn(), projectedPosition.getRow());
+        Point projectedPoint = project(column, row);
+        return underlyingTextGraphics.getCharacter(projectedPoint.getColumn(), projectedPoint.getRow());
     }
 }

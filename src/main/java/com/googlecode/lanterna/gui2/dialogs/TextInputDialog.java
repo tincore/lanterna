@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 
 import java.math.BigInteger;
@@ -38,7 +38,7 @@ public class TextInputDialog extends DialogWindow {
     TextInputDialog(
         String title,
         String description,
-        TerminalSize textBoxPreferredSize,
+        Dimension textBoxPreferredSize,
         String initialContent,
         TextInputDialogResultValidator validator,
         boolean password) {
@@ -65,7 +65,7 @@ public class TextInputDialog extends DialogWindow {
         if (description != null) {
             mainPanel.add(new Label(description));
         }
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
         textBox.setLayoutData(
             GridLayout.createLayoutData(
                 GridLayout.Alignment.FILL,
@@ -73,7 +73,7 @@ public class TextInputDialog extends DialogWindow {
                 true,
                 false))
             .addTo(mainPanel);
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
         buttonPanel.setLayoutData(
             GridLayout.createLayoutData(
                 GridLayout.Alignment.END,

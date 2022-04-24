@@ -3,7 +3,7 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -28,7 +28,7 @@ public class Issue274 {
         final MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
 
         Panel menubar = new Panel().setLayoutManager(new LinearLayout(Direction.HORIZONTAL).setSpacing(1))
-            .add(new TextBox(new TerminalSize(10, 10), TextBox.Style.MULTI_LINE))
+            .add(new TextBox(new Dimension(10, 10), TextBox.Style.MULTI_LINE))
             .add(new Button("Open", s -> {
                 final Window op = new BasicWindow("Select file");
                 gui.addWindow(op);

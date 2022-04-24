@@ -18,12 +18,12 @@
  */
 package com.googlecode.lanterna.screen;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.Scrollable;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.InputProvider;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -93,17 +93,17 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
      * @return Position where the cursor will be located after the screen has been refreshed or {@code null} if the
      * cursor is not visible
      */
-    TerminalPosition getCursorPosition();
+    Point getCursorPosition();
     
     /**
      * A screen implementation typically keeps a location on the screen where the cursor will be placed after drawing
      * and refreshing the buffers, this method controls that location. If you pass null, it means that the terminal 
      * will attempt to hide the cursor (if supported by the terminal).
      *
-     * @param position TerminalPosition of the new position where the cursor should be placed after refresh(), or if 
+     * @param point TerminalPosition of the new position where the cursor should be placed after refresh(), or if
      * {@code null}, hides the cursor
      */
-    void setCursorPosition(TerminalPosition position);
+    void setCursorPosition(Point point);
 
     /**
      * Gets the behaviour for what to do about tab characters. If a tab character is written to the Screen, it would
@@ -133,7 +133,7 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
      *
      * @return Size of the screen, in columns and rows
      */
-    TerminalSize getTerminalSize();
+    Dimension getTerminalSize();
 
     /**
      * Sets a character in the back-buffer to a specified value with specified colors and modifiers.
@@ -145,10 +145,10 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
     
     /**
      * Sets a character in the back-buffer to a specified value with specified colors and modifiers.
-     * @param position Which position in the terminal to modify
+     * @param point Which position in the terminal to modify
      * @param screenCharacter New data to put at the specified position
      */
-    void setCharacter(TerminalPosition position, TextCharacter screenCharacter);
+    void setCharacter(Point point, TextCharacter screenCharacter);
 
     /**
      * Creates a new TextGraphics objects that is targeting this Screen for writing to. Any operations done on this
@@ -170,10 +170,10 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
     /**
      * Reads a character and its associated meta-data from the front-buffer and returns it encapsulated as a 
      * ScreenCharacter.
-     * @param position What position to read the character from
+     * @param point What position to read the character from
      * @return A {@code ScreenCharacter} representation of the character in the front-buffer at the specified location
      */
-    TextCharacter getFrontCharacter(TerminalPosition position);
+    TextCharacter getFrontCharacter(Point point);
 
     /**
      * Reads a character and its associated meta-data from the back-buffer and returns it encapsulated as a
@@ -187,10 +187,10 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
     /**
      * Reads a character and its associated meta-data from the back-buffer and returns it encapsulated as a 
      * ScreenCharacter.
-     * @param position What position to read the character from
+     * @param point What position to read the character from
      * @return A {@code ScreenCharacter} representation of the character in the back-buffer at the specified location
      */
-    TextCharacter getBackCharacter(TerminalPosition position);
+    TextCharacter getBackCharacter(Point point);
 
     /**
      * This method will take the content from the back-buffer and move it into the front-buffer, making the changes
@@ -224,7 +224,7 @@ public interface Screen extends InputProvider, Scrollable, Closeable {
      * @return If the terminal has been resized since this method was last called, it will return the new size of the
      * terminal. If not, it will return null.
      */
-    TerminalSize doResizeIfNecessary();
+    Dimension doResizeIfNecessary();
 
     /**
      * Scroll a range of lines of this Screen according to given distance.

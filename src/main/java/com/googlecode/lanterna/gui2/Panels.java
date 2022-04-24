@@ -29,6 +29,10 @@ public class Panels {
     private Panels() {
     }
 
+    public static Panel border() {
+        return new Panel(new BorderLayout());
+    }
+
     /**
      * Creates a new {@code Panel} with a {@code GridLayout} layout manager and adds all the components passed in
      *
@@ -37,7 +41,11 @@ public class Panels {
      * @return The new {@code Panel}
      */
     public static Panel grid(int columns, Component... components) {
-        return new Panel(new GridLayout(columns)).add(components);
+        return grid(columns).add(components);
+    }
+
+    private static Panel grid(int columns) {
+        return new Panel(new GridLayout(columns));
     }
 
     /**
@@ -48,7 +56,11 @@ public class Panels {
      * @return The new {@code Panel}
      */
     public static Panel horizontal(Component... components) {
-        return new Panel(new LinearLayout(Direction.HORIZONTAL)).add(components);
+        return horizontal().add(components);
+    }
+
+    private static Panel horizontal() {
+        return new Panel(new LinearLayout(Direction.HORIZONTAL));
     }
 
     /**
@@ -59,6 +71,10 @@ public class Panels {
      * @return The new {@code Panel}
      */
     public static Panel vertical(Component... components) {
-        return new Panel(new LinearLayout(Direction.VERTICAL)).add(components);
+        return vertical().add(components);
+    }
+
+    private static Panel vertical() {
+        return new Panel(new LinearLayout(Direction.VERTICAL));
     }
 }

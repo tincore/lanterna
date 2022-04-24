@@ -18,13 +18,15 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.screen.Screen;
 
 import java.io.IOException;
+
+import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
 
 public class MultiLabelTest {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -37,18 +39,18 @@ public class MultiLabelTest {
                 .setLayoutManager(new LinearLayout(Direction.VERTICAL))
                 .add(new Label("This is a single line label"))
                 .add(new Label("This is another label on the second line"))
-                .add(new EmptySpace(new TerminalSize(5, 1)))
+                .add(new EmptySpace(new Dimension(5, 1)))
                 .add(new Label("Here is a\nmulti-line\ntext segment that is using \\n"))
                 .add(new Label("We can change foreground color...").setForegroundColor(TextColor.ANSI.BLUE))
                 .add(new Label("...and background color...").setBackgroundColor(TextColor.ANSI.MAGENTA))
                 .add(new Label("...and add custom SGR styles!")
                     .addStyle(SGR.BOLD)
                     .addStyle(SGR.UNDERLINE))
-                .add(new EmptySpace(new TerminalSize(5, 1)))
+                .add(new EmptySpace(new Dimension(5, 1)))
                 .add(new Label("Here is an animated label:"))
                 .add(AnimatedLabel.createClassicSpinningLine())
                 .add(new EmptySpace())
-                .add(new Button("Close", s -> window.close()).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center))));
+                .add(createButtonCloseContainer().setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Center))));
 
             textGUI.addWindow(window);
             textGUI.updateScreen();

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
@@ -30,7 +30,7 @@ import com.googlecode.lanterna.gui2.menu.MenuItem;
 import java.io.File;
 import java.io.IOException;
 
-public class MenuTest extends TestBase {
+public class MenuTest extends AbstractGuiTest {
     private static final Interactable.ClickListener DO_NOTHING = s -> {
     };
     private static final String[] GERMANY_STATES = new String[]{
@@ -54,11 +54,11 @@ public class MenuTest extends TestBase {
     public void init(final WindowBasedTextGUI textGUI) {
         // Create window to hold the menu
         final BasicWindow window = new BasicWindow();
-        Panel contentPane = new Panel(new BorderLayout());
-        contentPane.add(Panels.vertical(
-            new Separator(Direction.HORIZONTAL).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)),
-            new MultiColorComponent(),
-            new Button("Close", i -> window.close())));
+        Panel contentPane = new Panel(new BorderLayout())
+            .add(Panels.vertical(
+                new Separator(Direction.HORIZONTAL).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)),
+                new MultiColorComponent(),
+                createButtonCloseContainer()));
         window.setComponent(contentPane);
 
         MenuBar menubar = new MenuBar();
@@ -125,8 +125,8 @@ public class MenuTest extends TestBase {
                 }
 
                 @Override
-                public TerminalSize getPreferredSize(MultiColorComponent component) {
-                    return new TerminalSize(40, 15);
+                public Dimension getPreferredSize(MultiColorComponent component) {
+                    return new Dimension(40, 15);
                 }
             };
         }

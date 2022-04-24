@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.terminal;
 
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 
@@ -43,9 +43,9 @@ public interface IOSafeTerminal extends Terminal {
     @Override
     void setCursorPosition(int x, int y);
     @Override
-    void setCursorPosition(TerminalPosition position);
+    void setCursorPosition(Point point);
     @Override
-    TerminalPosition getCursorPosition();
+    Point getCursorPosition();
     @Override
     void setCursorVisible(boolean visible);
     @Override
@@ -63,7 +63,7 @@ public interface IOSafeTerminal extends Terminal {
     @Override
     void setBackgroundColor(TextColor color);
     @Override
-    TerminalSize getTerminalSize();
+    Dimension getTerminalSize();
     @Override
     byte[] enquireTerminal(int timeout, TimeUnit timeoutUnit);
     @Override

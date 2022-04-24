@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.table;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.gui2.AbstractInteractableComponent;
 import com.googlecode.lanterna.gui2.Attributes;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -115,8 +115,8 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
     }
 
     /**
-     * By converting {@link TerminalPosition}s to
-     * {@link #toGlobal(TerminalPosition)} and by comparing widths of column
+     * By converting {@link Point}s to
+     * {@link #toGlobal(Point)} and by comparing widths of column
      * headers, gets column clicked on by mouse action.
      *
      * @return row of a table that was clicked on with {@link MouseAction}
@@ -159,8 +159,8 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
     }
 
     /**
-     * By converting {@link TerminalPosition}s to
-     * {@link #toGlobal(TerminalPosition)} gets row clicked on by mouse action.
+     * By converting {@link Point}s to
+     * {@link #toGlobal(Point)} gets row clicked on by mouse action.
      *
      * @return row of a table that was clicked on with {@link MouseAction}
      */
@@ -388,20 +388,20 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
     }
 
     @Override
-    public Result onKeyStroke(KeyStroke keyStroke) {
+    public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         switch (keyStroke.getKeyType()) {
             case ArrowUp:
                 if (selectedRow > 0) {
                     selectedRow--;
                 } else if (escapeByArrowKey) {
-                    return Result.MOVE_FOCUS_UP;
+                    return KeyStrokeResult.MOVE_FOCUS_UP;
                 }
                 break;
             case ArrowDown:
                 if (selectedRow < tableModel.getRowCount() - 1) {
                     selectedRow++;
                 } else if (escapeByArrowKey) {
-                    return Result.MOVE_FOCUS_DOWN;
+                    return KeyStrokeResult.MOVE_FOCUS_DOWN;
                 }
                 break;
             case PageUp:
@@ -425,14 +425,14 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
                 if (cellSelection && selectedColumn > 0) {
                     selectedColumn--;
                 } else if (escapeByArrowKey) {
-                    return Result.MOVE_FOCUS_LEFT;
+                    return KeyStrokeResult.MOVE_FOCUS_LEFT;
                 }
                 break;
             case ArrowRight:
                 if (cellSelection && selectedColumn < tableModel.getColumnCount() - 1) {
                     selectedColumn++;
                 } else if (escapeByArrowKey) {
-                    return Result.MOVE_FOCUS_RIGHT;
+                    return KeyStrokeResult.MOVE_FOCUS_RIGHT;
                 }
                 break;
             case Character:
@@ -442,7 +442,7 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
                     if (c != null) {
                         c.onClicked(this);
                     } else {
-                        return Result.HANDLED;
+                        return KeyStrokeResult.HANDLED;
                     }
                     break;
                 } else {
@@ -453,7 +453,7 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
                 MouseActionType actionType = action.getActionType();
                 if (actionType == MouseActionType.MOVE) {
                     // do nothing
-                    return Result.UNHANDLED;
+                    return KeyStrokeResult.UNHANDLED;
                 }
                 if (!isFocused()) {
                     super.onKeyStroke(keyStroke);
@@ -471,7 +471,7 @@ public class Table<V> extends AbstractInteractableComponent<Table<V>> {
                 return super.onKeyStroke(keyStroke);
         }
         invalidate();
-        return Result.HANDLED;
+        return KeyStrokeResult.HANDLED;
     }
 
     /**

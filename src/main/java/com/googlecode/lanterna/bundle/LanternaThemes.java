@@ -62,7 +62,7 @@ public class LanternaThemes {
 
     /**
      * Returns a collection of all themes registered with this class, by their name. To get the associated {@link Theme}
-     * object, please use {@link #getRegisteredTheme(String)}.
+     * object, please use {@link #getTheme(String)}.
      * @return Collection of theme names
      */
     public static Collection<String> getRegisteredThemes() {
@@ -75,13 +75,13 @@ public class LanternaThemes {
      * @param name Name of the theme to retrieve
      * @return {@link Theme} registered with the supplied name, or {@code null} if none
      */
-    public static Theme getRegisteredTheme(String name) {
+    public static Theme getTheme(String name) {
         return REGISTERED_THEMES.get(name);
     }
 
     /**
      * Registers a {@link Theme} with this class under a certain name so that calling
-     * {@link #getRegisteredTheme(String)} on that name will return this theme and calling
+     * {@link #getTheme(String)} on that name will return this theme and calling
      * {@link #getRegisteredThemes()} will return a collection including this name.
      * @param name Name to register the theme under
      * @param theme Theme to register with this name

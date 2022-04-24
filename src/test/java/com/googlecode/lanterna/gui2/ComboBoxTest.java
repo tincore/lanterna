@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-public class ComboBoxTest extends TestBase {
+public class ComboBoxTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new ComboBoxTest().run(args);
     }
@@ -53,22 +53,22 @@ public class ComboBoxTest extends TestBase {
         comboBoxCJK.addItem("ウィキペディアは誰でも編集できるフリー百科事典です");
         comboBoxCJK.addItem("위키백과는 전 세계 여러 언어로 만들어 나가는 자유 백과사전으로, 누구나 참여하실 수 있습니다.");
         comboBoxCJK.addItem("This is a string without double-width characters");
-        comboBoxCJK.setPreferredSize(new TerminalSize(13, 1));
+        comboBoxCJK.setPreferredSize(new Dimension(13, 1));
 
         mainPanel.add(Panels.horizontal(
             comboBoxReadOnly.withBorder(Borders.singleLine("Read-only")),
             comboBoxEditable.withBorder(Borders.singleLine("Editable")),
             comboBoxCJK.withBorder(Borders.singleLine("CJK"))));
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
 
-        final TextBox textBoxNewItem = new TextBox(new TerminalSize(20, 1));
+        final TextBox textBoxNewItem = new TextBox(new Dimension(20, 1));
         Button buttonAddItem = new Button("Add", s -> {
             comboBoxEditable.addItem(textBoxNewItem.getText());
             comboBoxReadOnly.addItem(textBoxNewItem.getText());
             textBoxNewItem.setText("");
             window.setFocusedInteractable(textBoxNewItem);
         });
-        final TextBox textBoxSetSelectedIndex = new TextBox(new TerminalSize(20, 1), "0");
+        final TextBox textBoxSetSelectedIndex = new TextBox(new Dimension(20, 1), "0");
         textBoxSetSelectedIndex.setValidationPattern(Pattern.compile("-?[0-9]+"));
         Button buttonSetSelectedIndex = new Button("Set Selected Index", s -> {
             try {
@@ -78,7 +78,7 @@ public class ComboBoxTest extends TestBase {
                 MessageDialog.showMessageDialog(textGUI, e.getClass().getName(), e.getMessage(), MessageDialogButton.OK);
             }
         });
-        final TextBox textBoxSetSelectedItem = new TextBox(new TerminalSize(20, 1));
+        final TextBox textBoxSetSelectedItem = new TextBox(new Dimension(20, 1));
         Button buttonSetSelectedItem = new Button("Set Selected Item", s -> {
             try {
                 comboBoxEditable.setSelectedItem(textBoxSetSelectedItem.getText());
@@ -94,9 +94,9 @@ public class ComboBoxTest extends TestBase {
                 Panels.horizontal(textBoxSetSelectedItem, buttonSetSelectedItem))
                 .withBorder(Borders.singleLineBevel("Modify Content")));
 
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
         mainPanel.add(comboBoxTimeZones.withBorder(Borders.singleLine("Large ComboBox")));
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
         mainPanel.add(new Separator(Direction.HORIZONTAL).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
         mainPanel.add(new Button("OK", s -> window.close()));
         window.setComponent(mainPanel);

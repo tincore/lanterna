@@ -4,6 +4,10 @@ public interface Attributed {
 
     String ID = "id";
 
+    static Attributes attrs(String id) {
+        return new Attributes(ID, id);
+    }
+
     default String getAttribute(String attribute) {
         return getAttributes().get(attribute);
     }
@@ -17,5 +21,4 @@ public interface Attributed {
     default String getId() {
         return getAttribute(ID);
     }
-
 }

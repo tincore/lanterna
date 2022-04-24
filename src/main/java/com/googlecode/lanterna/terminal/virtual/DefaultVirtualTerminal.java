@@ -32,13 +32,13 @@ import java.util.concurrent.TimeUnit;
 public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualTerminal {
     private final TextBuffer regularTextBuffer;
     private final TextBuffer privateModeTextBuffer;
-    private final TreeSet<TerminalPosition> dirtyTerminalCells;
+    private final TreeSet<Point> dirtyTerminalCells;
     private final List<VirtualTerminalListener> listeners;
 
     private TextBuffer currentTextBuffer;
     private boolean wholeBufferDirty;
 
-    private TerminalSize terminalSize;
+    private Dimension dimension;
     private boolean cursorVisible;
     private int backlogSize;
 
@@ -48,24 +48,24 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     private TextColor activeBackgroundColor;
 
     // Global coordinates, i.e. relative to the top-left corner of the full buffer
-    private TerminalPosition cursorPosition;
+    private Point cursorPoint;
 
     // Used when switching back from private mode, to restore the earlier cursor position
-    private TerminalPosition savedCursorPosition;
+    private Point savedCursorPoint;
 
 
     /**
      * Creates a new virtual terminal with an initial size set
      */
     public DefaultVirtualTerminal() {
-        this(new TerminalSize(80, 24));
+        this(new Dimension(80, 24));
     }
 
     /**
      * Creates a new virtual terminal with an initial size set
-     * @param initialTerminalSize Starting size of the virtual terminal
+     * @param initialDimension Starting size of the virtual terminal
      */
-    public DefaultVirtualTerminal(TerminalSize initialTerminalSize) {
+    public DefaultVirtualTerminal(Dimension initialDimension) {
         this.regularTextBuffer = new TextBuffer();
         this.privateModeTextBuffer = new TextBuffer();
         this.dirtyTerminalCells = new TreeSet<>();
@@ -80,10 +80,10 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
         // Start with regular mode
         this.currentTextBuffer = regularTextBuffer;
         this.wholeBufferDirty = false;
-        this.terminalSize = initialTerminalSize;
+        this.dimension = initialDimension;
         this.cursorVisible = true;
-        this.cursorPosition = TerminalPosition.TOP_LEFT_CORNER;
-        this.savedCursorPosition = TerminalPosition.TOP_LEFT_CORNER;
+        this.cursorPoint = Point.TOP_LEFT_CORNER;
+        this.savedCursorPoint = Point.TOP_LEFT_CORNER;
         this.backlogSize = 1000;
     }
 
@@ -91,17 +91,17 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     // Terminal interface methods (and related)
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
-    public synchronized TerminalSize getTerminalSize() {
-        return terminalSize;
+    public synchronized Dimension getTerminalSize() {
+        return dimension;
     }
 
     @Override
-    public synchronized void setTerminalSize(TerminalSize newSize) {
-        this.terminalSize = newSize;
+    public synchronized void setTerminalSize(Dimension newSize) {
+        this.dimension = newSize;
         trimBufferBacklog();
         correctCursor();
         for(VirtualTerminalListener listener: listeners) {
-            listener.onResized(this, terminalSize);
+            listener.onResized(this, dimension);
         }
         super.onResized(newSize.getColumns(), newSize.getRows());
     }
@@ -109,15 +109,15 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     @Override
     public synchronized void enterPrivateMode() {
         currentTextBuffer = privateModeTextBuffer;
-        savedCursorPosition = getCursorBufferPosition();
-        setCursorPosition(TerminalPosition.TOP_LEFT_CORNER);
+        savedCursorPoint = getCursorBufferPosition();
+        setCursorPosition(Point.TOP_LEFT_CORNER);
         setWholeBufferDirty();
     }
 
     @Override
     public synchronized void exitPrivateMode() {
         currentTextBuffer = regularTextBuffer;
-        cursorPosition = savedCursorPosition;
+        cursorPoint = savedCursorPoint;
         setWholeBufferDirty();
     }
 
@@ -125,36 +125,36 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     public synchronized void clearScreen() {
         currentTextBuffer.clear();
         setWholeBufferDirty();
-        setCursorPosition(TerminalPosition.TOP_LEFT_CORNER);
+        setCursorPosition(Point.TOP_LEFT_CORNER);
     }
 
     @Override
     public synchronized void setCursorPosition(int x, int y) {
-        setCursorPosition(cursorPosition.withColumn(x).withRow(y));
+        setCursorPosition(cursorPoint.withColumn(x).withRow(y));
     }
 
     @Override
-    public synchronized void setCursorPosition(TerminalPosition cursorPosition) {
-        if(terminalSize.getRows() < getBufferLineCount()) {
-            cursorPosition = cursorPosition.withRelativeRow(getBufferLineCount() - terminalSize.getRows());
+    public synchronized void setCursorPosition(Point cursorPoint) {
+        if(dimension.getRows() < getBufferLineCount()) {
+            cursorPoint = cursorPoint.withRelativeRow(getBufferLineCount() - dimension.getRows());
         }
-        this.cursorPosition = cursorPosition;
+        this.cursorPoint = cursorPoint;
         correctCursor();
     }
 
     @Override
-    public synchronized TerminalPosition getCursorPosition() {
-        if(getBufferLineCount() <= terminalSize.getRows()) {
+    public synchronized Point getCursorPosition() {
+        if(getBufferLineCount() <= dimension.getRows()) {
             return getCursorBufferPosition();
         }
         else {
-            return cursorPosition.withRelativeRow(-(getBufferLineCount() - terminalSize.getRows()));
+            return cursorPoint.withRelativeRow(-(getBufferLineCount() - dimension.getRows()));
         }
     }
 
     @Override
-    public synchronized TerminalPosition getCursorBufferPosition() {
-        return cursorPosition;
+    public synchronized Point getCursorBufferPosition() {
+        return cursorPoint;
     }
 
     @Override
@@ -283,12 +283,12 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
         inputQueue.add(keyStroke);
     }
 
-    public synchronized TreeSet<TerminalPosition> getDirtyCells() {
+    public synchronized TreeSet<Point> getDirtyCells() {
         return new TreeSet<>(dirtyTerminalCells);
     }
 
-    public synchronized TreeSet<TerminalPosition> getAndResetDirtyCells() {
-        TreeSet<TerminalPosition> copy = new TreeSet<>(dirtyTerminalCells);
+    public synchronized TreeSet<Point> getAndResetDirtyCells() {
+        TreeSet<Point> copy = new TreeSet<>(dirtyTerminalCells);
         dirtyTerminalCells.clear();
         return copy;
     }
@@ -300,14 +300,14 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     }
 
     @Override
-    public synchronized TextCharacter getCharacter(TerminalPosition position) {
-        return getCharacter(position.getColumn(), position.getRow());
+    public synchronized TextCharacter getCharacter(Point point) {
+        return getCharacter(point.getColumn(), point.getRow());
     }
 
     @Override
     public synchronized TextCharacter getCharacter(int column, int row) {
-        if(terminalSize.getRows() < currentTextBuffer.getLineCount()) {
-            row += currentTextBuffer.getLineCount() - terminalSize.getRows();
+        if(dimension.getRows() < currentTextBuffer.getLineCount()) {
+            row += currentTextBuffer.getLineCount() - dimension.getRows();
         }
         return getBufferCharacter(column, row);
     }
@@ -318,8 +318,8 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     }
 
     @Override
-    public TextCharacter getBufferCharacter(TerminalPosition position) {
-        return getBufferCharacter(position.getColumn(), position.getRow());
+    public TextCharacter getBufferCharacter(Point point) {
+        return getBufferCharacter(point.getColumn(), point.getRow());
     }
 
     @Override
@@ -348,8 +348,8 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
 
     synchronized void putCharacter(TextCharacter terminalCharacter) {
         if(terminalCharacter.is('\t')) {
-            int nrOfSpaces = TabBehaviour.ALIGN_TO_COLUMN_4.getTabReplacement(cursorPosition.getColumn()).length();
-            for(int i = 0; i < nrOfSpaces && cursorPosition.getColumn() < terminalSize.getColumns() - 1; i++) {
+            int nrOfSpaces = TabBehaviour.ALIGN_TO_COLUMN_4.getTabReplacement(cursorPoint.getColumn()).length();
+            for(int i = 0; i < nrOfSpaces && cursorPoint.getColumn() < dimension.getColumns() - 1; i++) {
                 putCharacter(terminalCharacter.withCharacter(' '));
             }
         }
@@ -357,32 +357,32 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
             boolean doubleWidth = terminalCharacter.isDoubleWidth();
             // If we're at the last column and the user tries to print a double-width character, reset the cell and move
             // to the next line
-            if(cursorPosition.getColumn() == terminalSize.getColumns() - 1 && doubleWidth) {
-                currentTextBuffer.setCharacter(cursorPosition.getRow(), cursorPosition.getColumn(), TextCharacter.DEFAULT_CHARACTER);
+            if(cursorPoint.getColumn() == dimension.getColumns() - 1 && doubleWidth) {
+                currentTextBuffer.setCharacter(cursorPoint.getRow(), cursorPoint.getColumn(), TextCharacter.DEFAULT_CHARACTER);
                 moveCursorToNextLine();
             }
-            if(cursorPosition.getColumn() == terminalSize.getColumns()) {
+            if(cursorPoint.getColumn() == dimension.getColumns()) {
                 moveCursorToNextLine();
             }
 
             // Update the buffer
-            int i = currentTextBuffer.setCharacter(cursorPosition.getRow(), cursorPosition.getColumn(), terminalCharacter);
+            int i = currentTextBuffer.setCharacter(cursorPoint.getRow(), cursorPoint.getColumn(), terminalCharacter);
             if(!wholeBufferDirty) {
-                dirtyTerminalCells.add(new TerminalPosition(cursorPosition.getColumn(), cursorPosition.getRow()));
+                dirtyTerminalCells.add(new Point(cursorPoint.getColumn(), cursorPoint.getRow()));
                 if(i == 1) {
-                    dirtyTerminalCells.add(new TerminalPosition(cursorPosition.getColumn() + 1, cursorPosition.getRow()));
+                    dirtyTerminalCells.add(new Point(cursorPoint.getColumn() + 1, cursorPoint.getRow()));
                 }
                 else if(i == 2) {
-                    dirtyTerminalCells.add(new TerminalPosition(cursorPosition.getColumn() - 1, cursorPosition.getRow()));
+                    dirtyTerminalCells.add(new Point(cursorPoint.getColumn() - 1, cursorPoint.getRow()));
                 }
-                if(dirtyTerminalCells.size() > (terminalSize.getColumns() * terminalSize.getRows() * 0.9)) {
+                if(dirtyTerminalCells.size() > (dimension.getColumns() * dimension.getRows() * 0.9)) {
                     setWholeBufferDirty();
                 }
             }
 
             //Advance cursor
-            cursorPosition = cursorPosition.withRelativeColumn(doubleWidth ? 2 : 1);
-            if(cursorPosition.getColumn() > terminalSize.getColumns()) {
+            cursorPoint = cursorPoint.withRelativeColumn(doubleWidth ? 2 : 1);
+            if(cursorPoint.getColumn() > dimension.getColumns()) {
                 moveCursorToNextLine();
             }
         }
@@ -392,8 +392,8 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
      * Moves the text cursor to the first column of the next line and trims the backlog of necessary
      */
     private void moveCursorToNextLine() {
-        cursorPosition = cursorPosition.withColumn(0).withRelativeRow(1);
-        if(cursorPosition.getRow() >= currentTextBuffer.getLineCount()) {
+        cursorPoint = cursorPoint.withColumn(0).withRelativeRow(1);
+        if(cursorPoint.getRow() >= currentTextBuffer.getLineCount()) {
             currentTextBuffer.newLine();
         }
         trimBufferBacklog();
@@ -415,19 +415,19 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
         if(currentTextBuffer == privateModeTextBuffer) {
             bufferBacklogSize = 0;
         }
-        int trimBacklogRows = currentTextBuffer.getLineCount() - (bufferBacklogSize + terminalSize.getRows());
+        int trimBacklogRows = currentTextBuffer.getLineCount() - (bufferBacklogSize + dimension.getRows());
         if(trimBacklogRows > 0) {
             currentTextBuffer.removeTopLines(trimBacklogRows);
             // Adjust cursor position
-            cursorPosition = cursorPosition.withRelativeRow(-trimBacklogRows);
+            cursorPoint = cursorPoint.withRelativeRow(-trimBacklogRows);
             correctCursor();
             if(!wholeBufferDirty) {
                 // Adjust all "dirty" positions
-                TreeSet<TerminalPosition> newDirtySet = new TreeSet<>();
-                for(TerminalPosition dirtyPosition: dirtyTerminalCells) {
-                    TerminalPosition adjustedPosition = dirtyPosition.withRelativeRow(-trimBacklogRows);
-                    if(adjustedPosition.getRow() >= 0) {
-                        newDirtySet.add(adjustedPosition);
+                TreeSet<Point> newDirtySet = new TreeSet<>();
+                for(Point dirtyPoint : dirtyTerminalCells) {
+                    Point adjustedPoint = dirtyPoint.withRelativeRow(-trimBacklogRows);
+                    if(adjustedPoint.getRow() >= 0) {
+                        newDirtySet.add(adjustedPoint);
                     }
                 }
                 dirtyTerminalCells.clear();
@@ -437,12 +437,12 @@ public class DefaultVirtualTerminal extends AbstractTerminal implements VirtualT
     }
 
     private void correctCursor() {
-        this.cursorPosition = cursorPosition.withColumn(Math.min(cursorPosition.getColumn(), terminalSize.getColumns() - 1));
-        this.cursorPosition = cursorPosition.withRow(Math.min(cursorPosition.getRow(), Math.max(terminalSize.getRows(), getBufferLineCount()) - 1));
-        this.cursorPosition =
-                new TerminalPosition(
-                        Math.max(cursorPosition.getColumn(), 0),
-                        Math.max(cursorPosition.getRow(), 0));
+        this.cursorPoint = cursorPoint.withColumn(Math.min(cursorPoint.getColumn(), dimension.getColumns() - 1));
+        this.cursorPoint = cursorPoint.withRow(Math.min(cursorPoint.getRow(), Math.max(dimension.getRows(), getBufferLineCount()) - 1));
+        this.cursorPoint =
+                new Point(
+                        Math.max(cursorPoint.getColumn(), 0),
+                        Math.max(cursorPoint.getRow(), 0));
     }
 
     @Override

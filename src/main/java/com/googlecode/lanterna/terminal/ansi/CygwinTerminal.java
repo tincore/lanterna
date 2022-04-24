@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal.ansi;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -68,19 +68,19 @@ public class CygwinTerminal extends UnixLikeTTYTerminal {
     }
 
     @Override
-    protected TerminalSize findTerminalSize() {
+    protected Dimension findTerminalSize() {
         try {
             String stty = runSTTYCommand("-a");
             Matcher matcher = STTY_SIZE_PATTERN.matcher(stty);
             if(matcher.matches()) {
-                return new TerminalSize(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(1)));
+                return new Dimension(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(1)));
             }
             else {
-                return new TerminalSize(80, 24);
+                return new Dimension(80, 24);
             }
         }
         catch(Throwable e) {
-            return new TerminalSize(80, 24);
+            return new Dimension(80, 24);
         }
     }
 

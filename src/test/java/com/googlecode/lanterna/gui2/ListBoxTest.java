@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.io.IOException;
 
@@ -30,7 +30,7 @@ import static com.googlecode.lanterna.gui2.Panels.vertical;
  *
  * @author Martin
  */
-public class ListBoxTest extends TestBase {
+public class ListBoxTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new ListBoxTest().run(args);
     }
@@ -39,7 +39,7 @@ public class ListBoxTest extends TestBase {
     public void init(WindowBasedTextGUI textGUI) {
         final BasicWindow window = new BasicWindow("ListBox test");
 
-        TerminalSize size = new TerminalSize(14, 10);
+        Dimension size = new Dimension(14, 10);
         CheckBoxList<String> checkBoxList = new CheckBoxList<>(size);
         RadioBoxList<String> radioBoxList = new RadioBoxList<>(size);
         ActionListBox actionListBox = new ActionListBox(size);

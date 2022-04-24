@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.input;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 
 /**
  * MouseAction, a KeyStroke in disguise, this class contains the information of a single mouse action event.
@@ -26,20 +26,20 @@ import com.googlecode.lanterna.TerminalPosition;
 public class MouseAction extends KeyStroke {
     private final MouseActionType actionType;
     private final int button;
-    private final TerminalPosition position;
+    private final Point point;
 
     /**
      * Constructs a MouseAction based on an action type, a button and a location on the screen
      * @param actionType The kind of mouse event
      * @param button Which button is involved (no button = 0, left button = 1, middle (wheel) button = 2,
      *               right button = 3, scroll wheel up = 4, scroll wheel down = 5)
-     * @param position Where in the terminal is the mouse cursor located
+     * @param point Where in the terminal is the mouse cursor located
      */
-    public MouseAction(MouseActionType actionType, int button, TerminalPosition position) {
+    public MouseAction(MouseActionType actionType, int button, Point point) {
         super(KeyType.MouseEvent, false, false);
         this.actionType = actionType;
         this.button = button;
-        this.position = position;
+        this.point = point;
     }
 
     /**
@@ -71,8 +71,8 @@ public class MouseAction extends KeyStroke {
      * The location of the mouse cursor when this event was generated.
      * @return Location of the mouse cursor
      */
-    public TerminalPosition getPosition() {
-        return position;
+    public Point getPosition() {
+        return point;
     }
     
     public boolean isMouseDown() {
@@ -93,6 +93,6 @@ public class MouseAction extends KeyStroke {
 
     @Override
     public String toString() {
-        return "MouseAction{actionType=" + actionType + ", button=" + button + ", position=" + position + '}';
+        return "MouseAction{actionType=" + actionType + ", button=" + button + ", position=" + point + '}';
     }
 }

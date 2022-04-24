@@ -18,212 +18,28 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.bundle.*;
-import com.googlecode.lanterna.graphics.*;
-import com.googlecode.lanterna.input.*;
+import com.googlecode.lanterna.bundle.LanternaThemes;
 
-public class ImageComponentTest extends TestBase {
+import static com.googlecode.lanterna.gui2.Borders.singleLine;
+
+public class ImageComponentTest extends AbstractGuiTest {
     public static void main(String[] args) throws Exception {
         new ImageComponentTest().run(args);
     }
-    
-    static final class ExampleController {
-        ImageComponent selectedImageComponent;
-        public void setSelectedImage(TextImage image) {
-            selectedImageComponent.setTextImage(image);
-        }
-    }
-    
-    static String[] IMAGE = new String[] {
-        "-====================================================-",
-        "xx                                                  xx",
-        "xx  X                                            X  xx",
-        "xx                                                  xx",
-        "xx    .d8b.  d8888b.  .o88b.                        xx",
-        "xx   d8' `8b 88  `8D d8P  Y8                        xx",
-        "xx   88ooo88 88oooY' 8P            asdfasdf         xx",
-        "xx   88~~~88 88~~~b. 8b                             xx",
-        "xx   88   88 88   8D Y8b  d8              1234      xx",
-        "xx   YP   YP Y8888P'  `Y88P'                        xx",
-        "xx                                 asdfasdf         xx",
-        "xx                                                  xx",
-        "xx   db    db db    db d88888D                      xx",
-        "xx   `8b  d8' `8b  d8' YP  d8'                      xx",
-        "xx    `8bd8'   `8bd8'     d8'          xxxxxxx      xx",
-        "xx    .dPYb.     88      d8'           x     x      xx",
-        "xx   .8P  Y8.    88     d8' db         x     x      xx",
-        "xx   YP    YP    YP    d88888P         x     x      xx",
-        "xx                                     xxxxxxx      xx",
-        "xx  X                                            X  xx",
-        "xx                                                  xx",
-        "-====================================================-"
-    };
-    
-    static String[] IMAGE_BLANK = new String[] {
-        "-=================================-",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "x                                 x",
-        "-=================================-"
-    };
-    
-    static String[] IMAGE_X = new String[] {
-        "-=================================-",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "xx     XXXXXXX       XXXXXXX     xx",
-        "xx     X:::::X       X:::::X     xx",
-        "xx     X:::::X       X:::::X     xx",
-        "xx     X::::::X     X::::::X     xx",
-        "xx     XXX:::::X   X:::::XXX     xx",
-        "xx        X:::::X X:::::X        xx",
-        "xx         X:::::X:::::X         xx",
-        "xx          X:::::::::X          xx",
-        "xx          X:::::::::X          xx",
-        "xx         X:::::X:::::X         xx",
-        "xx        X:::::X X:::::X        xx",
-        "xx     XXX:::::X   X:::::XXX     xx",
-        "xx     X::::::X     X::::::X     xx",
-        "xx     X:::::X       X:::::X     xx",
-        "xx     X:::::X       X:::::X     xx",
-        "xx     XXXXXXX       XXXXXXX     xx",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "-=================================-"
-    };
-    
-    static String[] IMAGE_Y = new String[] {
-        "-=================================-",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "xx     YYYYYYY       YYYYYYY     xx",
-        "xx     Y:::::Y       Y:::::Y     xx",
-        "xx     Y:::::Y       Y:::::Y     xx",
-        "xx     Y::::::Y     Y::::::Y     xx",
-        "xx     YYY:::::Y   Y:::::YYY     xx",
-        "xx        Y:::::Y Y:::::Y        xx",
-        "xx         Y:::::Y:::::Y         xx",
-        "xx          Y:::::::::Y          xx",
-        "xx           Y:::::::Y           xx",
-        "xx            Y:::::Y            xx",
-        "xx            Y:::::Y            xx",
-        "xx            Y:::::Y            xx",
-        "xx            Y:::::Y            xx",
-        "xx         YYYY:::::YYYY         xx",
-        "xx         Y:::::::::::Y         xx",
-        "xx         YYYYYYYYYYYYY         xx",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "-=================================-"
-    };
-
-    
-    static String[] IMAGE_Z = new String[] {
-        "-=================================-",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "xx     ZZZZZZZZZZZZZZZZZZZ       xx",
-        "xx     Z:::::::::::::::::Z       xx",
-        "xx     Z:::::::::::::::::Z       xx",
-        "xx     Z:::ZZZZZZZZ:::::Z        xx",
-        "xx     ZZZZZ     Z:::::Z         xx",
-        "xx             Z:::::Z           xx",
-        "xx            Z:::::Z            xx",
-        "xx           Z:::::Z             xx",
-        "xx          Z:::::Z              xx",
-        "xx         Z:::::Z               xx",
-        "xx        Z:::::Z                xx",
-        "xx     ZZZ:::::Z     ZZZZZ       xx",
-        "xx     Z::::::ZZZZZZZZ:::Z       xx",
-        "xx     Z:::::::::::::::::Z       xx",
-        "xx     Z:::::::::::::::::Z       xx",
-        "xx     ZZZZZZZZZZZZZZZZZZZ       xx",
-        "xx                               xx",
-        "xx  X                         X  xx",
-        "xx                               xx",
-        "-=================================-"
-    };
 
     @Override
     public void init(WindowBasedTextGUI textGUI) {
-        final BasicWindow window = new BasicWindow("ImageComponentTest");
-        window.setTheme(LanternaThemes.getRegisteredTheme("conqueror"));
 
-        ExampleController controller = new ExampleController();
-        controller.selectedImageComponent = makeImageComponent(controller, IMAGE_BLANK);
-        
-        ImageComponent imageComponentX = makeImageComponent(controller, IMAGE_X);
-        ImageComponent imageComponentY = makeImageComponent(controller, IMAGE_Y);
-        ImageComponent imageComponentZ = makeImageComponent(controller, IMAGE_Z);
-        
-        
-        
-        Panel mainPanel = new Panel();
-        mainPanel.setLayoutManager(new GridLayout(2));
-        mainPanel.add(imageComponentX.withBorder(Borders.singleLine("x")));
-        mainPanel.add(imageComponentY.withBorder(Borders.singleLine("y")));
-        mainPanel.add(imageComponentZ.withBorder(Borders.singleLine("z")));
-        mainPanel.add(controller.selectedImageComponent.withBorder(Borders.singleLine("selection")));
-        
-        
-        window.setComponent(mainPanel);
-        textGUI.addWindow(window);
+        ImageComponent b = createImageComponent("B", IMAGE_BLANK);
+
+        textGUI.addWindow(new BasicWindow("ImageComponentTest")
+            .setTheme(LanternaThemes.getTheme("conqueror"))
+            .setComponent(Panels.grid(2,
+                singleLine("x", createImageComponent("X", IMAGE_X).setKeyStrokeListener((k, r, s) -> b.setTextImage(((ImageComponent) s).getTextImage()))),
+                singleLine("y", createImageComponent("Y", IMAGE_Y).setKeyStrokeListener((k1, r1, s1) -> b.setTextImage(((ImageComponent) s1).getTextImage()))),
+                singleLine("z", createImageComponent("Z", IMAGE_Z).setKeyStrokeListener((k2, r2, s2) -> b.setTextImage(((ImageComponent) s2).getTextImage()))),
+                singleLine("click space", b))));
     }
-    
-    
-    ImageComponent makeImageComponent(ExampleController controller, String[] image) {
-        TerminalSize imageSize = new TerminalSize(image[0].length(), image.length);
-        TextImage textImage = new BasicTextImage(imageSize);
-        for (int row = 0; row < image.length; row++) {
-            fillImageLine(textImage, row, image[row]);
-        }
-        
-        ImageComponent imageComponent = new ImageComponent() {
-            @Override
-            public Result onKeyStroke(KeyStroke keyStroke) {
-                if (isMouseDown(keyStroke)) {
-                    controller.setSelectedImage(textImage);
-                    return Result.HANDLED;
-                }
-                return super.onKeyStroke(keyStroke);
-            }
-        };
-        
-        imageComponent.setTextImage(textImage);
-        return imageComponent;
-    }
-    
-    void fillImageLine(TextImage textImage, int row, String line) {
-        for (int x = 0; x < line.length(); x++) {
-            char c = line.charAt(x);
-            TextCharacter textCharacter = new TextCharacter(c);
-            textImage.setCharacterAt(x, row, textCharacter);
-        }
-    }
+
 }
 

@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2.dialogs;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.gui2.*;
 
@@ -33,11 +33,11 @@ import java.util.List;
 public class ListSelectDialog<T> extends DialogWindow {
     private T result;
 
-    public ListSelectDialog(String title, String description, TerminalSize listBoxPreferredSize, boolean cancellable, T... items) {
+    public ListSelectDialog(String title, String description, Dimension listBoxPreferredSize, boolean cancellable, T... items) {
         this(title, description, listBoxPreferredSize, cancellable, List.of(items));
     }
 
-    public ListSelectDialog(String title, String description, TerminalSize listBoxPreferredSize, boolean cancellable, List<T> items) {
+    public ListSelectDialog(String title, String description, Dimension listBoxPreferredSize, boolean cancellable, List<T> items) {
         super(title);
         if (items.isEmpty()) {
             throw new IllegalStateException("ListSelectDialog needs at least one item");
@@ -52,7 +52,7 @@ public class ListSelectDialog<T> extends DialogWindow {
         if (description != null) {
             mainPanel
                 .add(new Label(description))
-                .add(new EmptySpace(TerminalSize.ONE));
+                .add(new EmptySpace(Dimension.ONE));
         }
         listBox.setLayoutData(
             GridLayout.createLayoutData(
@@ -62,7 +62,7 @@ public class ListSelectDialog<T> extends DialogWindow {
                 false))
             .addTo(mainPanel);
 
-        mainPanel.add(new EmptySpace(TerminalSize.ONE));
+        mainPanel.add(new EmptySpace(Dimension.ONE));
 
         if (cancellable) {
             Panel buttonPanel = new Panel(new GridLayout(2).setHorizontalSpacing(1))
@@ -112,7 +112,7 @@ public class ListSelectDialog<T> extends DialogWindow {
             width = Math.max(width, TerminalTextUtils.getColumnWidth(item.toString()));
         }
         width += 2;
-        return showDialog(textGUI, title, description, new TerminalSize(width, listBoxHeight), items);
+        return showDialog(textGUI, title, description, new Dimension(width, listBoxHeight), items);
     }
 
     /**
@@ -127,7 +127,7 @@ public class ListSelectDialog<T> extends DialogWindow {
      * @return The selected item or {@code null} if cancelled
      */
     @SafeVarargs
-    public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, TerminalSize listBoxSize, T... items) {
+    public static <T> T showDialog(WindowBasedTextGUI textGUI, String title, String description, Dimension listBoxSize, T... items) {
         ListSelectDialog<T> listSelectDialog = new ListSelectDialogBuilder<T>()
             .title(title)
             .description(description)

@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 
 import java.util.*;
 
@@ -385,8 +385,8 @@ public class GridLayout implements LayoutManager {
     }
 
     @Override
-    public TerminalSize getPreferredSize(List<Component> components) {
-        TerminalSize preferredSize = TerminalSize.ZERO;
+    public Dimension getPreferredSize(List<Component> components) {
+        Dimension preferredSize = Dimension.ZERO;
         if(components.isEmpty()) {
             return preferredSize.withRelative(
                     leftMarginSize + rightMarginSize,
@@ -412,12 +412,12 @@ public class GridLayout implements LayoutManager {
     }
 
     @Override
-    public void doLayout(TerminalSize area, List<Component> components) {
+    public void doLayout(Dimension area, List<Component> components) {
         //Sanity check, if the area is way too small, just return
         Component[][] table = buildTable(components);
         table = eliminateUnusedRowsAndColumns(table);
 
-        if(area.equals(TerminalSize.ZERO) ||
+        if(area.equals(Dimension.ZERO) ||
                 table.length == 0 ||
                 area.getColumns() <= leftMarginSize + rightMarginSize + ((table[0].length - 1) * horizontalSpacing) ||
                 area.getRows() <= bottomMarginSize + topMarginSize + ((table.length - 1) * verticalSpacing)) {
@@ -428,8 +428,8 @@ public class GridLayout implements LayoutManager {
         //Adjust area to the margins
         area = area.withRelative(-leftMarginSize - rightMarginSize, -topMarginSize - bottomMarginSize);
 
-        Map<Component, TerminalSize> sizeMap = new IdentityHashMap<>();
-        Map<Component, TerminalPosition> positionMap = new IdentityHashMap<>();
+        Map<Component, Dimension> sizeMap = new IdentityHashMap<>();
+        Map<Component, Point> positionMap = new IdentityHashMap<>();
 
         //Figure out each column first, this can be done independently of the row heights
         int[] columnWidths = getPreferredColumnWidths(table);
@@ -439,7 +439,7 @@ public class GridLayout implements LayoutManager {
 
         //Next, start shrinking to make sure it fits the size of the area we are trying to lay out on.
         //Notice we subtract the horizontalSpacing to take the space between components into account
-        TerminalSize areaWithoutHorizontalSpacing = area.withRelativeColumns(-horizontalSpacing * (table[0].length - 1));
+        Dimension areaWithoutHorizontalSpacing = area.withRelativeColumns(-horizontalSpacing * (table[0].length - 1));
         int totalWidth = shrinkWidthToFitArea(areaWithoutHorizontalSpacing, columnWidths);
 
         //Finally, if there is extra space, make the expandable columns larger
@@ -450,7 +450,7 @@ public class GridLayout implements LayoutManager {
         //Now repeat for rows
         int[] rowHeights = getPreferredRowHeights(table);
         Set<Integer> expandableRows = getExpandableRows(table);
-        TerminalSize areaWithoutVerticalSpacing = area.withRelativeRows(-verticalSpacing * (table.length - 1));
+        Dimension areaWithoutVerticalSpacing = area.withRelativeRows(-verticalSpacing * (table.length - 1));
         int totalHeight = shrinkHeightToFitArea(areaWithoutVerticalSpacing, rowHeights);
         while(areaWithoutVerticalSpacing.getRows() > totalHeight && !expandableRows.isEmpty()) {
             totalHeight = grabExtraVerticalSpace(areaWithoutVerticalSpacing, rowHeights, expandableRows, totalHeight);
@@ -458,15 +458,15 @@ public class GridLayout implements LayoutManager {
 
         //Ok, all constraints are in place, we can start placing out components. To simplify, do it horizontally first
         //and vertically after
-        TerminalPosition tableCellTopLeft = TerminalPosition.TOP_LEFT_CORNER;
+        Point tableCellTopLeft = Point.TOP_LEFT_CORNER;
         for(int y = 0; y < table.length; y++) {
             tableCellTopLeft = tableCellTopLeft.withColumn(0);
             for(int x = 0; x < table[y].length; x++) {
                 Component component = table[y][x];
                 if(component != null && !positionMap.containsKey(component)) {
                     GridLayoutData layoutData = getLayoutData(component);
-                    TerminalSize size = component.getPreferredSize();
-                    TerminalPosition position = tableCellTopLeft;
+                    Dimension size = component.getPreferredSize();
+                    Point point = tableCellTopLeft;
 
                     int availableHorizontalSpace = 0;
                     int availableVerticalSpace = 0;
@@ -483,10 +483,10 @@ public class GridLayout implements LayoutManager {
 
                     switch (layoutData.horizontalAlignment) {
                         case CENTER:
-                            position = position.withRelativeColumn((availableHorizontalSpace - size.getColumns()) / 2);
+                            point = point.withRelativeColumn((availableHorizontalSpace - size.getColumns()) / 2);
                             break;
                         case END:
-                            position = position.withRelativeColumn(availableHorizontalSpace - size.getColumns());
+                            point = point.withRelativeColumn(availableHorizontalSpace - size.getColumns());
                             break;
                         case FILL:
                             size = size.withColumns(availableHorizontalSpace);
@@ -496,10 +496,10 @@ public class GridLayout implements LayoutManager {
                     }
                     switch (layoutData.verticalAlignment) {
                         case CENTER:
-                            position = position.withRelativeRow((availableVerticalSpace - size.getRows()) / 2);
+                            point = point.withRelativeRow((availableVerticalSpace - size.getRows()) / 2);
                             break;
                         case END:
-                            position = position.withRelativeRow(availableVerticalSpace - size.getRows());
+                            point = point.withRelativeRow(availableVerticalSpace - size.getRows());
                             break;
                         case FILL:
                             size = size.withRows(availableVerticalSpace);
@@ -509,7 +509,7 @@ public class GridLayout implements LayoutManager {
                     }
 
                     sizeMap.put(component, size);
-                    positionMap.put(component, position);
+                    positionMap.put(component, point);
                 }
                 tableCellTopLeft = tableCellTopLeft.withRelativeColumn(columnWidths[x] + horizontalSpacing);
             }
@@ -674,7 +674,7 @@ public class GridLayout implements LayoutManager {
         return expandableRows;
     }
 
-    private int shrinkWidthToFitArea(TerminalSize area, int[] columnWidths) {
+    private int shrinkWidthToFitArea(Dimension area, int[] columnWidths) {
         int totalWidth = 0;
         for(int width: columnWidths) {
             totalWidth += width;
@@ -695,7 +695,7 @@ public class GridLayout implements LayoutManager {
         return totalWidth;
     }
 
-    private int shrinkHeightToFitArea(TerminalSize area, int[] rowHeights) {
+    private int shrinkHeightToFitArea(Dimension area, int[] rowHeights) {
         int totalHeight = 0;
         for(int height: rowHeights) {
             totalHeight += height;
@@ -716,7 +716,7 @@ public class GridLayout implements LayoutManager {
         return totalHeight;
     }
 
-    private int grabExtraHorizontalSpace(TerminalSize area, int[] columnWidths, Set<Integer> expandableColumns, int totalWidth) {
+    private int grabExtraHorizontalSpace(Dimension area, int[] columnWidths, Set<Integer> expandableColumns, int totalWidth) {
         for(int columnIndex: expandableColumns) {
             columnWidths[columnIndex]++;
             totalWidth++;
@@ -727,7 +727,7 @@ public class GridLayout implements LayoutManager {
         return totalWidth;
     }
 
-    private int grabExtraVerticalSpace(TerminalSize area, int[] rowHeights, Set<Integer> expandableRows, int totalHeight) {
+    private int grabExtraVerticalSpace(Dimension area, int[] rowHeights, Set<Integer> expandableRows, int totalHeight) {
         for(int rowIndex: expandableRows) {
             rowHeights[rowIndex]++;
             totalHeight++;

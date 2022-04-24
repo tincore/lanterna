@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.screen;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -44,9 +44,9 @@ public class VirtualScreenTest {
 
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.setBackgroundColor(TextColor.ANSI.GREEN);
-        textGraphics.fillTriangle(new TerminalPosition(40, 0), new TerminalPosition(25,19), new TerminalPosition(65, 19), ' ');
+        textGraphics.fillTriangle(new Point(40, 0), new Point(25,19), new Point(65, 19), ' ');
         textGraphics.setBackgroundColor(TextColor.ANSI.RED);
-        textGraphics.drawRectangle(TerminalPosition.TOP_LEFT_CORNER, screen.getTerminalSize(), ' ');
+        textGraphics.drawRectangle(Point.TOP_LEFT_CORNER, screen.getTerminalSize(), ' ');
         screen.refresh();
 
         while(true) {

@@ -25,11 +25,11 @@ import java.util.Objects;
  *
  * @author ginkoblongata
  */
-public class TerminalRectangle {
+public class Rectangle {
     
     // one of the benefits of immutable: ease of usage
-    public final TerminalPosition position;
-    public final TerminalSize size;
+    public final Point point;
+    public final Dimension size;
     public final int x;
     public final int y;
     public final int width;
@@ -37,7 +37,7 @@ public class TerminalRectangle {
     
     public final int xAndWidth;
     public final int yAndHeight;
-    
+
     /**
      * Creates a new terminal rect representation at the supplied x y position with the supplied width and height.
      *
@@ -46,9 +46,9 @@ public class TerminalRectangle {
      * @param width number of columns
      * @param height number of rows
      */
-    public TerminalRectangle(int x, int y, int width, int height) {
-        position = new TerminalPosition(x, y);
-        size = new TerminalSize(width, height);
+    public Rectangle(int x, int y, int width, int height) {
+        point = new Point(x, y);
+        size = new Dimension(width, height);
         
         this.x = x;
         this.y = y;
@@ -77,8 +77,8 @@ public class TerminalRectangle {
      * @param columns Width of the new rect, in columns
      * @return New rect based on this one, but with a new width
      */
-    public TerminalRectangle withColumns(int columns) {
-        return new TerminalRectangle(x, y, columns, height);
+    public Rectangle withColumns(int columns) {
+        return new Rectangle(x, y, columns, height);
     }
     
     /**
@@ -86,11 +86,11 @@ public class TerminalRectangle {
      * @param rows Height of the new rect, in rows
      * @return New rect based on this one, but with a new height
      */
-    public TerminalRectangle withRows(int rows) {
-        return new TerminalRectangle(x, y, width, rows);
+    public Rectangle withRows(int rows) {
+        return new Rectangle(x, y, width, rows);
     }
 
-    public boolean whenContains(TerminalPosition p, Runnable op) {
+    public boolean whenContains(Point p, Runnable op) {
         return whenContains(p.getColumn(), p.getRow(), op);
     }
     public boolean whenContains(int x, int y, Runnable op) {
@@ -111,12 +111,12 @@ public class TerminalRectangle {
     public boolean equals(Object obj) {
         return obj != null
             && obj.getClass() == getClass()
-            && Objects.equals(position, ((TerminalRectangle)obj).position)
-            && Objects.equals(size, ((TerminalRectangle)obj).size);
+            && Objects.equals(point, ((Rectangle)obj).point)
+            && Objects.equals(size, ((Rectangle)obj).size);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, size);
+        return Objects.hash(point, size);
     }
 }

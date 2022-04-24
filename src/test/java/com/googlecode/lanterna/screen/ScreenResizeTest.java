@@ -18,9 +18,9 @@
  */
 package com.googlecode.lanterna.screen;
 
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.TestTerminalFactory;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class ScreenResizeTest {
     public ScreenResizeTest(String[] args) throws InterruptedException, IOException {
         screen = new TestTerminalFactory(args).createScreen();
         screen.start();
-        screen.setCursorPosition(new TerminalPosition(0, 0));
+        screen.setCursorPosition(new Point(0, 0));
         putStrings("Initial setup, please resize the window");
 
         long now = System.currentTimeMillis();

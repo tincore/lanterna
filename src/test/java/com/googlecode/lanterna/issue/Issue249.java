@@ -21,7 +21,7 @@ package com.googlecode.lanterna.issue;
 
 import java.io.IOException;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.*;
@@ -35,7 +35,7 @@ public class Issue249 {
         Screen screen = new TerminalScreen(terminal);
         screen.start();
 
-        TerminalSize screenSize = screen.getTerminalSize();
+        Dimension screenSize = screen.getTerminalSize();
 
         // Create panel to hold components
         Panel panel = new Panel();

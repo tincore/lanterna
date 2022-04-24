@@ -18,8 +18,6 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.screen.Screen;
-
 import java.util.Collection;
 
 /**
@@ -104,7 +102,7 @@ public interface WindowBasedTextGUI extends TextGUI {
      * terminal area and is always behind all windows.
      * @return The {@code BasePane} used by this {@code WindowBasedTextGUI}
      */
-    BasePane getBackgroundPane();
+    RootPane getBackgroundPane();
 
     /**
      * Returns the {@link WindowPostRenderer} for this {@link WindowBasedTextGUI}

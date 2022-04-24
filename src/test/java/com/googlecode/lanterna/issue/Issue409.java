@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.*;
@@ -29,6 +29,8 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
 
 public class Issue409 {
     public static void main(String[] args) {
@@ -46,7 +48,7 @@ public class Issue409 {
                 .add(new EmptySpace())
                 .add(cyclingThemesTextBox)
                 .add(new EmptySpace())
-                .add(new Button("Close", s -> window.close())));
+                .add(createButtonCloseContainer()));
 
             gui.addWindow(window);
             new Thread(() -> {
@@ -90,7 +92,7 @@ public class Issue409 {
 
         public CyclingThemesTextBox() {
             super("Cycling themes: default");
-            setPreferredSize(new TerminalSize(40, 1));
+            setPreferredSize(new Dimension(40, 1));
             systemThemes = new ArrayList<>(LanternaThemes.getRegisteredThemes());
             index = 0;
         }
@@ -100,7 +102,7 @@ public class Issue409 {
                 index = 0;
             }
             String name = systemThemes.get(index);
-            Theme theme = LanternaThemes.getRegisteredTheme(name);
+            Theme theme = LanternaThemes.getTheme(name);
             setTheme(theme);
             setText("Cycling themes: " + name);
         }

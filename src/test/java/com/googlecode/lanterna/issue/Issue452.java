@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.TextBox.Style;
 import com.googlecode.lanterna.gui2.menu.Menu;
@@ -127,7 +127,7 @@ public class Issue452 {
 
     public static void main(String[] args) throws IOException {
         try (Screen screen = new DefaultTerminalFactory().setTelnetPort(23000)
-            .setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE).setInitialTerminalSize(new TerminalSize(100, 100))
+            .setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE).setInitialTerminalSize(new Dimension(100, 100))
             .createScreen()) {
             screen.start();
             WindowBasedTextGUI gui = new MultiWindowTextGUI(screen);

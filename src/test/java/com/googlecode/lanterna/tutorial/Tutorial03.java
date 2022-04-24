@@ -58,9 +58,9 @@ public class Tutorial03 {
             Now let's draw some random content in the screen buffer
              */
             Random random = new Random();
-            TerminalSize terminalSize = screen.getTerminalSize();
-            for(int column = 0; column < terminalSize.getColumns(); column++) {
-                for(int row = 0; row < terminalSize.getRows(); row++) {
+            Dimension dimension = screen.getTerminalSize();
+            for(int column = 0; column < dimension.getColumns(); column++) {
+                for(int row = 0; row < dimension.getRows(); row++) {
                     screen.setCharacter(column, row, new TextCharacter(
                             ' ',
                             TextColor.ANSI.DEFAULT,
@@ -113,9 +113,9 @@ public class Tutorial03 {
                 calling) and update the buffer dimensions accordingly. It returns null if the terminal has not changed
                 size since last time.
                  */
-                TerminalSize newSize = screen.doResizeIfNecessary();
+                Dimension newSize = screen.doResizeIfNecessary();
                 if(newSize != null) {
-                    terminalSize = newSize;
+                    dimension = newSize;
                 }
 
                 // Increase this to increase speed
@@ -124,9 +124,9 @@ public class Tutorial03 {
                     /*
                     We pick a random location
                      */
-                        TerminalPosition cellToModify = new TerminalPosition(
-                                random.nextInt(terminalSize.getColumns()),
-                                random.nextInt(terminalSize.getRows()));
+                        Point cellToModify = new Point(
+                                random.nextInt(dimension.getColumns()),
+                                random.nextInt(dimension.getRows()));
 
                     /*
                     Pick a random background color again
@@ -148,10 +148,10 @@ public class Tutorial03 {
                 Just like with Terminal, it's probably easier to draw using TextGraphics. Let's do that to put a little
                 box with information on the size of the terminal window
                  */
-                String sizeLabel = "Terminal Size: " + terminalSize;
-                TerminalPosition labelBoxTopLeft = new TerminalPosition(1, 1);
-                TerminalSize labelBoxSize = new TerminalSize(sizeLabel.length() + 2, 3);
-                TerminalPosition labelBoxTopRightCorner = labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 1);
+                String sizeLabel = "Terminal Size: " + dimension;
+                Point labelBoxTopLeft = new Point(1, 1);
+                Dimension labelBoxSize = new Dimension(sizeLabel.length() + 2, 3);
+                Point labelBoxTopRightCorner = labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 1);
                 TextGraphics textGraphics = screen.newTextGraphics();
                 //This isn't really needed as we are overwriting everything below anyway, but just for demonstrative purpose
                 textGraphics.fillRectangle(labelBoxTopLeft, labelBoxSize, ' ');

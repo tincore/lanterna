@@ -18,39 +18,31 @@
  */
 package com.googlecode.lanterna.issue;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.screen.*;
-import com.googlecode.lanterna.terminal.*;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class Issue190 {
     public static void main(String[] args) throws IOException {
         DefaultTerminalFactory factory = new DefaultTerminalFactory();
-        factory.setInitialTerminalSize(new TerminalSize(150,50));
+        factory.setInitialTerminalSize(new Dimension(150, 50));
         factory.setTerminalEmulatorTitle("name");
         Terminal terminal = factory.createTerminal();
         TerminalScreen screen = new TerminalScreen(terminal);
         screen.start();
+        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
 
-        Panel panel = new Panel();
-        panel.setLayoutManager(new BorderLayout());
+        Panel panel = Panels.border()
+            .add(new ActionListBox().withBorder(Borders.singleLine("Channels")), BorderLayout.Location.LEFT);
 
-        ActionListBox channels = new ActionListBox();
-        channels.setLayoutData(BorderLayout.Location.LEFT);
-        panel.add(channels.withBorder(Borders.singleLine("Channels")));
+        panel.add(new TextBox("", TextBox.Style.MULTI_LINE).setReadOnly(true).setLayoutData(BorderLayout.Location.CENTER).withBorder(Borders.singleLine("Log")));
 
-        TextBox log = new TextBox("", TextBox.Style.MULTI_LINE);
-        log.setReadOnly(true);
-        log.setLayoutData(BorderLayout.Location.CENTER);
-        panel.add(log.withBorder(Borders.singleLine("Log")));
-
-        Panel options = new Panel();
-        options.setLayoutData(BorderLayout.Location.BOTTOM);
-
+        Panel options = new Panel().setLayoutData(BorderLayout.Location.BOTTOM);
         options.withBorder(Borders.singleLine("Send Message"));
 
         options.setLayoutManager(new BorderLayout());
@@ -61,12 +53,8 @@ public class Issue190 {
 
         panel.add(options.withBorder(Borders.singleLine("Send Message")));
 
-        BasicWindow window = new BasicWindow();
-        window.setComponent(panel.withBorder(Borders.doubleLine("DarkOwlBot")));
-
-        window.setHints(Arrays.asList(Window.Hint.EXPANDED, Window.Hint.FIT_TERMINAL_WINDOW));
-
-        MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
-        gui.addWindowAndWait(window);
+        gui.addWindowAndWait(new BasicWindow()
+            .setHints(Window.Hint.EXPANDED, Window.Hint.FIT_TERMINAL_WINDOW)
+            .setComponent(panel.withBorder(Borders.doubleLine("DarkOwlBot"))));
     }
 }

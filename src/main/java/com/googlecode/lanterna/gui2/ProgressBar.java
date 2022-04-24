@@ -18,8 +18,8 @@
  */
 package com.googlecode.lanterna.gui2;
 
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.Symbols;
-import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
@@ -266,7 +266,7 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
     public static class DefaultProgressBarRenderer implements ComponentRenderer<ProgressBar> {
         @Override
         public void drawComponent(TextGUIGraphics graphics, ProgressBar component) {
-            TerminalSize size = graphics.getSize();
+            Dimension size = graphics.getSize();
             if (size.getRows() == 0 || size.getColumns() == 0) {
                 return;
             }
@@ -316,14 +316,14 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
         }
 
         @Override
-        public TerminalSize getPreferredSize(ProgressBar component) {
+        public Dimension getPreferredSize(ProgressBar component) {
             int preferredWidth = component.getPreferredWidth();
             if (preferredWidth > 0) {
-                return new TerminalSize(preferredWidth, 1);
+                return new Dimension(preferredWidth, 1);
             } else if (component.getLabelFormat() != null && !component.getLabelFormat().trim().isEmpty()) {
-                return new TerminalSize(TerminalTextUtils.getColumnWidth(String.format(component.getLabelFormat(), 100.0f)) + 2, 1);
+                return new Dimension(TerminalTextUtils.getColumnWidth(String.format(component.getLabelFormat(), 100.0f)) + 2, 1);
             } else {
-                return new TerminalSize(10, 1);
+                return new Dimension(10, 1);
             }
         }
     }
@@ -336,7 +336,7 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
     public static class LargeProgressBarRenderer implements ComponentRenderer<ProgressBar> {
         @Override
         public void drawComponent(TextGUIGraphics graphics, ProgressBar component) {
-            TerminalSize size = graphics.getSize();
+            Dimension size = graphics.getSize();
             if (size.getRows() == 0 || size.getColumns() == 0) {
                 return;
             }
@@ -443,12 +443,12 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
         }
 
         @Override
-        public TerminalSize getPreferredSize(ProgressBar component) {
+        public Dimension getPreferredSize(ProgressBar component) {
             int preferredWidth = component.getPreferredWidth();
             if (preferredWidth > 0) {
-                return new TerminalSize(preferredWidth, 3);
+                return new Dimension(preferredWidth, 3);
             } else {
-                return new TerminalSize(42, 3);
+                return new Dimension(42, 3);
             }
         }
     }

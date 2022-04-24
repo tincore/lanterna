@@ -18,10 +18,10 @@
  */
 package com.googlecode.lanterna.screen;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.graphics.TextImage;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.io.IOException;
  * @author martin
  */
 public abstract class AbstractScreen implements Screen {
-    private TerminalPosition cursorPosition;
+    private Point cursorPoint;
     private ScreenBuffer backBuffer;
     private ScreenBuffer frontBuffer;
     private final TextCharacter defaultCharacter;
@@ -42,12 +42,12 @@ public abstract class AbstractScreen implements Screen {
     private TabBehaviour tabBehaviour;
 
     //Current size of the screen
-    private TerminalSize terminalSize;
+    private Dimension dimension;
 
     //Pending resize of the screen
-    private TerminalSize latestResizeRequest;
+    private Dimension latestResizeRequest;
 
-    public AbstractScreen(TerminalSize initialSize) {
+    public AbstractScreen(Dimension initialSize) {
         this(initialSize, DEFAULT_CHARACTER);
     }
 
@@ -60,13 +60,13 @@ public abstract class AbstractScreen implements Screen {
      * @param defaultCharacter What character to use for the initial state of the screen and expanded areas
      */
     @SuppressWarnings({"SameParameterValue", "WeakerAccess"})
-    public AbstractScreen(TerminalSize initialSize, TextCharacter defaultCharacter) {
+    public AbstractScreen(Dimension initialSize, TextCharacter defaultCharacter) {
         this.frontBuffer = new ScreenBuffer(initialSize, defaultCharacter);
         this.backBuffer = new ScreenBuffer(initialSize, defaultCharacter);
         this.defaultCharacter = defaultCharacter;
-        this.cursorPosition = new TerminalPosition(0, 0);
+        this.cursorPoint = new Point(0, 0);
         this.tabBehaviour = TabBehaviour.ALIGN_TO_COLUMN_4;
-        this.terminalSize = initialSize;
+        this.dimension = initialSize;
         this.latestResizeRequest = null;
     }
 
@@ -75,36 +75,36 @@ public abstract class AbstractScreen implements Screen {
      * cursor is not visible
      */
     @Override
-    public TerminalPosition getCursorPosition() {
-        return cursorPosition;
+    public Point getCursorPosition() {
+        return cursorPoint;
     }
 
     /**
      * Moves the current cursor position or hides it. If the cursor is hidden and given a new position, it will be
      * visible after this method call.
      *
-     * @param position 0-indexed column and row numbers of the new position, or if {@code null}, hides the cursor
+     * @param point 0-indexed column and row numbers of the new position, or if {@code null}, hides the cursor
      */
     @Override
-    public void setCursorPosition(TerminalPosition position) {
-        if(position == null) {
+    public void setCursorPosition(Point point) {
+        if(point == null) {
             //Skip any validation checks if we just want to hide the cursor
-            this.cursorPosition = null;
+            this.cursorPoint = null;
             return;
         }
-        if(position.getColumn() < 0) {
-            position = position.withColumn(0);
+        if(point.getColumn() < 0) {
+            point = point.withColumn(0);
         }
-        if(position.getRow() < 0) {
-            position = position.withRow(0);
+        if(point.getRow() < 0) {
+            point = point.withRow(0);
         }
-        if(position.getColumn() >= terminalSize.getColumns()) {
-            position = position.withColumn(terminalSize.getColumns() - 1);
+        if(point.getColumn() >= dimension.getColumns()) {
+            point = point.withColumn(dimension.getColumns() - 1);
         }
-        if(position.getRow() >= terminalSize.getRows()) {
-            position = position.withRow(terminalSize.getRows() - 1);
+        if(point.getRow() >= dimension.getRows()) {
+            point = point.withRow(dimension.getRows() - 1);
         }
-        this.cursorPosition = position;
+        this.cursorPoint = point;
     }
 
     @Override
@@ -120,15 +120,15 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public void setCharacter(TerminalPosition position, TextCharacter screenCharacter) {
-        setCharacter(position.getColumn(), position.getRow(), screenCharacter);
+    public void setCharacter(Point point, TextCharacter screenCharacter) {
+        setCharacter(point.getColumn(), point.getRow(), screenCharacter);
     }
 
     @Override
     public TextGraphics newTextGraphics() {
         return new ScreenTextGraphics(this) {
             @Override
-            public TextGraphics drawImage(TerminalPosition topLeft, TextImage image, TerminalPosition sourceImageTopLeft, TerminalSize sourceImageSize) {
+            public TextGraphics drawImage(Point topLeft, TextImage image, Point sourceImageTopLeft, Dimension sourceImageSize) {
                 backBuffer.copyFrom(image, sourceImageTopLeft.getRow(), sourceImageSize.getRows(), sourceImageTopLeft.getColumn(), sourceImageSize.getColumns(), topLeft.getRow(), topLeft.getColumn());
                 return this;
             }
@@ -154,8 +154,8 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public synchronized TextCharacter getFrontCharacter(TerminalPosition position) {
-        return getFrontCharacter(position.getColumn(), position.getRow());
+    public synchronized TextCharacter getFrontCharacter(Point point) {
+        return getFrontCharacter(point.getColumn(), point.getRow());
     }
 
     @Override
@@ -164,8 +164,8 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public synchronized TextCharacter getBackCharacter(TerminalPosition position) {
-        return getBackCharacter(position.getColumn(), position.getRow());
+    public synchronized TextCharacter getBackCharacter(Point point) {
+        return getBackCharacter(point.getColumn(), point.getRow());
     }
 
     @Override
@@ -189,8 +189,8 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public synchronized TerminalSize doResizeIfNecessary() {
-        TerminalSize pendingResize = getAndClearPendingResize();
+    public synchronized Dimension doResizeIfNecessary() {
+        Dimension pendingResize = getAndClearPendingResize();
         if(pendingResize == null) {
             return null;
         }
@@ -201,8 +201,8 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public TerminalSize getTerminalSize() {
-        return terminalSize;
+    public Dimension getTerminalSize() {
+        return dimension;
     }
 
     /**
@@ -221,11 +221,11 @@ public abstract class AbstractScreen implements Screen {
         return backBuffer;
     }
 
-    private synchronized TerminalSize getAndClearPendingResize() {
+    private synchronized Dimension getAndClearPendingResize() {
         if(latestResizeRequest != null) {
-            terminalSize = latestResizeRequest;
+            dimension = latestResizeRequest;
             latestResizeRequest = null;
-            return terminalSize;
+            return dimension;
         }
         return null;
     }
@@ -234,7 +234,7 @@ public abstract class AbstractScreen implements Screen {
      * Tells this screen that the size has changed and it should, at next opportunity, resize itself and its buffers
      * @param newSize New size the 'real' terminal now has
      */
-    protected void addResizeRequest(TerminalSize newSize) {
+    protected void addResizeRequest(Dimension newSize) {
         latestResizeRequest = newSize;
     }
 

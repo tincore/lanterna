@@ -60,7 +60,7 @@ With this hint, the window wants to be at the center of the terminal instead of 
 standard.
 
 #### `FIXED_POSITION`
-Windows with this hint should not be positioned by the window manager, rather they should use whatever position is 
+Windows with this hint should not be positioned by the window manager, rather they should use whatever point is 
 pre-set programmatically.
 
 #### `FIXED_SIZE`

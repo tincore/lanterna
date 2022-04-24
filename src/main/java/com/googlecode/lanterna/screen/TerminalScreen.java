@@ -90,8 +90,8 @@ public class TerminalScreen extends AbstractScreen {
     }
 
     @Override
-    public synchronized TerminalSize doResizeIfNecessary() {
-        TerminalSize newSize = super.doResizeIfNecessary();
+    public synchronized Dimension doResizeIfNecessary() {
+        Dimension newSize = super.doResizeIfNecessary();
         if (newSize != null) {
             fullRedrawHint = true;
         }
@@ -144,15 +144,15 @@ public class TerminalScreen extends AbstractScreen {
             refreshByDelta();
         }
         getBackBuffer().copyTo(getFrontBuffer());
-        TerminalPosition cursorPosition = getCursorPosition();
-        if (cursorPosition != null) {
+        Point cursorPoint = getCursorPosition();
+        if (cursorPoint != null) {
             getTerminal().setCursorVisible(true);
             //If we are trying to move the cursor to the padding of a double-width character, put it on the actual character instead
-            if (cursorPosition.getColumn() > 0 &&
-                getFrontBuffer().getCharacterAt(cursorPosition.withRelativeColumn(-1)).isDoubleWidth()) {
-                getTerminal().setCursorPosition(cursorPosition.getColumn() - 1, cursorPosition.getRow());
+            if (cursorPoint.getColumn() > 0 &&
+                getFrontBuffer().getCharacterAt(cursorPoint.withRelativeColumn(-1)).isDoubleWidth()) {
+                getTerminal().setCursorPosition(cursorPoint.getColumn() - 1, cursorPoint.getRow());
             } else {
-                getTerminal().setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+                getTerminal().setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
             }
         } else {
             getTerminal().setCursorVisible(false);
@@ -161,23 +161,23 @@ public class TerminalScreen extends AbstractScreen {
     }
 
     private void refreshByDelta() throws IOException {
-        Map<TerminalPosition, TextCharacter> updateMap = new TreeMap<>(new ScreenPointComparator());
-        TerminalSize terminalSize = getTerminalSize();
+        Map<Point, TextCharacter> updateMap = new TreeMap<>(new ScreenPointComparator());
+        Dimension dimension = getTerminalSize();
 
         useScrollHint();
 
-        for (int y = 0; y < terminalSize.getRows(); y++) {
-            for (int x = 0; x < terminalSize.getColumns(); x++) {
+        for (int y = 0; y < dimension.getRows(); y++) {
+            for (int x = 0; x < dimension.getColumns(); x++) {
                 TextCharacter backBufferCharacter = getBackBuffer().getCharacterAt(x, y);
                 TextCharacter frontBufferCharacter = getFrontBuffer().getCharacterAt(x, y);
                 if (!backBufferCharacter.equals(frontBufferCharacter)) {
-                    updateMap.put(new TerminalPosition(x, y), backBufferCharacter);
+                    updateMap.put(new Point(x, y), backBufferCharacter);
                 }
                 if (backBufferCharacter.isDoubleWidth()) {
                     x++;    //Skip the trailing padding
                 } else if (frontBufferCharacter.isDoubleWidth()) {
-                    if (x + 1 < terminalSize.getColumns()) {
-                        updateMap.put(new TerminalPosition(x + 1, y), frontBufferCharacter.withCharacter(' '));
+                    if (x + 1 < dimension.getColumns()) {
+                        updateMap.put(new Point(x + 1, y), frontBufferCharacter.withCharacter(' '));
                     }
                 }
             }
@@ -186,8 +186,8 @@ public class TerminalScreen extends AbstractScreen {
         if (updateMap.isEmpty()) {
             return;
         }
-        TerminalPosition currentPosition = updateMap.keySet().iterator().next();
-        getTerminal().setCursorPosition(currentPosition.getColumn(), currentPosition.getRow());
+        Point currentPoint = updateMap.keySet().iterator().next();
+        getTerminal().setCursorPosition(currentPoint.getColumn(), currentPoint.getRow());
 
         TextCharacter firstScreenCharacterToUpdate = updateMap.values().iterator().next();
         EnumSet<SGR> currentSGR = firstScreenCharacterToUpdate.getModifiers();
@@ -199,12 +199,12 @@ public class TerminalScreen extends AbstractScreen {
         TextColor currentBackgroundColor = firstScreenCharacterToUpdate.getBackgroundColor();
         getTerminal().setForegroundColor(currentForegroundColor);
         getTerminal().setBackgroundColor(currentBackgroundColor);
-        for (TerminalPosition position : updateMap.keySet()) {
-            if (!position.equals(currentPosition)) {
-                getTerminal().setCursorPosition(position.getColumn(), position.getRow());
-                currentPosition = position;
+        for (Point point : updateMap.keySet()) {
+            if (!point.equals(currentPoint)) {
+                getTerminal().setCursorPosition(point.getColumn(), point.getRow());
+                currentPoint = point;
             }
-            TextCharacter newCharacter = updateMap.get(position);
+            TextCharacter newCharacter = updateMap.get(point);
             if (!currentForegroundColor.equals(newCharacter.getForegroundColor())) {
                 getTerminal().setForegroundColor(newCharacter.getForegroundColor());
                 currentForegroundColor = newCharacter.getForegroundColor();
@@ -225,10 +225,10 @@ public class TerminalScreen extends AbstractScreen {
             getTerminal().putString(newCharacter.getCharacterString());
             if (newCharacter.isDoubleWidth()) {
                 // Double-width characters advances two columns
-                currentPosition = currentPosition.withRelativeColumn(2);
+                currentPoint = currentPoint.withRelativeColumn(2);
             } else {
                 // Normal characters advances one column
-                currentPosition = currentPosition.withRelativeColumn(1);
+                currentPoint = currentPoint.withRelativeColumn(1);
             }
         }
     }
@@ -328,10 +328,10 @@ public class TerminalScreen extends AbstractScreen {
         getTerminal().getTerminalSize();
         getTerminal().clearScreen();
         this.fullRedrawHint = true;
-        TerminalPosition cursorPosition = getCursorPosition();
-        if (cursorPosition != null) {
+        Point cursorPoint = getCursorPosition();
+        if (cursorPoint != null) {
             getTerminal().setCursorVisible(true);
-            getTerminal().setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+            getTerminal().setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
         } else {
             getTerminal().setCursorVisible(false);
         }
@@ -383,9 +383,9 @@ public class TerminalScreen extends AbstractScreen {
         }
     }
 
-    private static class ScreenPointComparator implements Comparator<TerminalPosition> {
+    private static class ScreenPointComparator implements Comparator<Point> {
         @Override
-        public int compare(TerminalPosition o1, TerminalPosition o2) {
+        public int compare(Point o1, Point o2) {
             if (o1.getRow() == o2.getRow()) {
                 if (o1.getColumn() == o2.getColumn()) {
                     return 0;
@@ -422,7 +422,7 @@ public class TerminalScreen extends AbstractScreen {
 
     private class TerminalScreenResizeListener implements TerminalResizeListener {
         @Override
-        public void onResized(Terminal terminal, TerminalSize newSize) {
+        public void onResized(Terminal terminal, Dimension newSize) {
             addResizeRequest(newSize);
         }
     }

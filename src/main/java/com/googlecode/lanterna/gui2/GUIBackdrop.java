@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 
 /**
@@ -31,8 +31,8 @@ public class GUIBackdrop extends EmptySpace {
         return new ComponentRenderer<EmptySpace>() {
 
             @Override
-            public TerminalSize getPreferredSize(EmptySpace component) {
-                return TerminalSize.ONE;
+            public Dimension getPreferredSize(EmptySpace component) {
+                return Dimension.ONE;
             }
 
             @Override

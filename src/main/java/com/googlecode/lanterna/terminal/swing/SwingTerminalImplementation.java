@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal.swing;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 import com.googlecode.lanterna.TextCharacter;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ class SwingTerminalImplementation extends GraphicalTerminalImplementation {
      * Creates a new {@code SwingTerminalImplementation}
      * @param component JComponent that is the Swing terminal surface
      * @param fontConfiguration Font configuration to use
-     * @param initialTerminalSize Initial size of the terminal
+     * @param initialDimension Initial size of the terminal
      * @param deviceConfiguration Device configuration
      * @param colorConfiguration Color configuration
      * @param scrollController Controller to be used when inspecting scroll status
@@ -46,17 +46,17 @@ class SwingTerminalImplementation extends GraphicalTerminalImplementation {
     SwingTerminalImplementation(
             JComponent component,
             SwingTerminalFontConfiguration fontConfiguration,
-            TerminalSize initialTerminalSize,
+            Dimension initialDimension,
             TerminalEmulatorDeviceConfiguration deviceConfiguration,
             TerminalEmulatorColorConfiguration colorConfiguration,
             TerminalScrollController scrollController) {
 
-        super(initialTerminalSize, deviceConfiguration, colorConfiguration, scrollController);
+        super(initialDimension, deviceConfiguration, colorConfiguration, scrollController);
         this.component = component;
         this.fontConfiguration = fontConfiguration;
 
         //Prevent us from shrinking beyond one character
-        component.setMinimumSize(new Dimension(fontConfiguration.getFontWidth(), fontConfiguration.getFontHeight()));
+        component.setMinimumSize(new java.awt.Dimension(fontConfiguration.getFontWidth(), fontConfiguration.getFontHeight()));
 
         component.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.<AWTKeyStroke>emptySet());
         component.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.<AWTKeyStroke>emptySet());

@@ -21,6 +21,7 @@ package com.googlecode.lanterna.gui2;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.test.TestFixtureTrait;
 
 import java.io.IOException;
 
@@ -29,9 +30,9 @@ import java.io.IOException;
  *
  * @author Martin
  */
-public abstract class TestBase {
+public abstract class AbstractGuiTest implements TestFixtureTrait {
 
-    public static final Interactable.ClickListener ON_CLICK_CLOSE_CONTAINER = s -> ((Window) s.getBasePane()).close();
+    public static final Interactable.ClickListener ON_CLICK_CLOSE_CONTAINER = s -> ((Window) s.getRootPane()).close();
 
     public static Button createButtonCloseContainer() {
         return new Button("Close", ON_CLICK_CLOSE_CONTAINER);
@@ -62,7 +63,7 @@ public abstract class TestBase {
         MultiWindowTextGUI textGUI = createTextGUI(screen);
         String theme = extractTheme(args);
         if (theme != null) {
-            textGUI.setTheme(LanternaThemes.getRegisteredTheme(theme));
+            textGUI.setTheme(LanternaThemes.getTheme(theme));
         }
         textGUI.setBlockingIO(false);
         textGUI.setEOFWhenNoWindows(true);

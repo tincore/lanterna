@@ -18,11 +18,11 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.Dimension;
 
 import java.io.IOException;
 
-public class TextBoxTest extends TestBase {
+public class TextBoxTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new TextBoxTest().run(args);
     }
@@ -37,10 +37,10 @@ public class TextBoxTest extends TestBase {
 
         leftPanel.add(new TextBox().withBorder(Borders.singleLine("Default")));
         leftPanel.add(new TextBox("Some text").withBorder(Borders.singleLine("With init")));
-        leftPanel.add(new TextBox(new TerminalSize(10, 1), "Here is some text that is too long to fit in the text box").withBorder(Borders.singleLine("Long text")));
+        leftPanel.add(new TextBox(new Dimension(10, 1), "Here is some text that is too long to fit in the text box").withBorder(Borders.singleLine("Long text")));
         leftPanel.add(new TextBox("password").setMask('*').withBorder(Borders.singleLine("Password")));
 
-        rightPanel.add(new TextBox(new TerminalSize(15, 5),
+        rightPanel.add(new TextBox(new Dimension(15, 5),
                 "Well here we are again\n" +
                 "It's always such a pleasure\n" +
                 "Remember when you tried\n" +

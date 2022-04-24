@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -198,7 +198,7 @@ public abstract class AbstractTextGUI implements TextGUI {
      * cursor on the screen at this time.
      * @return Where to place the text cursor, or {@code null} if the cursor should be hidden
      */
-    protected abstract TerminalPosition getCursorPosition();
+    protected abstract Point getCursorPosition();
 
     /**
      * This method should take the user input and feed it to the focused component for handling.

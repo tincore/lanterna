@@ -18,7 +18,7 @@
  */
 package com.googlecode.lanterna.terminal;
 
-import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.TestTerminalFactory;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -48,7 +48,7 @@ public class SimpleTerminalTest {
         printHelp(textGraphics);
         terminal.putCharacter('\n');
         terminal.setBackgroundColor(COLORS_TO_CYCLE[0]);
-        TerminalPosition cursorPosition = resetCursorPositionAfterHelp(terminal);
+        Point cursorPoint = resetCursorPositionAfterHelp(terminal);
         terminal.flush();
 
         mainLoop:
@@ -60,27 +60,27 @@ public class SimpleTerminalTest {
                     break mainLoop;
 
                 case ArrowDown:
-                    if(terminal.getTerminalSize().getRows() > cursorPosition.getRow() + 1) {
-                        cursorPosition = cursorPosition.withRelativeRow(1);
-                        terminal.setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+                    if(terminal.getTerminalSize().getRows() > cursorPoint.getRow() + 1) {
+                        cursorPoint = cursorPoint.withRelativeRow(1);
+                        terminal.setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
                     }
                     break;
                 case ArrowUp:
-                    if(cursorPosition.getRow() > 0) {
-                        cursorPosition = cursorPosition.withRelativeRow(-1);
-                        terminal.setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+                    if(cursorPoint.getRow() > 0) {
+                        cursorPoint = cursorPoint.withRelativeRow(-1);
+                        terminal.setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
                     }
                     break;
                 case ArrowRight:
-                    if(cursorPosition.getColumn() + 1 < terminal.getTerminalSize().getColumns()) {
-                        cursorPosition = cursorPosition.withRelativeColumn(1);
-                        terminal.setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+                    if(cursorPoint.getColumn() + 1 < terminal.getTerminalSize().getColumns()) {
+                        cursorPoint = cursorPoint.withRelativeColumn(1);
+                        terminal.setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
                     }
                     break;
                 case ArrowLeft:
-                    if(cursorPosition.getColumn() > 0) {
-                        cursorPosition = cursorPosition.withRelativeColumn(-1);
-                        terminal.setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
+                    if(cursorPoint.getColumn() > 0) {
+                        cursorPoint = cursorPoint.withRelativeColumn(-1);
+                        terminal.setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
                     }
                     break;
 
@@ -89,7 +89,7 @@ public class SimpleTerminalTest {
                         case '?':
                             terminal.putCharacter('\n');
                             printHelp(textGraphics);
-                            cursorPosition = resetCursorPositionAfterHelp(terminal);
+                            cursorPoint = resetCursorPositionAfterHelp(terminal);
                             break;
                         case 'm':
                             if(inPrivateMode) {
@@ -103,7 +103,7 @@ public class SimpleTerminalTest {
                             break;
                         case 'n':
                             terminal.putCharacter('\n');
-                            cursorPosition = cursorPosition.withRelativeRow(1).withColumn(0);
+                            cursorPoint = cursorPoint.withRelativeRow(1).withColumn(0);
                             break;
                         case 'b':
                             terminal.bell();
@@ -116,13 +116,13 @@ public class SimpleTerminalTest {
                             terminal.setBackgroundColor(COLORS_TO_CYCLE[colorIndex]);
                             break;
                         case 'p':
-                            TerminalPosition position = terminal.getCursorPosition();
-                            textGraphics.putString(1, terminal.getTerminalSize().getRows() - 1, position.toString() + "                                     ");
+                            Point point = terminal.getCursorPosition();
+                            textGraphics.putString(1, terminal.getTerminalSize().getRows() - 1, point.toString() + "                                     ");
 
                             // Restore the background color which was reset in the call above
                             terminal.setBackgroundColor(COLORS_TO_CYCLE[colorIndex]);
 
-                            terminal.setCursorPosition(position.getColumn(), position.getRow());
+                            terminal.setCursorPosition(point.getColumn(), point.getRow());
                             break;
 
                         case '1':
@@ -137,7 +137,7 @@ public class SimpleTerminalTest {
                             for(int i = 0; i < Integer.parseInt(Character.toString(keyStroke.getCharacter())); i++) {
                                 terminal.putCharacter(' ');
                             }
-                            cursorPosition = terminal.getCursorPosition();
+                            cursorPoint = terminal.getCursorPosition();
                             break;
                     }
                     break;
@@ -158,10 +158,10 @@ public class SimpleTerminalTest {
         }
     }
 
-    private static TerminalPosition resetCursorPositionAfterHelp(Terminal terminal) throws IOException {
-        TerminalPosition cursorPosition = new TerminalPosition(0, 10);
-        terminal.setCursorPosition(cursorPosition.getColumn(), cursorPosition.getRow());
-        return cursorPosition;
+    private static Point resetCursorPositionAfterHelp(Terminal terminal) throws IOException {
+        Point cursorPoint = new Point(0, 10);
+        terminal.setCursorPosition(cursorPoint.getColumn(), cursorPoint.getRow());
+        return cursorPoint;
     }
 
     private static void printHelp(TextGraphics textGraphics) {
