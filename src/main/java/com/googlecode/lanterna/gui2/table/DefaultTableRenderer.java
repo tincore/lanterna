@@ -23,7 +23,7 @@ import com.googlecode.lanterna.graphics.Theme;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.ScrollBar;
-import com.googlecode.lanterna.gui2.TextGUIGraphics;
+import com.googlecode.lanterna.gui2.TextUiGraphics;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -368,7 +368,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
     }
 
     @Override
-    public synchronized void drawComponent(TextGUIGraphics graphics, Table<V> table) {
+    public synchronized void drawComponent(TextUiGraphics graphics, Table<V> table) {
         //Get the size
         Dimension area = graphics.getSize();
 
@@ -528,7 +528,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
         return columnSizes;
     }
 
-    private void drawHeader(TextGUIGraphics graphics, Table<V> table, List<Integer> columnSizes) {
+    private void drawHeader(TextUiGraphics graphics, Table<V> table, List<Integer> columnSizes) {
         Theme theme = table.getTheme();
         TableHeaderRenderer<V> tableHeaderRenderer = table.getTableHeaderRenderer();
         List<String> headers = table.getTableModel().getColumnLabels();
@@ -578,7 +578,7 @@ public class DefaultTableRenderer<V> implements TableRenderer<V> {
     }
 
     private void drawRows(
-            TextGUIGraphics graphics,
+            TextUiGraphics graphics,
             Table<V> table,
             List<Integer> columnSizes,
             int visibleRows,

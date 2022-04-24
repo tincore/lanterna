@@ -3,7 +3,7 @@ package com.googlecode.lanterna.issue;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.MultiWindowFrame;
-import com.googlecode.lanterna.gui2.TextGUIThread;
+import com.googlecode.lanterna.gui2.TextUiThread;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
@@ -35,7 +35,7 @@ public class Issue392 {
     }
 
     private static void setExceptionHandler() {
-        textGUI.getGUIThread().setExceptionHandler(new TextGUIThread.ExceptionHandler() {
+        textGUI.getGUIThread().setExceptionHandler(new TextUiThread.ExceptionHandler() {
 
             private boolean handleException(Exception e) {
                 System.err.println("### Caught!");

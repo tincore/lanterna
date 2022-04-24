@@ -265,7 +265,7 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
      */
     public static class DefaultProgressBarRenderer implements ComponentRenderer<ProgressBar> {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, ProgressBar component) {
+        public void drawComponent(TextUiGraphics graphics, ProgressBar component) {
             Dimension size = graphics.getSize();
             if (size.getRows() == 0 || size.getColumns() == 0) {
                 return;
@@ -335,7 +335,7 @@ public class ProgressBar extends AbstractComponent<ProgressBar> {
      */
     public static class LargeProgressBarRenderer implements ComponentRenderer<ProgressBar> {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, ProgressBar component) {
+        public void drawComponent(TextUiGraphics graphics, ProgressBar component) {
             Dimension size = graphics.getSize();
             if (size.getRows() == 0 || size.getColumns() == 0) {
                 return;

@@ -35,9 +35,18 @@ public class ImageComponentTest extends AbstractGuiTest {
         textGUI.addWindow(new BasicWindow("ImageComponentTest")
             .setTheme(LanternaThemes.getTheme("conqueror"))
             .setComponent(Panels.grid(2,
-                singleLine("x", createImageComponent("X", IMAGE_X).setKeyStrokeListener((k, r, s) -> b.setTextImage(((ImageComponent) s).getTextImage()))),
-                singleLine("y", createImageComponent("Y", IMAGE_Y).setKeyStrokeListener((k1, r1, s1) -> b.setTextImage(((ImageComponent) s1).getTextImage()))),
-                singleLine("z", createImageComponent("Z", IMAGE_Z).setKeyStrokeListener((k2, r2, s2) -> b.setTextImage(((ImageComponent) s2).getTextImage()))),
+                singleLine("x", createImageComponent("X", IMAGE_X).setKeyStrokeListener((k, r, s) -> {
+                    b.setTextImage(((ImageComponent) s).getTextImage());
+                    return true;
+                })),
+                singleLine("y", createImageComponent("Y", IMAGE_Y).setKeyStrokeListener((k, r, s) -> {
+                    b.setTextImage(((ImageComponent) s).getTextImage());
+                    return true;
+                })),
+                singleLine("z", createImageComponent("Z", IMAGE_Z).setKeyStrokeListener((k, r, s) -> {
+                    b.setTextImage(((ImageComponent) s).getTextImage());
+                    return true;
+                })),
                 singleLine("click space", b))));
     }
 

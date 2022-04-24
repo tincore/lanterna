@@ -38,16 +38,16 @@ import java.util.concurrent.TimeUnit;
  *     // ... this thread will continue while the GUI runs on a separate thread ...
  *     }
  * </pre>
- * @see TextGUIThread
- * @see SameTextGUIThread
+ * @see TextUiThread
+ * @see SameTextUiThread
  * @author Martin
  */
-public class SeparateTextGUIThread extends AbstractTextGUIThread implements AsynchronousTextGUIThread {
+public class SeparateTextUiThread extends AbstractTextUiThread implements AsynchronousTextUiThread {
     private volatile State state;
     private final Thread textGUIThread;
     private final CountDownLatch waitLatch;
 
-    private SeparateTextGUIThread(Frame frame) {
+    private SeparateTextUiThread(Frame frame) {
         super(frame);
         this.waitLatch = new CountDownLatch(1);
         this.textGUIThread = new Thread("LanternaGUI") {
@@ -158,10 +158,10 @@ public class SeparateTextGUIThread extends AbstractTextGUIThread implements Asyn
     /**
      * Factory class for creating SeparateTextGUIThread objects
      */
-    public static class Factory implements TextGUIThreadFactory {
+    public static class Factory implements TextUiThreadFactory {
         @Override
-        public TextGUIThread createTextGUIThread(Frame frame) {
-            return new SeparateTextGUIThread(frame);
+        public TextUiThread createTextGUIThread(Frame frame) {
+            return new SeparateTextUiThread(frame);
         }
     }
 }

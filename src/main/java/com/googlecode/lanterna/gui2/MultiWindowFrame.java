@@ -68,7 +68,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
      * @param screen Screen to use as the backend for drawing operations
      */
     public MultiWindowFrame(Screen screen) {
-        this(new SameTextGUIThread.Factory(), screen);
+        this(new SameTextUiThread.Factory(), screen);
     }
 
     /**
@@ -79,7 +79,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
      * @param guiThreadFactory Factory implementation to use when creating the {@code TextGUIThread}
      * @param screen           Screen to use as the backend for drawing operations
      */
-    public MultiWindowFrame(TextGUIThreadFactory guiThreadFactory, Screen screen) {
+    public MultiWindowFrame(TextUiThreadFactory guiThreadFactory, Screen screen) {
         this(guiThreadFactory,
             screen,
             new DefaultWindowManager(),
@@ -96,7 +96,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
      * @param screen           Screen to use as the backend for drawing operations
      * @param windowManager    Custom window manager to use
      */
-    public MultiWindowFrame(TextGUIThreadFactory guiThreadFactory, Screen screen, WindowManager windowManager) {
+    public MultiWindowFrame(TextUiThreadFactory guiThreadFactory, Screen screen, WindowManager windowManager) {
         this(guiThreadFactory,
             screen,
             windowManager,
@@ -155,7 +155,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
         WindowPostRenderer postRenderer,
         Component background) {
 
-        this(new SameTextGUIThread.Factory(), screen, windowManager, postRenderer, background);
+        this(new SameTextUiThread.Factory(), screen, windowManager, postRenderer, background);
     }
 
     /**
@@ -172,7 +172,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
      * @param background       Component to use as the background of the GUI, behind all the windows
      */
     public MultiWindowFrame(
-        TextGUIThreadFactory guiThreadFactory,
+        TextUiThreadFactory guiThreadFactory,
         Screen screen,
         WindowManager windowManager,
         WindowPostRenderer postRenderer,
@@ -253,12 +253,12 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
         return this;
     }
 
-    private void drawBackgroundPane(TextGUIGraphics graphics) {
-        backgroundPane.draw(new DefaultTextGUIGraphics(this, graphics));
+    private void drawBackgroundPane(TextUiGraphics graphics) {
+        backgroundPane.draw(new DefaultTextUiGraphics(this, graphics));
     }
 
     @Override
-    protected synchronized void drawGUI(TextGUIGraphics graphics) {
+    protected synchronized void drawGUI(TextUiGraphics graphics) {
         drawBackgroundPane(graphics);
         windowManager.prepareWindows(this, windowList.getWindowsInStableOrder(), graphics.getSize());
         for (Window window : getWindows()) {
@@ -270,8 +270,8 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
                     textImage = new BasicTextImage(window.getDecoratedSize());
                     windowRenderBufferCache.put(window, textImage);
                 }
-                TextGUIGraphics windowGraphics = new DefaultTextGUIGraphics(this, textImage.newTextGraphics());
-                TextGUIGraphics insideWindowDecorationsGraphics = windowGraphics;
+                TextUiGraphics windowGraphics = new DefaultTextUiGraphics(this, textImage.newTextGraphics());
+                TextUiGraphics insideWindowDecorationsGraphics = windowGraphics;
                 Point contentOffset = Point.TOP_LEFT_CORNER;
                 if (!window.isHint(Hint.NO_DECORATIONS)) {
                     WindowDecorationRenderer decorationRenderer = windowManager.getWindowDecorationRenderer(window);
@@ -516,7 +516,7 @@ public class MultiWindowFrame extends AbstractFrame implements WindowFrame {
     public void waitForWindowToClose(Window window) {
         while (window.getTextGUI() != null) {
             boolean sleep = true;
-            TextGUIThread guiThread = getGUIThread();
+            TextUiThread guiThread = getGUIThread();
             if (Thread.currentThread() == guiThread.getThread()) {
                 try {
                     sleep = !guiThread.processEventsAndUpdate();

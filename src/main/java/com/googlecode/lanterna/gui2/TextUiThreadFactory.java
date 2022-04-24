@@ -19,21 +19,14 @@
 package com.googlecode.lanterna.gui2;
 
 /**
- * This interface is the base part in the Lanterna Text GUI component hierarchy
- * @author Martin
+ * Factory class for creating {@code TextGUIThread} objects. This is used by {@code TextGUI} implementations to assign
+ * their local {@code TextGUIThread} reference
  */
-public interface TextGUIElement {
+public interface TextUiThreadFactory {
     /**
-     * Draws the GUI element using the supplied TextGUIGraphics object. This is the main method to implement when you
-     * want to create your own GUI components.
-     * @param graphics Graphics object to use when drawing the component
+     * Creates a new {@code TextGUIThread} objects
+     * @param frame {@code TextGUI} this {@code TextGUIThread} should be associated with
+     * @return The new {@code TextGUIThread}
      */
-    void draw(TextGUIGraphics graphics);
-
-    /**
-     * Checks if this element (or any of its child components, if any) has signaled that what it's currently displaying
-     * is out of date and needs re-drawing.
-     * @return {@code true} if the component is invalid and needs redrawing, {@code false} otherwise
-     */
-    boolean isInvalid();
+    TextUiThread createTextGUIThread(Frame frame);
 }

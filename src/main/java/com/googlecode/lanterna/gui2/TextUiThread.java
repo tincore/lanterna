@@ -25,11 +25,11 @@ import java.io.IOException;
  * are mainly two implementations of this interface, one for having lanterna automatically spawn a new thread for doing
  * all the processing and leaving the creator thread free to do other things, and one that assumes the creator thread
  * will hand over control to lanterna for as long as the GUI is running.
- * @see SameTextGUIThread
- * @see SeparateTextGUIThread
+ * @see SameTextUiThread
+ * @see SeparateTextUiThread
  * @author Martin
  */
-public interface TextGUIThread {
+public interface TextUiThread {
     /**
      * Invokes custom code on the GUI thread. Even if the current thread <b>is</b> the GUI thread, the code will be
      * executed at a later time when the event processing is done.

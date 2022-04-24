@@ -35,7 +35,9 @@ public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
      * @param keyStroke The unhandled input event
      * @param rootPane  {@link RootPane} that got the input event
      */
-    boolean onAfterKeyStroke(KeyStroke keyStroke, T rootPane);
+    default boolean onAfterKeyStroke(KeyStroke keyStroke, T rootPane){
+        return false;
+    }
 
     /**
      * Called when a user input is about to be delivered to the focused {@link Interactable} inside the
@@ -46,5 +48,7 @@ public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
      * @param rootPane  Base pane that got the input event
      * @return intercepted
      */
-    boolean onBeforeKeyStroke(KeyStroke keyStroke, T rootPane);
+    default boolean onBeforeKeyStroke(KeyStroke keyStroke, T rootPane){
+        return false;
+    }
 }

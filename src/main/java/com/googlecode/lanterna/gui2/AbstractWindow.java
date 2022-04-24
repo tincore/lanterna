@@ -91,7 +91,7 @@ public abstract class AbstractWindow extends AbstractRootPane<Window> implements
     }
 
     @Override
-    public void draw(TextGUIGraphics graphics) {
+    public void draw(TextUiGraphics graphics) {
         if (!graphics.getSize().equals(lastKnownSize)) {
             getComponent().invalidate();
         }

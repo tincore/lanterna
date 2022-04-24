@@ -43,7 +43,7 @@ public abstract class AbstractGuiTest implements TestFixtureTrait {
     }
 
     protected MultiWindowFrame createTextGUI(Screen screen) {
-        return new MultiWindowFrame(new SeparateTextGUIThread.Factory(), screen);
+        return new MultiWindowFrame(new SeparateTextUiThread.Factory(), screen);
     }
 
     private String extractTheme(String[] args) {
@@ -72,7 +72,7 @@ public abstract class AbstractGuiTest implements TestFixtureTrait {
 
         try {
             init(textGUI);
-            AsynchronousTextGUIThread guiThread = (AsynchronousTextGUIThread) textGUI.getGUIThread();
+            AsynchronousTextUiThread guiThread = (AsynchronousTextUiThread) textGUI.getGUIThread();
             guiThread.start();
             afterGUIThreadStarted(textGUI);
             guiThread.waitForStop();

@@ -195,7 +195,7 @@ public class ScrollBar extends AbstractComponent<ScrollBar> {
         }
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, ScrollBar component) {
+        public void drawComponent(TextUiGraphics graphics, ScrollBar component) {
             Dimension size = graphics.getSize();
             Direction direction = component.getDirection();
             int position = component.getScrollPosition();

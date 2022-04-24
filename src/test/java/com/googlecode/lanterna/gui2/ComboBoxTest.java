@@ -27,6 +27,11 @@ import java.util.Arrays;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import static com.googlecode.lanterna.gui2.Borders.singleLine;
+import static com.googlecode.lanterna.gui2.Borders.singleLineBevel;
+import static com.googlecode.lanterna.gui2.Panels.horizontal;
+import static com.googlecode.lanterna.gui2.Panels.vertical;
+
 public class ComboBoxTest extends AbstractGuiTest {
     public static void main(String[] args) throws IOException, InterruptedException {
         new ComboBoxTest().run(args);
@@ -34,12 +39,10 @@ public class ComboBoxTest extends AbstractGuiTest {
 
     @Override
     public void init(final WindowFrame textGUI) {
-        final BasicWindow window = new BasicWindow("ComboBoxTest");
-        Panel mainPanel = new Panel();
+        Window window = new BasicWindow("ComboBoxTest");
 
         final ComboBox<String> comboBoxReadOnly = new ComboBox<>();
         final ComboBox<String> comboBoxEditable = new ComboBox<String>().setReadOnly(false);
-        final ComboBox<String> comboBoxCJK = new ComboBox<String>().setReadOnly(false);
         final ComboBox<String> comboBoxTimeZones = new ComboBox<String>().setReadOnly(true);
 
         for (String item : Arrays.asList("Berlin", "London", "Paris", "Stockholm", "Tokyo")) {
@@ -49,57 +52,60 @@ public class ComboBoxTest extends AbstractGuiTest {
         for (String id : TimeZone.getAvailableIDs()) {
             comboBoxTimeZones.addItem(id);
         }
-        comboBoxCJK.addItem("维基百科人人可編輯的自由百科全書");
-        comboBoxCJK.addItem("ウィキペディアは誰でも編集できるフリー百科事典です");
-        comboBoxCJK.addItem("위키백과는 전 세계 여러 언어로 만들어 나가는 자유 백과사전으로, 누구나 참여하실 수 있습니다.");
-        comboBoxCJK.addItem("This is a string without double-width characters");
-        comboBoxCJK.setPreferredSize(new Dimension(13, 1));
-
-        mainPanel.add(Panels.horizontal(
-            comboBoxReadOnly.withBorder(Borders.singleLine("Read-only")),
-            comboBoxEditable.withBorder(Borders.singleLine("Editable")),
-            comboBoxCJK.withBorder(Borders.singleLine("CJK"))));
-        mainPanel.add(new EmptySpace(Dimension.ONE));
 
         final TextBox textBoxNewItem = new TextBox(new Dimension(20, 1));
-        Button buttonAddItem = new Button("Add", s -> {
-            comboBoxEditable.addItem(textBoxNewItem.getText());
-            comboBoxReadOnly.addItem(textBoxNewItem.getText());
-            textBoxNewItem.setText("");
-            window.setFocusedInteractable(textBoxNewItem);
-        });
-        final TextBox textBoxSetSelectedIndex = new TextBox(new Dimension(20, 1), "0");
-        textBoxSetSelectedIndex.setValidationPattern(Pattern.compile("-?[0-9]+"));
-        Button buttonSetSelectedIndex = new Button("Set Selected Index", s -> {
-            try {
-                comboBoxEditable.setSelectedIndex(Integer.parseInt(textBoxSetSelectedIndex.getText()));
-                comboBoxReadOnly.setSelectedIndex(Integer.parseInt(textBoxSetSelectedIndex.getText()));
-            } catch (Exception e) {
-                MessageDialog.showMessageDialog(textGUI, e.getClass().getName(), e.getMessage(), MessageDialogButton.OK);
-            }
-        });
-        final TextBox textBoxSetSelectedItem = new TextBox(new Dimension(20, 1));
-        Button buttonSetSelectedItem = new Button("Set Selected Item", s -> {
-            try {
-                comboBoxEditable.setSelectedItem(textBoxSetSelectedItem.getText());
-                comboBoxReadOnly.setSelectedItem(textBoxSetSelectedItem.getText());
-            } catch (Exception e) {
-                MessageDialog.showMessageDialog(textGUI, e.getClass().getName(), e.getMessage(), MessageDialogButton.OK);
-            }
-        });
-        mainPanel.add(
-            Panels.vertical(
-                Panels.horizontal(textBoxNewItem, buttonAddItem),
-                Panels.horizontal(textBoxSetSelectedIndex, buttonSetSelectedIndex),
-                Panels.horizontal(textBoxSetSelectedItem, buttonSetSelectedItem))
-                .withBorder(Borders.singleLineBevel("Modify Content")));
+        final TextBox textBoxSetSelectedIndex = new TextBox(new Dimension(20, 1), "0")
+            .setValidationPattern(Pattern.compile("-?[0-9]+"));
 
-        mainPanel.add(new EmptySpace(Dimension.ONE));
-        mainPanel.add(comboBoxTimeZones.withBorder(Borders.singleLine("Large ComboBox")));
-        mainPanel.add(new EmptySpace(Dimension.ONE));
-        mainPanel.add(new Separator(Direction.HORIZONTAL).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)));
-        mainPanel.add(new Button("OK", s -> window.close()));
+        TextBox textBoxSetSelectedItem = new TextBox(new Dimension(20, 1));
+
+
+        Panel mainPanel = new Panel()
+            .add(horizontal(
+                singleLine("Read-only", comboBoxReadOnly),
+                comboBoxEditable.withBorder(singleLine("Editable")),
+                new ComboBox<String>().setReadOnly(false).setPreferredSize(new Dimension(13, 1))
+                    .addItem(
+                        "维基百科人人可編輯的自由百科全書",
+                        "ウィキペディアは誰でも編集できるフリー百科事典です",
+                        "위키백과는 전 세계 여러 언어로 만들어 나가는 자유 백과사전으로, 누구나 참여하실 수 있습니다.",
+                        "This is a string without double-width characters").withBorder(singleLine("CJK"))))
+            .add(new EmptySpace(Dimension.ONE));
+
+
+        mainPanel.add(
+            vertical(
+                horizontal(textBoxNewItem, new Button("Add", s3 -> {
+                    comboBoxEditable.addItem(textBoxNewItem.getText());
+                    comboBoxReadOnly.addItem(textBoxNewItem.getText());
+                    textBoxNewItem.setText("");
+                    window.setFocusedInteractable(textBoxNewItem);
+                })),
+                horizontal(textBoxSetSelectedIndex, new Button("Set Selected Index", s2 -> {
+                    try {
+                        comboBoxEditable.setSelectedIndex(Integer.parseInt(textBoxSetSelectedIndex.getText()));
+                        comboBoxReadOnly.setSelectedIndex(Integer.parseInt(textBoxSetSelectedIndex.getText()));
+                    } catch (Exception e1) {
+                        MessageDialog.showMessageDialog(textGUI, e1.getClass().getName(), e1.getMessage(), MessageDialogButton.OK);
+                    }
+                })),
+                horizontal(textBoxSetSelectedItem, new Button("Set Selected Item", s1 -> {
+                    try {
+                        comboBoxEditable.setSelectedItem(textBoxSetSelectedItem.getText());
+                        comboBoxReadOnly.setSelectedItem(textBoxSetSelectedItem.getText());
+                    } catch (Exception e) {
+                        MessageDialog.showMessageDialog(textGUI, e.getClass().getName(), e.getMessage(), MessageDialogButton.OK);
+                    }
+                })))
+                .withBorder(singleLineBevel("Modify Content")))
+            .add(new EmptySpace(Dimension.ONE))
+            .add(comboBoxTimeZones.withBorder(singleLine("Large ComboBox")))
+            .add(new EmptySpace(Dimension.ONE))
+            .add(new Separator(Direction.HORIZONTAL).setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill)))
+            .add(new Button("OK", s -> window.close()));
         window.setComponent(mainPanel);
+
+
         textGUI.addWindow(window);
     }
 }

@@ -25,19 +25,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Abstract implementation of {@link TextGUIThread} with common logic for both available concrete implementations.
+ * Abstract implementation of {@link TextUiThread} with common logic for both available concrete implementations.
  */
-public abstract class AbstractTextGUIThread implements TextGUIThread {
+public abstract class AbstractTextUiThread implements TextUiThread {
 
     protected final Frame frame;
     protected final Queue<Runnable> customTasks;
     protected ExceptionHandler exceptionHandler;
 
     /**
-     * Sets up this {@link AbstractTextGUIThread} for operations on the supplies {@link Frame}
-     * @param frame Text GUI this {@link TextGUIThread} implementations will be operating on
+     * Sets up this {@link AbstractTextUiThread} for operations on the supplies {@link Frame}
+     * @param frame Text GUI this {@link TextUiThread} implementations will be operating on
      */
-    public AbstractTextGUIThread(Frame frame) {
+    public AbstractTextUiThread(Frame frame) {
         this.exceptionHandler = new ExceptionHandler() {
             @Override
             public boolean onIOException(IOException e) {

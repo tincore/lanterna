@@ -19,7 +19,7 @@
 package com.googlecode.lanterna.gui2.table;
 
 import com.googlecode.lanterna.Dimension;
-import com.googlecode.lanterna.gui2.TextGUIGraphics;
+import com.googlecode.lanterna.gui2.TextUiGraphics;
 
 /**
  * The main interface to implement when you need to customize the way table cells are drawn
@@ -45,7 +45,7 @@ public interface TableCellRenderer<V> {
      * @param cell Data stored in the cell
      * @param columnIndex Column index of the cell
      * @param rowIndex Row index of the cell
-     * @param textGUIGraphics Graphics object to draw with
+     * @param textUiGraphics Graphics object to draw with
      */
-    void drawCell(Table<V> table, V cell, int columnIndex, int rowIndex, TextGUIGraphics textGUIGraphics);
+    void drawCell(Table<V> table, V cell, int columnIndex, int rowIndex, TextUiGraphics textUiGraphics);
 }

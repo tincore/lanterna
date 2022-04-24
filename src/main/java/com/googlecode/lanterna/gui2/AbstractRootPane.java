@@ -52,7 +52,7 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
     }
 
     @Override
-    public void draw(TextGUIGraphics graphics) {
+    public void draw(TextUiGraphics graphics) {
         graphics.applyThemeStyle(getTheme().getDefinition(Window.class).getNormal());
         graphics.fill(' ');
 
@@ -388,10 +388,10 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         protected ComponentRenderer<Container> createDefaultRenderer() {
             return new ComponentRenderer<>() {
                 @Override
-                public void drawComponent(TextGUIGraphics graphics, Container component) {
+                public void drawComponent(TextUiGraphics graphics, Container component) {
                     if (!(menuBar instanceof EmptyMenuBar)) {
                         int menuBarHeight = menuBar.getPreferredSize().getRows();
-                        TextGUIGraphics menuGraphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER, graphics.getSize().withRows(menuBarHeight));
+                        TextUiGraphics menuGraphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER, graphics.getSize().withRows(menuBarHeight));
                         menuBar.draw(menuGraphics);
                         graphics = graphics.newTextGraphics(Point.TOP_LEFT_CORNER.withRelativeRow(menuBarHeight), graphics.getSize().withRelativeRows(-menuBarHeight));
                     }

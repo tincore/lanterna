@@ -53,7 +53,7 @@ public class LineWrappingLabelTest extends AbstractGuiTest {
     @Override
     protected MultiWindowFrame createTextGUI(Screen screen) {
         return new MultiWindowFrame(
-            new SeparateTextGUIThread.Factory(),
+            new SeparateTextUiThread.Factory(),
             screen,
             new MyWindowManager(),
             new WindowShadowRenderer(),

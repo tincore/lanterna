@@ -260,7 +260,7 @@ public class RadioBoxList<V> extends AbstractListBox<V, RadioBoxList<V>> {
      */
     public static class RadioBoxListItemRenderer<V> extends ListItemRenderer<V, RadioBoxList<V>> {
         @Override
-        public void drawItem(TextGUIGraphics graphics, RadioBoxList<V> listBox, int index, V item, boolean selected, boolean focused) {
+        public void drawItem(TextUiGraphics graphics, RadioBoxList<V> listBox, int index, V item, boolean selected, boolean focused) {
             ThemeDefinition themeDefinition = listBox.getTheme().getDefinition(RadioBoxList.class);
             ThemeStyle itemStyle;
             if (selected && !focused) {

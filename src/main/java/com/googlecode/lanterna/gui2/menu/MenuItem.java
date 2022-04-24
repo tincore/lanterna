@@ -125,7 +125,7 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
      */
     public static class DefaultMenuItemRenderer extends MenuItemRenderer {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, MenuItem menuItem) {
+        public void drawComponent(TextUiGraphics graphics, MenuItem menuItem) {
             ThemeDefinition themeDefinition = menuItem.getThemeDefinition();
             if (menuItem.isFocused()) {
                 graphics.applyThemeStyle(themeDefinition.getSelected());

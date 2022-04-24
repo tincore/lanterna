@@ -34,7 +34,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 public class Button extends AbstractInteractableComponent<Button> {
 
     private String label;
-    private ClickListener clickListener;
+    private ClickListener clickListener = ClickListener.DUMMY;
 
     /**
      * Creates a new button with a specific label and no initially attached action.
@@ -100,6 +100,10 @@ public class Button extends AbstractInteractableComponent<Button> {
         invalidate();
     }
 
+    public void onClicked() {
+        clickListener.onClicked(this);
+    }
+
     @Override
     public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isActivationStroke(keyStroke)) {
@@ -107,11 +111,6 @@ public class Button extends AbstractInteractableComponent<Button> {
             return KeyStrokeResult.HANDLED;
         }
         return super.onKeyStroke(keyStroke);
-    }
-
-    public void onClicked() {
-        // Extend to implement
-        clickListener.onClicked(this);
     }
 
     @Override
@@ -143,7 +142,7 @@ public class Button extends AbstractInteractableComponent<Button> {
      */
     public static class DefaultButtonRenderer implements ButtonRenderer {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Button button) {
+        public void drawComponent(TextUiGraphics graphics, Button button) {
             ThemeDefinition themeDefinition = button.getThemeDefinition();
             if (button.isFocused()) {
                 graphics.applyThemeStyle(themeDefinition.getActive());
@@ -206,7 +205,7 @@ public class Button extends AbstractInteractableComponent<Button> {
      */
     public static class FlatButtonRenderer implements ButtonRenderer {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Button button) {
+        public void drawComponent(TextUiGraphics graphics, Button button) {
             ThemeDefinition themeDefinition = button.getThemeDefinition();
             if (button.isFocused()) {
                 graphics.applyThemeStyle(themeDefinition.getActive());
@@ -235,7 +234,7 @@ public class Button extends AbstractInteractableComponent<Button> {
 
     public static class BorderedButtonRenderer implements ButtonRenderer {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Button button) {
+        public void drawComponent(TextUiGraphics graphics, Button button) {
             ThemeDefinition themeDefinition = button.getThemeDefinition();
             graphics.applyThemeStyle(themeDefinition.getNormal());
             Dimension size = graphics.getSize();

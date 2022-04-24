@@ -848,7 +848,7 @@ public class TextBox extends AbstractInteractableComponent<TextBox> {
         }
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, TextBox component) {
+        public void drawComponent(TextUiGraphics graphics, TextBox component) {
             Dimension realTextArea = graphics.getSize();
             if (realTextArea.getRows() == 0 || realTextArea.getColumns() == 0) {
                 return;
@@ -892,7 +892,7 @@ public class TextBox extends AbstractInteractableComponent<TextBox> {
             }
         }
 
-        private void drawTextArea(TextGUIGraphics graphics, TextBox component) {
+        private void drawTextArea(TextUiGraphics graphics, TextBox component) {
             Dimension textAreaSize = graphics.getSize();
             if (viewTopLeft.getColumn() + textAreaSize.getColumns() > component.longestRow) {
                 viewTopLeft = viewTopLeft.withColumn(component.longestRow - textAreaSize.getColumns());

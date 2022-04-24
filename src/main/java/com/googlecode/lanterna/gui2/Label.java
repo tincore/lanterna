@@ -75,7 +75,7 @@ public class Label extends AbstractComponent<Label> {
     protected ComponentRenderer<Label> createDefaultRenderer() {
         return new ComponentRenderer<>() {
             @Override
-            public void drawComponent(TextGUIGraphics graphics, Label component) {
+            public void drawComponent(TextUiGraphics graphics, Label component) {
                 ThemeDefinition themeDefinition = component.getThemeDefinition();
                 graphics.applyThemeStyle(themeDefinition.getNormal());
                 if (foregroundColor != null) {

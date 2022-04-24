@@ -43,7 +43,7 @@ public class InputUITest extends AbstractGuiTest {
             protected InteractableRenderer createDefaultRenderer() {
                 return new InteractableRenderer() {
                     @Override
-                    public void drawComponent(TextGUIGraphics graphics, Component component) {
+                    public void drawComponent(TextUiGraphics graphics, Component component) {
                         graphics.setBackgroundColor(TextColor.ANSI.BLACK);
                         graphics.setForegroundColor(TextColor.ANSI.WHITE);
                         graphics.fill(' ');

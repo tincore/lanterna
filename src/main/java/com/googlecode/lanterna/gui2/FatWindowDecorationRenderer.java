@@ -29,7 +29,7 @@ import com.googlecode.lanterna.graphics.ThemeDefinition;
  */
 public class FatWindowDecorationRenderer implements WindowDecorationRenderer {
     @Override
-    public TextGUIGraphics draw(WindowFrame textGUI, TextGUIGraphics graphics, Window window) {
+    public TextUiGraphics draw(WindowFrame textGUI, TextUiGraphics graphics, Window window) {
         String title = window.getTitle();
         if(title == null) {
             title = "";

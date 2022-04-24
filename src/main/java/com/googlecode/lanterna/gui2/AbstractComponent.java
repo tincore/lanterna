@@ -114,7 +114,7 @@ public abstract class AbstractComponent<T extends Component> implements Componen
     protected abstract ComponentRenderer<T> createDefaultRenderer();
 
     @Override
-    public final synchronized void draw(final TextGUIGraphics graphics) {
+    public final synchronized void draw(final TextUiGraphics graphics) {
         //Delegate drawing the component to the renderer
         setSize(graphics.getSize());
         onBeforeDrawing();
@@ -287,7 +287,7 @@ public abstract class AbstractComponent<T extends Component> implements Componen
      * @param graphics Graphics object you can use to manipulate the appearance of the component
      */
     @SuppressWarnings("EmptyMethod")
-    protected void onAfterDrawing(TextGUIGraphics graphics) {
+    protected void onAfterDrawing(TextUiGraphics graphics) {
         //No operation by default
     }
 

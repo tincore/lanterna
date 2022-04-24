@@ -76,7 +76,7 @@ TableTest extends AbstractGuiTest {
         final Table<String> table = new Table<String>("Column 1", "Column 2", "Column 3")
             .setTableCellRenderer(new DefaultTableCellRenderer<String>() {
                 @Override
-                protected void applyStyle(Table<String> table, String cell, int columnIndex, int rowIndex, boolean isSelected, TextGUIGraphics textGUIGraphics) {
+                protected void applyStyle(Table<String> table, String cell, int columnIndex, int rowIndex, boolean isSelected, TextUiGraphics textGUIGraphics) {
                     super.applyStyle(table, cell, columnIndex, rowIndex, isSelected, textGUIGraphics);
                     if (columnIndex == 1) {
                         textGUIGraphics.setBackgroundColor(TextColor.ANSI.BLACK);

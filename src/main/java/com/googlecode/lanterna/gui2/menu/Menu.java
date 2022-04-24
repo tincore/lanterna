@@ -20,10 +20,7 @@
  */
 package com.googlecode.lanterna.gui2.menu;
 
-import com.googlecode.lanterna.gui2.MenuPopupWindow;
-import com.googlecode.lanterna.gui2.RootPaneKeystrokeAdapter;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowFrame;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 
@@ -73,7 +70,7 @@ public class Menu extends MenuItem {
         }
         if (getParent() instanceof MenuBar) {
             final MenuBar menuBar = (MenuBar) getParent();
-            popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
+            popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
                 @Override
                 public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
                     if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
@@ -99,7 +96,7 @@ public class Menu extends MenuItem {
                 }
             });
         }
-        popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeAdapter<>() {
+        popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
             @Override
             public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
                 if (keyStroke.getKeyType() == KeyType.Escape) {

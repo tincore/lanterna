@@ -18,12 +18,13 @@
  */
 package com.googlecode.lanterna.gui2;
 
-import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.Dimension;
+import com.googlecode.lanterna.Point;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.MouseCaptureMode;
 import com.googlecode.lanterna.terminal.ansi.TelnetTerminal;
 import com.googlecode.lanterna.terminal.ansi.TelnetTerminalServer;
 
@@ -32,8 +33,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.googlecode.lanterna.gui2.Panels.vertical;
 import static com.googlecode.lanterna.gui2.AbstractGuiTest.createButtonCloseContainer;
+import static com.googlecode.lanterna.gui2.Panels.vertical;
 
 public class GUIOverTelnet {
     private static final List<TextBox> ALL_TEXTBOXES = new ArrayList<>();
@@ -44,6 +45,7 @@ public class GUIOverTelnet {
         //noinspection InfiniteLoopStatement
         while (true) {
             final TelnetTerminal telnetTerminal = telnetTerminalServer.acceptConnection();
+            telnetTerminal.setMouseCaptureMode(MouseCaptureMode.CLICK_RELEASE_DRAG_MOVE);
             System.out.println("Accepted connection from " + telnetTerminal.getRemoteSocketAddress());
             Thread thread = new Thread(() -> {
                 try {
@@ -64,14 +66,14 @@ public class GUIOverTelnet {
     private static void runGUI(final TelnetTerminal telnetTerminal) throws IOException {
         Screen screen = new TerminalScreen(telnetTerminal);
         screen.start();
-        final MultiWindowFrame textGUI = new MultiWindowFrame(screen);
-        textGUI.setBlockingIO(false);
-        textGUI.setEOFWhenNoWindows(true);
+        final MultiWindowFrame multiWindowFrame = new MultiWindowFrame(screen);
+        multiWindowFrame.setBlockingIO(false);
+        multiWindowFrame.setEOFWhenNoWindows(true);
         try {
             final BasicWindow window = new BasicWindow("Text GUI over Telnet");
             Panel contentArea = Panels.vertical()
                 .add(new Button("Button", s2 -> {
-                    textGUI.addWindow(new BasicWindow("Response")
+                    multiWindowFrame.addWindow(new BasicWindow("Response")
                         .setComponent(vertical(
                             new Label("Hello!"),
                             createButtonCloseContainer())));
@@ -101,7 +103,7 @@ public class GUIOverTelnet {
                     protected InteractableRenderer createDefaultRenderer() {
                         return new InteractableRenderer() {
                             @Override
-                            public void drawComponent(TextGUIGraphics graphics, Component component) {
+                            public void drawComponent(TextUiGraphics graphics, Component component) {
                                 graphics.putString(0, 0, text);
                             }
 
@@ -137,7 +139,7 @@ public class GUIOverTelnet {
             contentArea.add(createButtonCloseContainer());
             window.setComponent(contentArea);
 
-            textGUI.addWindowAndWait(window);
+            multiWindowFrame.addWindowAndWait(window);
         } finally {
             try {
                 screen.stop();

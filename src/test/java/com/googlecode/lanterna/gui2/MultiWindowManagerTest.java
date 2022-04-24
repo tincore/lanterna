@@ -94,17 +94,10 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
         public DynamicWindow() {
             super("Window #" + WINDOW_COUNTER.incrementAndGet());
 
-            Panel statsTableContainer = new Panel();
-            statsTableContainer.setLayoutManager(new GridLayout(2));
-            statsTableContainer.add(new Label("Position:"));
             this.labelWindowPosition = new Label("");
-            statsTableContainer.add(labelWindowPosition);
-            statsTableContainer.add(new Label("Size:"));
             this.labelWindowSize = new Label("");
-            statsTableContainer.add(labelWindowSize);
-            statsTableContainer.add(new Label("Auto-sized:"));
             this.labelUnlockWindow = new Label("true");
-            statsTableContainer.add(labelUnlockWindow);
+
 
             addWindowListener(new WindowMoveListenerAdapter() {
                 @Override
@@ -118,9 +111,15 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
                 }
             });
 
-            Panel contentArea = new Panel()
-                .setLayoutManager(new GridLayout(1))
-                .add(statsTableContainer)
+            setComponent(Panels.grid(1)
+                .add(Panels.grid(2,
+                    new Label("Position:"),
+                    labelWindowPosition,
+                    new Label("Size:"),
+                    labelWindowSize,
+                    new Label("Auto-sized:"),
+                    labelUnlockWindow
+                ))
                 .add(new EmptySpace(Dimension.ONE))
                 .add(new Label("Move window with ALT+Arrow\n" + "Resize window with CTRL+Arrow"))
                 .add(new EmptySpace(Dimension.ONE)
@@ -128,8 +127,7 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
                         GridLayout.createLayoutData(GridLayout.Alignment.FILL, GridLayout.Alignment.FILL, true, true)))
                 .add(Panels.horizontal(
                     new Button("Toggle auto-sized", s -> this.toggleManaged()),
-                    new Button("Close", s -> this.close())));
-            setComponent(contentArea);
+                    new Button("Close", s -> this.close()))));
         }
 
         @Override
@@ -195,7 +193,7 @@ public class MultiWindowManagerTest extends AbstractGuiTest {
         protected ComponentRenderer<EmptySpace> createDefaultRenderer() {
             return new ComponentRenderer<EmptySpace>() {
                 @Override
-                public void drawComponent(TextGUIGraphics graphics, EmptySpace component) {
+                public void drawComponent(TextUiGraphics graphics, EmptySpace component) {
                     graphics.applyThemeStyle(component.getTheme().getDefinition(FrameBackdrop.class).getNormal());
                     graphics.fill('・');
                     String text = "Press <CTRL+Tab>/F6 and <CTRL+Shift+Tab>/F7 to cycle active window";

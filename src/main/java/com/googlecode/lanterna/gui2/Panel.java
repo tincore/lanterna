@@ -377,7 +377,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
         private boolean fillAreaBeforeDrawingComponents = true;
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Panel panel) {
+        public void drawComponent(TextUiGraphics graphics, Panel panel) {
             if (isInvalid()) {
                 layout(graphics.getSize());
             }
@@ -396,7 +396,7 @@ public class Panel extends AbstractComponent<Panel> implements Container {
                     if (!child.isVisible()) {
                         continue;
                     }
-                    TextGUIGraphics componentGraphics = graphics.newTextGraphics(child.getPosition(), child.getSize());
+                    TextUiGraphics componentGraphics = graphics.newTextGraphics(child.getPosition(), child.getSize());
                     child.draw(componentGraphics);
                 }
             }

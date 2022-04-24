@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Martin
  */
-public interface AsynchronousTextGUIThread extends TextGUIThread {
+public interface AsynchronousTextUiThread extends TextUiThread {
     /**
      * Starts the AsynchronousTextGUIThread, typically meaning that the event processing loop will start.
      */

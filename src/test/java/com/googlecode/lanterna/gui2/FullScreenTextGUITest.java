@@ -38,7 +38,7 @@ public class FullScreenTextGUITest {
 
         final AtomicBoolean stop = new AtomicBoolean(false);
         MultiWindowFrame multiWindowFrame = new MultiWindowFrame(screen);
-        multiWindowFrame.setKeyStrokeListener((k, h, g) -> {
+        multiWindowFrame.setKeyStrokeListener((k, h, s) -> {
             if (h) {
                 return false;
             }
@@ -175,7 +175,7 @@ public class FullScreenTextGUITest {
 
             return new ComponentRenderer<Panel>() {
                 @Override
-                public void drawComponent(TextGUIGraphics graphics, Panel component) {
+                public void drawComponent(TextUiGraphics graphics, Panel component) {
                     //Clear all data
                     graphics.setBackgroundColor(TextColor.ANSI.BLACK).fill(' ');
 
@@ -205,7 +205,7 @@ public class FullScreenTextGUITest {
             private ButtonRenderer newRenderer() {
                 return new ButtonRenderer() {
                     @Override
-                    public void drawComponent(TextGUIGraphics graphics, Button component) {
+                    public void drawComponent(TextUiGraphics graphics, Button component) {
                         graphics.setBackgroundColor(TextColor.ANSI.BLUE);
                         graphics.fill(' ');
                         if (isFocused()) {

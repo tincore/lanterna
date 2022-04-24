@@ -43,7 +43,7 @@ public interface RootPane extends Composite {
      *
      * @param graphics TextGraphics object to draw with
      */
-    void draw(TextGUIGraphics graphics);
+    void draw(TextUiGraphics graphics);
 
     /**
      * Returns a position expressed in global coordinates, i.e. row and column offset from the top-left corner of the

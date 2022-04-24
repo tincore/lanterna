@@ -36,7 +36,7 @@ public class FrameBackdrop extends EmptySpace {
             }
 
             @Override
-            public void drawComponent(TextGUIGraphics graphics, EmptySpace component) {
+            public void drawComponent(TextUiGraphics graphics, EmptySpace component) {
                 ThemeDefinition themeDefinition = component.getTheme().getDefinition(FrameBackdrop.class);
                 graphics.applyThemeStyle(themeDefinition.getNormal());
                 graphics.fill(themeDefinition.getCharacter("BACKGROUND", ' '));

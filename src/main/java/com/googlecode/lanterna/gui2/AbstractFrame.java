@@ -28,7 +28,7 @@ import com.googlecode.lanterna.screen.Screen;
 import java.io.EOFException;
 import java.io.IOException;
 
-import static com.googlecode.lanterna.gui2.Frame.KeyStrokeListener.DUMMY;
+import static com.googlecode.lanterna.gui2.KeyStrokeListener.DUMMY;
 
 /**
  * This abstract implementation of TextGUI contains some basic management of the underlying Screen and other common code
@@ -39,9 +39,9 @@ import static com.googlecode.lanterna.gui2.Frame.KeyStrokeListener.DUMMY;
 public abstract class AbstractFrame implements Frame {
 
     private final Screen screen;
-    private final TextGUIThread textGUIThread;
+    private final TextUiThread textUiThread;
 
-    private KeyStrokeListener keyStrokeListener = DUMMY;
+    private KeyStrokeListener<Frame> keyStrokeListener = DUMMY;
     private boolean blockingIO;
     private boolean dirty;
     private Theme theme;
@@ -49,16 +49,16 @@ public abstract class AbstractFrame implements Frame {
     /**
      * Constructor for {@code AbstractTextGUI} that requires a {@code Screen} and a factory for creating the GUI thread
      *
-     * @param textGUIThreadFactory Factory class to use for creating the {@code TextGUIThread} class
-     * @param screen               What underlying {@code Screen} to use for this text GUI
+     * @param textUiThreadFactory Factory class to use for creating the {@code TextGUIThread} class
+     * @param screen              What underlying {@code Screen} to use for this text GUI
      */
-    protected AbstractFrame(TextGUIThreadFactory textGUIThreadFactory, Screen screen) {
+    protected AbstractFrame(TextUiThreadFactory textUiThreadFactory, Screen screen) {
         if (screen == null) {
             throw new IllegalArgumentException("Creating a TextGUI requires an underlying Screen");
         }
         this.screen = screen;
         this.theme = LanternaThemes.getDefaultTheme();
-        this.textGUIThread = textGUIThreadFactory.createTextGUIThread(this);
+        this.textUiThread = textUiThreadFactory.createTextGUIThread(this);
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class AbstractFrame implements Frame {
      *
      * @param graphics Graphics object to draw using
      */
-    protected abstract void drawGUI(TextGUIGraphics graphics);
+    protected abstract void drawGUI(TextUiGraphics graphics);
 
     /**
      * Top-level method for drilling in to the GUI and figuring out, in global coordinates, where to place the text
@@ -77,8 +77,8 @@ public abstract class AbstractFrame implements Frame {
     protected abstract Point getCursorPosition();
 
     @Override
-    public TextGUIThread getGUIThread() {
-        return textGUIThread;
+    public TextUiThread getGUIThread() {
+        return textUiThread;
     }
 
     @Override
@@ -193,7 +193,7 @@ public abstract class AbstractFrame implements Frame {
     @Override
     public synchronized void updateScreen() throws IOException {
         screen.doResizeIfNecessary();
-        drawGUI(new DefaultTextGUIGraphics(this, screen.newTextGraphics()));
+        drawGUI(new DefaultTextUiGraphics(this, screen.newTextGraphics()));
         screen.setCursorPosition(getCursorPosition());
         screen.refresh();
         dirty = false;

@@ -43,5 +43,5 @@ public interface ComponentRenderer<T extends Component> {
      * @param graphics Graphics object to use for drawing
      * @param component Component to draw
      */
-    void drawComponent(TextGUIGraphics graphics, T component);
+    void drawComponent(TextUiGraphics graphics, T component);
 }

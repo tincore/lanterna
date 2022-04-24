@@ -272,7 +272,7 @@ public class CheckBoxList<V> extends AbstractListBox<V, CheckBoxList<V>> {
      */
     public static class CheckBoxListItemRenderer<V> extends ListItemRenderer<V, CheckBoxList<V>> {
         @Override
-        public void drawItem(TextGUIGraphics graphics, CheckBoxList<V> listBox, int index, V item, boolean selected, boolean focused) {
+        public void drawItem(TextUiGraphics graphics, CheckBoxList<V> listBox, int index, V item, boolean selected, boolean focused) {
             ThemeDefinition themeDefinition = listBox.getTheme().getDefinition(CheckBoxList.class);
             ThemeStyle itemStyle;
             if (selected && !focused) {

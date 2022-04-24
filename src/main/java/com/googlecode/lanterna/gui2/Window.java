@@ -57,7 +57,7 @@ public interface Window extends RootPane {
      * @param graphics TextGraphics object to draw with
      */
     @Override
-    void draw(TextGUIGraphics graphics);
+    void draw(TextUiGraphics graphics);
 
     /**
      * @see Window#fromGlobalToContentRelative(Point)

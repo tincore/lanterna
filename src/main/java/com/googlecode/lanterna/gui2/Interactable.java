@@ -249,12 +249,4 @@ public interface Interactable extends Component {
 
         void onFocusLost(FocusChangeDirection direction, Interactable previouslyInFocus, Interactable source);
     }
-
-    interface KeyStrokeListener {
-        KeyStrokeListener DUMMY = (k, r, s) -> {
-        };
-
-        void onKeyStroke(KeyStroke keyStroke, KeyStrokeResult keyStrokeResult, Interactable source);
-    }
-
 }

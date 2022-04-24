@@ -79,7 +79,7 @@ public class Separator extends AbstractComponent<Separator> {
      */
     public static class DefaultSeparatorRenderer extends SeparatorRenderer {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Separator component) {
+        public void drawComponent(TextUiGraphics graphics, Separator component) {
             ThemeDefinition themeDefinition = component.getThemeDefinition();
             graphics.applyThemeStyle(themeDefinition.getNormal());
             char character = themeDefinition.getCharacter(component.getDirection().name().toUpperCase(),

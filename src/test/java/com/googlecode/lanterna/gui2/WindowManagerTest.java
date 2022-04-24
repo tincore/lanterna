@@ -13,7 +13,7 @@ public class WindowManagerTest extends AbstractGuiTest {
 
     @Override
     protected MultiWindowFrame createTextGUI(Screen screen) {
-        return new MultiWindowFrame(new SeparateTextGUIThread.Factory(), screen, new CustomWindowManager());
+        return new MultiWindowFrame(new SeparateTextUiThread.Factory(), screen, new CustomWindowManager());
     }
 
     @Override

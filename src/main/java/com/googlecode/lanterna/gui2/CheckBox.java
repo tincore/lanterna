@@ -191,7 +191,7 @@ public class CheckBox extends AbstractInteractableComponent<CheckBox> {
         private static final Point CURSOR_LOCATION = new Point(1, 0);
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, CheckBox component) {
+        public void drawComponent(TextUiGraphics graphics, CheckBox component) {
             ThemeDefinition themeDefinition = component.getThemeDefinition();
             if (component.isFocused()) {
                 graphics.applyThemeStyle(themeDefinition.getActive());

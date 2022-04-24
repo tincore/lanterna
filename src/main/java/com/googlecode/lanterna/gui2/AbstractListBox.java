@@ -374,7 +374,7 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
         }
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, T listBox) {
+        public void drawComponent(TextUiGraphics graphics, T listBox) {
             //update the page size, used for page up and page down keys
             ThemeDefinition themeDefinition = listBox.getTheme().getDefinition(AbstractListBox.class);
             int componentHeight = graphics.getSize().getRows();
@@ -479,7 +479,7 @@ public abstract class AbstractListBox<V, T extends AbstractListBox<V, T>> extend
          *                 please notice what context 'selected' refers to here (see {@code setSelectedIndex})
          * @param focused  Will be set to {@code true} if the list box currently has input focus, otherwise {@code false}
          */
-        public void drawItem(TextGUIGraphics graphics, T listBox, int index, V item, boolean selected, boolean focused) {
+        public void drawItem(TextUiGraphics graphics, T listBox, int index, V item, boolean selected, boolean focused) {
             ThemeDefinition themeDefinition = listBox.getTheme().getDefinition(AbstractListBox.class);
             if (selected && focused) {
                 graphics.applyThemeStyle(themeDefinition.getSelected());

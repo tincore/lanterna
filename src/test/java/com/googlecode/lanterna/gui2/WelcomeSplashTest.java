@@ -47,7 +47,7 @@ public class WelcomeSplashTest extends AbstractGuiTest {
                     }
 
                     @Override
-                    public void drawComponent(TextGUIGraphics graphics, EmptySpace component) {
+                    public void drawComponent(TextUiGraphics graphics, EmptySpace component) {
                         graphics.setForegroundColor(TextColor.ANSI.CYAN);
                         graphics.setBackgroundColor(TextColor.ANSI.BLUE);
                         graphics.setModifiers(EnumSet.of(SGR.BOLD));

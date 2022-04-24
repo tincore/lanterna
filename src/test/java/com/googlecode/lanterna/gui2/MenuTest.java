@@ -111,7 +111,7 @@ public class MenuTest extends AbstractGuiTest {
         protected ComponentRenderer<MultiColorComponent> createDefaultRenderer() {
             return new ComponentRenderer<>() {
                 @Override
-                public void drawComponent(TextGUIGraphics graphics, MultiColorComponent component) {
+                public void drawComponent(TextUiGraphics graphics, MultiColorComponent component) {
                     graphics.applyThemeStyle(getTheme().getDefaultDefinition().getNormal());
                     graphics.fill(' ');
                     int row = 1;

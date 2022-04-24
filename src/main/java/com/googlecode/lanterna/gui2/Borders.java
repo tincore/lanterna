@@ -516,7 +516,7 @@ public class Borders {
         }
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, Border component) {
+        public void drawComponent(TextUiGraphics graphics, Border component) {
             StandardBorder border = (StandardBorder) component;
             Component wrappedComponent = border.getComponent();
             if (wrappedComponent == null) {

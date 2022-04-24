@@ -178,7 +178,7 @@ public class MenuBar extends AbstractComponent<MenuBar> implements Container {
      */
     public class DefaultMenuBarRenderer implements ComponentRenderer<MenuBar> {
         @Override
-        public void drawComponent(TextGUIGraphics graphics, MenuBar menuBar) {
+        public void drawComponent(TextUiGraphics graphics, MenuBar menuBar) {
             // Reset the area
             graphics.applyThemeStyle(getThemeDefinition().getNormal());
             graphics.fill(' ');
@@ -198,7 +198,7 @@ public class MenuBar extends AbstractComponent<MenuBar> implements Container {
                     .withRows(size.getRows()));
                 remainingSpace -= finalWidth + EXTRA_PADDING;
                 leftPosition += finalWidth + EXTRA_PADDING;
-                TextGUIGraphics componentGraphics = graphics.newTextGraphics(menu.getPosition(), menu.getSize());
+                TextUiGraphics componentGraphics = graphics.newTextGraphics(menu.getPosition(), menu.getSize());
                 menu.draw(componentGraphics);
             }
         }

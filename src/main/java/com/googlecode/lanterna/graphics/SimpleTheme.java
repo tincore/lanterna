@@ -21,6 +21,7 @@ package com.googlecode.lanterna.graphics;
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Frame;
 import com.googlecode.lanterna.gui2.table.Table;
 
 import java.util.*;

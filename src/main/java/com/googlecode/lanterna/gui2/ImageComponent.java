@@ -44,7 +44,7 @@ public class ImageComponent extends AbstractInteractableComponent<ImageComponent
     public InteractableRenderer<ImageComponent> createDefaultRenderer() {
         return new InteractableRenderer<>() {
             @Override
-            public void drawComponent(TextGUIGraphics graphics, ImageComponent panel) {
+            public void drawComponent(TextUiGraphics graphics, ImageComponent panel) {
                 graphics.drawImage(Point.TOP_LEFT_CORNER, textImage);
             }
 

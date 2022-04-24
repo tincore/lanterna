@@ -19,7 +19,7 @@
 package com.googlecode.lanterna.gui2;
 
 /**
- * This {@link TextGUIThread} implementation is assuming the GUI event thread will be the same as the thread that
+ * This {@link TextUiThread} implementation is assuming the GUI event thread will be the same as the thread that
  * creates the {@link Frame} objects. This means on the thread you create the GUI on, when you are done you pass over
  * control to lanterna and let it manage the GUI for you. When the GUI is done, you'll get back control again over the
  * thread. This is different from {@code SeparateTextGUIThread} which spawns a new thread that manages the GUI and
@@ -47,14 +47,14 @@ package com.googlecode.lanterna.gui2;
  *     // ... tear down ...
  *     }
  * </pre>
- * @see SeparateTextGUIThread
- * @see TextGUIThread
+ * @see SeparateTextUiThread
+ * @see TextUiThread
  */
-public class SameTextGUIThread extends AbstractTextGUIThread {
+public class SameTextUiThread extends AbstractTextUiThread {
 
     private final Thread guiThread;
 
-    private SameTextGUIThread(Frame frame) {
+    private SameTextUiThread(Frame frame) {
         super(frame);
         guiThread = Thread.currentThread();
 
@@ -72,10 +72,10 @@ public class SameTextGUIThread extends AbstractTextGUIThread {
      * Default factory class for {@code SameTextGUIThread}, you need to pass this to the {@code TextGUI} constructor if
      * you want it to use this class
      */
-    public static class Factory implements TextGUIThreadFactory {
+    public static class Factory implements TextUiThreadFactory {
         @Override
-        public TextGUIThread createTextGUIThread(Frame frame) {
-            return new SameTextGUIThread(frame);
+        public TextUiThread createTextGUIThread(Frame frame) {
+            return new SameTextUiThread(frame);
         }
     }
 }

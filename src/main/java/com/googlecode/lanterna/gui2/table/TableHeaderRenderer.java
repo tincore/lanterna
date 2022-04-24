@@ -19,7 +19,7 @@
 package com.googlecode.lanterna.gui2.table;
 
 import com.googlecode.lanterna.Dimension;
-import com.googlecode.lanterna.gui2.TextGUIGraphics;
+import com.googlecode.lanterna.gui2.TextUiGraphics;
 
 /**
  * This interface can be implemented if you want to customize how table headers are drawn.
@@ -43,7 +43,7 @@ public interface TableHeaderRenderer<V> {
      * @param table Table containing the header
      * @param label Label for this header
      * @param index Column index of the header
-     * @param textGUIGraphics Graphics object to header with
+     * @param textUiGraphics Graphics object to header with
      */
-    void drawHeader(Table<V> table, String label, int index, TextGUIGraphics textGUIGraphics);
+    void drawHeader(Table<V> table, String label, int index, TextUiGraphics textUiGraphics);
 }

@@ -38,7 +38,7 @@ public abstract class AbstractInteractableComponent<T extends AbstractInteractab
     private boolean focused;
     private boolean enabled = true;
 
-    private KeyStrokeListener keyStrokeListener = KeyStrokeListener.DUMMY;
+    private KeyStrokeListener<T> keyStrokeListener = KeyStrokeListener.DUMMY;
     private FocusGainListener focusGainListener = FocusGainListener.DUMMY;
     private FocusLostListener focusLostListener = FocusLostListener.DUMMY;
 
@@ -163,7 +163,7 @@ public abstract class AbstractInteractableComponent<T extends AbstractInteractab
     @Override
     public synchronized KeyStrokeResult onInput(KeyStroke keyStroke) {
         KeyStrokeResult keyStrokeResult = inputFilter == null || inputFilter.onInput(this, keyStroke) ? onKeyStroke(keyStroke) : KeyStrokeResult.UNHANDLED;
-        keyStrokeListener.onKeyStroke(keyStroke, keyStrokeResult, this);
+        keyStrokeListener.onKeyStroke(keyStroke, keyStrokeResult != KeyStrokeResult.UNHANDLED, self());
         return keyStrokeResult;
     }
 
@@ -216,7 +216,7 @@ public abstract class AbstractInteractableComponent<T extends AbstractInteractab
         return self();
     }
 
-    public T setKeyStrokeListener(KeyStrokeListener keyStrokeListener) {
+    public T setKeyStrokeListener(KeyStrokeListener<T> keyStrokeListener) {
         this.keyStrokeListener = keyStrokeListener;
         return self();
     }

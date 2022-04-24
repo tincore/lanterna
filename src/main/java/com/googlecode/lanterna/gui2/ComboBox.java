@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 
 /**
  * This is a simple combo box implementation that allows the user to select one out of multiple items through a
@@ -139,14 +140,16 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
      * @param item Item to add to the combo box
      * @return Itself
      */
-    public synchronized ComboBox<V> addItem(V item) {
+    public synchronized ComboBox<V> addItem(V... item) {
         if (item == null) {
             throw new IllegalArgumentException("Cannot add null elements to a ComboBox");
         }
-        items.add(item);
-        if (selectedIndex == -1 && items.size() == 1) {
-            setSelectedIndex(0);
-        }
+        Stream.of(item).forEach(i -> {
+            items.add(i);
+            if (selectedIndex == -1 && items.size() == 1) {
+                setSelectedIndex(0);
+            }
+        });
         invalidate();
         return this;
     }
@@ -606,7 +609,7 @@ public class ComboBox<V> extends AbstractInteractableComponent<ComboBox<V>> {
         }
 
         @Override
-        public void drawComponent(TextGUIGraphics graphics, ComboBox<V> comboBox) {
+        public void drawComponent(TextUiGraphics graphics, ComboBox<V> comboBox) {
             ThemeDefinition themeDefinition = comboBox.getThemeDefinition();
             if (comboBox.isReadOnly()) {
                 graphics.applyThemeStyle(themeDefinition.getNormal());
