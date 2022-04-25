@@ -29,7 +29,7 @@ import com.googlecode.lanterna.input.KeyStroke;
 /**
  * This class is a single item that appears in a {@link Menu} with an optional action attached to it
  */
-public class MenuItem extends AbstractInteractableComponent<MenuItem> {
+public class MenuItem extends AbstractInteractableComponent<MenuItem> implements MenuSubElement{
     private final String label;
     private ClickListener clickListener;
 
@@ -142,17 +142,13 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
 
             graphics.fill(' ');
             graphics.putString(1, 0, label);
-            if (menuItem instanceof Menu && !(menuItem.getParent() instanceof MenuBar)) {
-                graphics.putString(graphics.getSize().getColumns() - 2, 0, String.valueOf(Symbols.TRIANGLE_RIGHT_POINTING_BLACK));
+
+            if (menuItem.isFocused()) {
+                graphics.applyThemeStyle(themeDefinition.getActive());
+            } else {
+                graphics.applyThemeStyle(themeDefinition.getPreLight());
             }
-            if (!label.isEmpty()) {
-                if (menuItem.isFocused()) {
-                    graphics.applyThemeStyle(themeDefinition.getActive());
-                } else {
-                    graphics.applyThemeStyle(themeDefinition.getPreLight());
-                }
-                graphics.putString(1, 0, leadingCharacter);
-            }
+            graphics.putString(1, 0, leadingCharacter);
         }
 
         @Override
@@ -163,9 +159,6 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         @Override
         public Dimension getPreferredSize(MenuItem component) {
             int preferredWidth = TerminalTextUtils.getColumnWidth(component.getLabel()) + 2;
-            if (component instanceof Menu && !(component.getParent() instanceof MenuBar)) {
-                preferredWidth += 2;
-            }
             return Dimension.ONE.withColumns(preferredWidth);
         }
     }

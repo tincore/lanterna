@@ -16,10 +16,12 @@
  *
  * Copyright (C) 2010-2020 Martin Berglund
  */
-package com.googlecode.lanterna.gui2;
+package com.googlecode.lanterna.gui2.menu;
 
 import com.googlecode.lanterna.Point;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.menu.MenuItem;
+import com.googlecode.lanterna.gui2.menu.MenuSubElement;
 
 /**
  * This class is a {@link Window} implementation that automatically sets some common settings that you'd want on
@@ -48,13 +50,13 @@ public class MenuPopupWindow extends AbstractWindow {
     /**
      * Adds a new menu item to this popup window. The item will automatically be selected if it's the first one added.
      *
-     * @param menuItem Menu item to add to the popup window.
+     * @param menuSubElement Menu item to add to the popup window.
      */
-    public void addMenuItem(MenuItem menuItem) {
-        menuItemPanel.add(menuItem);
-        menuItem.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
+    public void addMenuItem(MenuSubElement menuSubElement) {
+        menuItemPanel.add(menuSubElement);
+        menuSubElement.setLayoutData(LinearLayout.createLayoutData(LinearLayout.Alignment.Fill));
         if (menuItemPanel.getComponentCount() == 1) {
-            setFocusedInteractable(menuItem);
+            setFocusedInteractable(menuSubElement);
         }
         invalidate();
     }
