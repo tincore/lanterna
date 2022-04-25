@@ -33,7 +33,7 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
 
     protected final ContentHolder contentHolder = new ContentHolder();
     private final Attributes attributes;
-    private final CopyOnWriteArrayList<RootPaneKeystrokeInterceptor<T>> rootPaneKeystrokeInterceptors = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<RootPaneKeystrokeInterceptor> rootPaneKeystrokeInterceptors = new CopyOnWriteArrayList<>();
     protected InteractableLookupMap interactableLookupMap = new InteractableLookupMap(new Dimension(80, 25));
     private Interactable focusedInteractable;
     private boolean invalid;
@@ -47,7 +47,8 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
         this.attributes = attributes;
     }
 
-    public void addRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor<T> rootPaneKeystrokeInterceptor) {
+    @Override
+    public void addRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor rootPaneKeystrokeInterceptor) {
         this.rootPaneKeystrokeInterceptors.addIfAbsent(rootPaneKeystrokeInterceptor);
     }
 
@@ -162,7 +163,7 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
 
     @Override
     public boolean onInput(KeyStroke keyStroke) {
-        for (RootPaneKeystrokeInterceptor<T> interceptor : this.rootPaneKeystrokeInterceptors) {
+        for (RootPaneKeystrokeInterceptor interceptor : this.rootPaneKeystrokeInterceptors) {
             boolean intercepted = interceptor.onBeforeKeyStroke(keyStroke, self());
             if (intercepted) {
                 return true;
@@ -296,14 +297,15 @@ public abstract class AbstractRootPane<T extends RootPane> implements RootPane {
 
         // If it wasn't handled, fire the listeners and decide what to report to the TextGUI
         if (!handled) {
-            for (RootPaneKeystrokeInterceptor<T> interceptor : rootPaneKeystrokeInterceptors) {
-                handled = interceptor.onAfterKeyStroke(keyStroke, self()) || handled;
+            for (RootPaneKeystrokeInterceptor interceptor : rootPaneKeystrokeInterceptors) {
+                handled = interceptor.onAfterKeyStroke(keyStroke, handled, self()) || handled;
             }
         }
         return handled;
     }
 
-    protected void removeRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor<T> rootPaneKeystrokeInterceptor) {
+    @Override
+    public void removeRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor rootPaneKeystrokeInterceptor) {
         this.rootPaneKeystrokeInterceptors.remove(rootPaneKeystrokeInterceptor);
     }
 

@@ -19,8 +19,8 @@
 package com.googlecode.lanterna.gui2.menu;
 
 import com.googlecode.lanterna.Dimension;
-import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.Point;
+import com.googlecode.lanterna.Symbols;
 import com.googlecode.lanterna.TerminalTextUtils;
 import com.googlecode.lanterna.graphics.ThemeDefinition;
 import com.googlecode.lanterna.gui2.*;
@@ -40,6 +40,10 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
      */
     public MenuItem(String label) {
         this(label, ClickListener.DUMMY, Attributes.EMPTY);
+    }
+
+    public MenuItem(String label, Attributes attributes) {
+        this(label, ClickListener.DUMMY, attributes);
     }
 
     /**
@@ -85,6 +89,17 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         return label;
     }
 
+    /**
+     * Method to invoke when a menu item is "activated" by pressing the Enter key.
+     *
+     * @return Returns {@code true} if the action was performed successfully, otherwise {@code false}, which will not
+     * automatically close the popup window itself.
+     */
+    public boolean onClicked() {
+        clickListener.onClicked(this);
+        return true;
+    }
+
     @Override
     public KeyStrokeResult onKeyStroke(KeyStroke keyStroke) {
         if (isActivationStroke(keyStroke)) {
@@ -101,17 +116,6 @@ public class MenuItem extends AbstractInteractableComponent<MenuItem> {
         } else {
             return super.onKeyStroke(keyStroke);
         }
-    }
-
-    /**
-     * Method to invoke when a menu item is "activated" by pressing the Enter key.
-     *
-     * @return Returns {@code true} if the action was performed successfully, otherwise {@code false}, which will not
-     * automatically close the popup window itself.
-     */
-    public boolean onClicked() {
-        clickListener.onClicked(this);
-        return true;
     }
 
     /**

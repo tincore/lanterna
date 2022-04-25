@@ -297,9 +297,9 @@ public class ThemeTest extends AbstractGuiTest {
             Panels.vertical(
                 leftHolder.withBorder(Borders.singleLine()),
                 leftWindowActionBox));
-        window1.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
+        window1.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor() {
             @Override
-            public boolean onBeforeKeyStroke(KeyStroke keyStroke, Window basePane) {
+            public boolean onBeforeKeyStroke(KeyStroke keyStroke, RootPane rootPane) {
                 if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window2);
                     return true;
@@ -337,9 +337,9 @@ public class ThemeTest extends AbstractGuiTest {
             Panels.vertical(
                 rightHolder.withBorder(Borders.singleLine()),
                 rightWindowActionBox));
-        window2.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
+        window2.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor() {
             @Override
-            public boolean onBeforeKeyStroke(KeyStroke keyStroke, Window basePane) {
+            public boolean onBeforeKeyStroke(KeyStroke keyStroke, RootPane rootPane) {
                 if (keyStroke.isKeyType(Tab) || keyStroke.isKeyType(ReverseTab)) {
                     textGUI.setActiveWindow(window1);
                     return true;

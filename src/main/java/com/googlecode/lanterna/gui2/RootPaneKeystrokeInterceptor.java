@@ -26,7 +26,7 @@ import com.googlecode.lanterna.input.KeyStroke;
  * thread that will call these methods. You typically use this through {@link WindowMoveListener} and calling
  * {@link Window#addWindowListener(WindowMoveListener)}
  */
-public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
+public interface RootPaneKeystrokeInterceptor {
     /**
      * Called when a user entered some input which wasn't handled by the focused component. This allows you to catch it
      * at a {@link RootPane} (or {@link Window}) level and prevent it from being reported to the {@link Frame} as an
@@ -35,7 +35,7 @@ public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
      * @param keyStroke The unhandled input event
      * @param rootPane  {@link RootPane} that got the input event
      */
-    default boolean onAfterKeyStroke(KeyStroke keyStroke, T rootPane){
+    default boolean onAfterKeyStroke(KeyStroke keyStroke, boolean handled, RootPane rootPane) {
         return false;
     }
 
@@ -48,7 +48,7 @@ public interface RootPaneKeystrokeInterceptor<T extends RootPane> {
      * @param rootPane  Base pane that got the input event
      * @return intercepted
      */
-    default boolean onBeforeKeyStroke(KeyStroke keyStroke, T rootPane){
+    default boolean onBeforeKeyStroke(KeyStroke keyStroke, RootPane rootPane) {
         return false;
     }
 }

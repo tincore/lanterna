@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Implementation of a drop-down menu contained in a {@link MenuBar} and also a sub-menu inside another {@link Menu}.
  */
 public class Menu extends MenuItem {
-    private final List<MenuItem> subItems;
+    private final List<MenuItem> subItems = new ArrayList<>();
 
     /**
      * Creates a menu with the specified label
@@ -40,9 +40,13 @@ public class Menu extends MenuItem {
      * @param label Label to use for the menu item that will trigger this menu to pop up
      */
     public Menu(String label) {
-        super(label);
-        this.subItems = new ArrayList<>();
+        this(label, Attributes.EMPTY);
     }
+
+    public Menu(String label, Attributes attributes) {
+        super(label, attributes);
+    }
+
 
     /**
      * Adds a new menu item to this menu, this can be either a regular {@link MenuItem} or another {@link Menu}
@@ -70,9 +74,9 @@ public class Menu extends MenuItem {
         }
         if (getParent() instanceof MenuBar) {
             final MenuBar menuBar = (MenuBar) getParent();
-            popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
+            popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor() {
                 @Override
-                public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
+                public boolean onAfterKeyStroke(KeyStroke keyStroke, boolean handled, RootPane rootPane) {
                     if (keyStroke.getKeyType() == KeyType.ArrowLeft) {
                         int thisMenuIndex = menuBar.getChildrenList().indexOf(Menu.this);
                         if (thisMenuIndex > 0) {
@@ -96,9 +100,9 @@ public class Menu extends MenuItem {
                 }
             });
         }
-        popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor<>() {
+        popupMenu.addRootPaneKeystrokeInterceptor(new RootPaneKeystrokeInterceptor() {
             @Override
-            public boolean onAfterKeyStroke(KeyStroke keyStroke, Window window) {
+            public boolean onAfterKeyStroke(KeyStroke keyStroke, boolean handled, RootPane rootPane) {
                 if (keyStroke.getKeyType() == KeyType.Escape) {
                     popupCancelled.set(true);
                     popupMenu.close();

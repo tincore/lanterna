@@ -37,6 +37,8 @@ import com.googlecode.lanterna.input.KeyStroke;
  */
 public interface RootPane extends Composite {
 
+    void addRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor rootPaneKeystrokeInterceptor);
+
     /**
      * Called by the GUI system (or something imitating the GUI system) to draw the root container. The TextGUIGraphics
      * object should be used to perform the drawing operations.
@@ -106,16 +108,6 @@ public interface RootPane extends Composite {
     Theme getTheme();
 
     /**
-     * Called by the GUI system to delegate a keyboard input event. The root container will decide what to do with this
-     * input, usually sending it to one of its sub-components, but if it isn't able to find any handler for this input
-     * it should return {@code false} so that the GUI system can take further decisions on what to do with it.
-     *
-     * @param keyStroke Keyboard input
-     * @return {@code true} If the root container could handle the input, false otherwise
-     */
-    boolean onInput(KeyStroke keyStroke);
-
-    /**
      * Invalidates the whole root container (including all of its child components) which will cause them all to be
      * recalculated (for containers) and redrawn.
      */
@@ -128,6 +120,18 @@ public interface RootPane extends Composite {
      * @return {@code true} if the container's content is invalid and needs redrawing, {@code false} otherwise
      */
     boolean isInvalid();
+
+    /**
+     * Called by the GUI system to delegate a keyboard input event. The root container will decide what to do with this
+     * input, usually sending it to one of its sub-components, but if it isn't able to find any handler for this input
+     * it should return {@code false} so that the GUI system can take further decisions on what to do with it.
+     *
+     * @param keyStroke Keyboard input
+     * @return {@code true} If the root container could handle the input, false otherwise
+     */
+    boolean onInput(KeyStroke keyStroke);
+
+    void removeRootPaneKeystrokeInterceptor(RootPaneKeystrokeInterceptor rootPaneKeystrokeInterceptor);
 
     /**
      * If set to false, using the keyboard arrows keys will have the same effect as using the tab and reverse tab.
@@ -149,7 +153,6 @@ public interface RootPane extends Composite {
      * @param menubar The {@link MenuBar} to assign to this pane/window
      */
     <T extends Composite> T setMenuBar(MenuBar menubar);
-
 
     /**
      * If set to true, up/down array keys will not translate to next/previous if there are no more components
@@ -175,4 +178,5 @@ public interface RootPane extends Composite {
      * @return The local position translated to global coordinates
      */
     Point toGlobal(Point localPoint);
+
 }
